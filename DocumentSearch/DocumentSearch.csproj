@@ -23,9 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\logo.png" Condition="Exists('Assets\logo.png')">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="Assets\logo.png" Condition="Exists('Assets\logo.png')" />
   </ItemGroup>
 
 </Project>

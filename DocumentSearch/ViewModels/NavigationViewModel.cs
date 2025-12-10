@@ -5,6 +5,7 @@ using DocumentSearch.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using System.Threading.Tasks;
 
 namespace DocumentSearch.ViewModels;
@@ -13,6 +14,7 @@ public partial class NavigationViewModel : ObservableObject
 {
     private readonly IServiceProvider? _serviceProvider;
     private readonly UpdateService? _updateService;
+    private DispatcherTimer? _updateCheckTimer;
 
     [ObservableProperty]
     private UserControl? currentView;
@@ -38,15 +40,43 @@ public partial class NavigationViewModel : ObservableObject
         if (_updateService != null)
         {
             _updateService.UpdateStatusChanged += UpdateService_UpdateStatusChanged;
-            // İlk kontrolü yap
+            
+            // İlk kontrolü yap (3 saniye sonra)
             _ = Task.Run(async () =>
             {
                 await Task.Delay(3000); // 3 saniye bekle
                 await _updateService.CheckForUpdatesAsync(silent: true);
             });
+            
+            // Periyodik güncelleme kontrolü başlat (her 30 dakikada bir)
+            StartPeriodicUpdateCheck();
         }
         
         NavigateToDocumentSearch();
+    }
+
+    /// <summary>
+    /// Periyodik güncelleme kontrolünü başlatır (her 30 dakikada bir)
+    /// </summary>
+    private void StartPeriodicUpdateCheck()
+    {
+        if (_updateService == null)
+            return;
+
+        _updateCheckTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromHours(12) // Her 30 dakikada bir kontrol et
+        };
+        
+        _updateCheckTimer.Tick += async (sender, e) =>
+        {
+            if (_updateService != null)
+            {
+                await _updateService.CheckForUpdatesAsync(silent: true);
+            }
+        };
+        
+        _updateCheckTimer.Start();
     }
 
     private void UpdateService_UpdateStatusChanged(object? sender, EventArgs e)

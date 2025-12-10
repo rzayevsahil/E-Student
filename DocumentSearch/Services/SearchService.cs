@@ -28,10 +28,11 @@ public class SearchService : ISearchService
                 });
             }
 
-            // İçerikte sayfa bazlı arama (sadece PDF için)
-            if (document.FileExtension.ToLower() == ".pdf" && !string.IsNullOrWhiteSpace(document.RawContent))
+            // İçerikte sayfa bazlı arama (PDF ve Word için)
+            if ((document.FileExtension.ToLower() == ".pdf" || document.FileExtension.ToLower() == ".docx" || document.FileExtension.ToLower() == ".doc") 
+                && !string.IsNullOrWhiteSpace(document.RawContent))
             {
-                // PDF içeriğini sayfalara böl (---PAGE_X--- ayırıcısına göre)
+                // İçeriği sayfalara böl (---PAGE_X--- ayırıcısına göre)
                 var pageSeparator = "---PAGE_";
                 var pages = document.RawContent.Split(new[] { pageSeparator }, StringSplitOptions.RemoveEmptyEntries);
                 
@@ -68,7 +69,7 @@ public class SearchService : ISearchService
             }
             else
             {
-                // PDF dışı dosyalar için (Excel, Word) - tüm içerikte ara
+                // Excel gibi diğer dosyalar için - tüm içerikte ara
                 if (!string.IsNullOrWhiteSpace(document.RawContent))
                 {
                     var normalizedContent = NormalizeTurkish(document.RawContent.ToLower());
@@ -79,7 +80,7 @@ public class SearchService : ISearchService
                         {
                             DocumentPath = document.FilePath,
                             DocumentName = document.FileName,
-                            PageNumber = 0 // Excel/Word'de sayfa yok
+                            PageNumber = 0 // Excel'de sayfa yok
                         });
                     }
                 }

@@ -1,7 +1,13 @@
 using DocumentSearch.Models;
 using System.IO;
+using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Syncfusion.DocIO;
+using Syncfusion.DocIO.DLS;
+using Syncfusion.DocIORenderer;
+using SyncfusionPdf = Syncfusion.Pdf;
+using PdfPigDocument = UglyToad.PdfPig.PdfDocument;
 
 namespace DocumentSearch.Services;
 
@@ -118,13 +124,8 @@ public class WordParser : IWordParser
     {
         try
         {
-            using var wordDocument = WordprocessingDocument.Open(filePath, false);
-            var body = wordDocument.MainDocumentPart?.Document?.Body;
-            
-            if (body == null)
-                return string.Empty;
-
-            return body.InnerText;
+            // Word → PDF → Sayfa Sayfa Okuma yaklaşımı
+            return ExtractWordPages(filePath);
         }
         catch
         {
@@ -132,9 +133,194 @@ public class WordParser : IWordParser
         }
     }
 
+    /// <summary>
+    /// Word dosyasını PDF'e dönüştürüp sayfa sayfa metin çıkarır
+    /// </summary>
+    private string ExtractWordPages(string docxPath)
+    {
+        string tempPdfPath = Path.Combine(Path.GetTempPath(), Path.GetFileNameWithoutExtension(docxPath) + "_" + Guid.NewGuid().ToString("N")[..8] + ".pdf");
+        
+        try
+        {
+            // 1) Word → PDF dönüştürme
+            ConvertDocxToPdf(docxPath, tempPdfPath);
+            
+            // 2) PDF → Sayfa Sayfa Metin
+            var pages = ExtractTextByPage(tempPdfPath);
+            
+            // 3) Sayfa numaralarıyla birleştir
+            var result = new System.Text.StringBuilder();
+            foreach (var page in pages.OrderBy(p => p.Key))
+            {
+                result.Append($"---PAGE_{page.Key}---");
+                result.Append(page.Value);
+                result.Append(" ");
+            }
+            
+            return result.ToString().Trim();
+        }
+        finally
+        {
+            // Geçici PDF dosyasını sil
+            try
+            {
+                if (File.Exists(tempPdfPath))
+                {
+                    File.Delete(tempPdfPath);
+                }
+            }
+            catch
+            {
+                // Silme hatası önemsiz
+            }
+        }
+    }
+
+    /// <summary>
+    /// Word dosyasını PDF'e dönüştürür
+    /// </summary>
+    private void ConvertDocxToPdf(string inputPath, string outputPath)
+    {
+        using (var fileStream = new FileStream(inputPath, FileMode.Open, FileAccess.Read))
+        {
+            using (WordDocument document = new WordDocument(fileStream, FormatType.Docx))
+            {
+                using (DocIORenderer renderer = new DocIORenderer())
+                {
+                    SyncfusionPdf.PdfDocument pdf = renderer.ConvertToPDF(document);
+                    using (var outputStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+                    {
+                        pdf.Save(outputStream);
+                    }
+                    pdf.Close(true);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// PDF'den sayfa sayfa metin çıkarır
+    /// </summary>
+    private Dictionary<int, string> ExtractTextByPage(string pdfPath)
+    {
+        var result = new Dictionary<int, string>();
+        
+        using (PdfPigDocument document = PdfPigDocument.Open(pdfPath))
+        {
+            int pageCount = document.NumberOfPages;
+            for (int i = 1; i <= pageCount; i++)
+            {
+                var page = document.GetPage(i);
+                string text = page.Text;
+                result.Add(i, text);
+            }
+        }
+        
+        return result;
+    }
+
+
+    private string ExtractTextFromBody(OpenXmlElement? body)
+    {
+        if (body == null)
+            return string.Empty;
+
+        var result = new System.Text.StringBuilder();
+        foreach (var element in body.Elements())
+        {
+            if (element is Paragraph paragraph)
+            {
+                var text = GetTextFromParagraph(paragraph);
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    result.Append(text);
+                    result.Append(" ");
+                }
+            }
+            else if (element is Table table)
+            {
+                result.Append(GetTextFromTable(table));
+            }
+        }
+        return result.ToString().Trim();
+    }
+
+    private string GetTextFromParagraph(Paragraph paragraph)
+    {
+        var texts = new List<string>();
+        
+        // Tüm Text elementlerini topla (Run içindekiler dahil)
+        foreach (var text in paragraph.Descendants<Text>())
+        {
+            if (!string.IsNullOrWhiteSpace(text.Text))
+            {
+                texts.Add(text.Text);
+            }
+        }
+        
+        // Eğer Text bulunamadıysa, InnerText kullan
+        if (texts.Count == 0 && !string.IsNullOrWhiteSpace(paragraph.InnerText))
+        {
+            return paragraph.InnerText;
+        }
+        
+        // Boşluksuz birleştir (14/07/2025 gibi tarihler için)
+        return string.Concat(texts);
+    }
+
+    private string GetTextFromTable(Table table)
+    {
+        var result = new System.Text.StringBuilder();
+        foreach (var row in table.Elements<TableRow>())
+        {
+            foreach (var cell in row.Elements<TableCell>())
+            {
+                var cellText = GetTextFromCell(cell);
+                if (!string.IsNullOrWhiteSpace(cellText))
+                {
+                    result.Append(cellText);
+                    result.Append(" ");
+                }
+            }
+            result.AppendLine();
+        }
+        return result.ToString();
+    }
+
     private string GetTextFromCell(TableCell cell)
     {
-        return string.Join(" ", cell.Descendants<Text>().Select(t => t.Text));
+        var texts = new List<string>();
+        
+        // Hücre içindeki tüm paragrafları işle
+        foreach (var paragraph in cell.Elements<Paragraph>())
+        {
+            var paragraphText = GetTextFromParagraph(paragraph);
+            if (!string.IsNullOrWhiteSpace(paragraphText))
+            {
+                texts.Add(paragraphText);
+            }
+        }
+        
+        // Eğer paragraf yoksa, direkt Text elementlerini al
+        if (texts.Count == 0)
+        {
+            foreach (var text in cell.Descendants<Text>())
+            {
+                if (!string.IsNullOrWhiteSpace(text.Text))
+                {
+                    texts.Add(text.Text);
+                }
+            }
+        }
+        
+        // Eğer hala metin yoksa, InnerText kullan
+        if (texts.Count == 0 && !string.IsNullOrWhiteSpace(cell.InnerText))
+        {
+            return cell.InnerText;
+        }
+        
+        // Boşluksuz birleştir (14/07/2025 gibi tarihler için)
+        return string.Concat(texts);
     }
 }
 

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:DocumentSearch"
         xmlns:vm="clr-namespace:DocumentSearch.ViewModels"
         mc:Ignorable="d"
-        Title="Productivity Suite" Height="800" Width="1400"
+        Title="E-Student" Height="800" Width="1400"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -25,14 +25,26 @@
                 Background="#F8F9FA">
             <StackPanel Margin="0">
                 <!-- Logo/Header -->
-                <Border Background="#2196F3" 
-                        Padding="20,30"
-                        Margin="0,0,0,20">
-                    <TextBlock Text="⚡ Productivity Suite" 
-                               FontSize="20" 
-                               FontWeight="Bold"
-                               Foreground="White"
-                               HorizontalAlignment="Center"/>
+                <Border Background="#ffffff" 
+                        Padding="0"
+                        Margin="0,0,0,0">
+                    <StackPanel Orientation="Horizontal" 
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <!-- Logo (Logo dosyası varsa göster) -->
+                        <Image x:Name="LogoImage"
+                               Width="100" 
+                               Height="100" 
+                               Margin="0,0,0,0"
+                               Stretch="Uniform"
+                               Visibility="Collapsed"/>
+                        <!-- E-Student Text -->
+                        <!--<TextBlock Text="E-Student" 
+                                   FontSize="22" 
+                                   FontWeight="Bold"
+                                   Foreground="Black"
+                                   VerticalAlignment="Center"/>-->
+                    </StackPanel>
                 </Border>
 
                 <!-- Menu Items -->

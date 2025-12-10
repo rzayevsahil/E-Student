@@ -23,13 +23,7 @@ public partial class App : Application
         var mainWindow = new MainWindow(navigationViewModel);
         mainWindow.Show();
         
-        // Uygulama başladığında arka planda güncelleme kontrolü yap (sessiz mod)
-        _ = Task.Run(async () =>
-        {
-            await Task.Delay(3000); // 3 saniye bekle (uygulama yüklensin)
-            var updateService = new UpdateService();
-            await updateService.CheckForUpdatesAsync(silent: true);
-        });
+        // Not: Güncelleme kontrolü NavigationViewModel constructor'ında yapılıyor
     }
 
     private void ConfigureServices(IServiceCollection services)

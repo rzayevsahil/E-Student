@@ -22,6 +22,13 @@ public class UpdateService
     // GitHub Releases API URL'i
     private string LatestReleaseUrl => $"https://api.github.com/repos/{_githubRepoOwner}/{_githubRepoName}/releases/latest";
     
+    // Güncelleme durumu
+    public bool HasUpdate { get; private set; }
+    public string? LatestVersion { get; private set; }
+    
+    // Güncelleme durumu değiştiğinde tetiklenen event
+    public event EventHandler? UpdateStatusChanged;
+    
     public UpdateService()
     {
         _httpClient = new HttpClient();
@@ -46,6 +53,11 @@ public class UpdateService
             
             if (latestVersion == null)
             {
+                // Güncelleme kontrolü yapılamadı, durumu güncelle
+                HasUpdate = false;
+                LatestVersion = null;
+                UpdateStatusChanged?.Invoke(this, EventArgs.Empty);
+                
                 if (!silent)
                 {
                     MessageBox.Show(
@@ -57,7 +69,13 @@ public class UpdateService
                 return;
             }
             
-            if (IsNewerVersion(latestVersion, _currentVersion))
+            // Güncelleme durumunu kontrol et ve güncelle
+            bool hasUpdate = IsNewerVersion(latestVersion, _currentVersion);
+            HasUpdate = hasUpdate;
+            LatestVersion = latestVersion;
+            UpdateStatusChanged?.Invoke(this, EventArgs.Empty);
+            
+            if (hasUpdate)
             {
                 // Yeni sürüm bulundu
                 var result = MessageBox.Show(
@@ -88,6 +106,11 @@ public class UpdateService
         }
         catch (Exception ex)
         {
+            // Hata durumunda durumu sıfırla
+            HasUpdate = false;
+            LatestVersion = null;
+            UpdateStatusChanged?.Invoke(this, EventArgs.Empty);
+            
             if (!silent)
             {
                 MessageBox.Show(

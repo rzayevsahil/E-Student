@@ -8,6 +8,9 @@
         mc:Ignorable="d"
         Title="Productivity Suite" Height="800" Width="1400"
         WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
@@ -108,16 +111,17 @@
                         </Button.Style>
                     </Button>
 
-                    <!-- Güncelleme Kontrolü Butonu -->
-                    <Button Content="🔄 Güncellemeleri Kontrol Et" 
+                    <!-- Güncelleme Butonu (Sadece güncelleme varsa göster) -->
+                    <Button Content="{Binding UpdateButtonText}" 
                             Command="{Binding CheckForUpdatesCommand}"
                             Margin="10,20,10,5"
                             Padding="15,12"
-                            HorizontalContentAlignment="Left">
+                            HorizontalContentAlignment="Left"
+                            Foreground="{Binding UpdateButtonForeground}"
+                            Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Button.Style>
                             <Style TargetType="Button">
                                 <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="#4CAF50"/>
                                 <Setter Property="BorderThickness" Value="0"/>
                                 <Setter Property="FontSize" Value="13"/>
                                 <Setter Property="Cursor" Value="Hand"/>

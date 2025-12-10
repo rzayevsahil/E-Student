@@ -2,6 +2,7 @@
 using DocumentSearch.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
+using System.Threading.Tasks;
 
 namespace DocumentSearch;
 
@@ -21,6 +22,14 @@ public partial class App : Application
         var navigationViewModel = new NavigationViewModel(_serviceProvider);
         var mainWindow = new MainWindow(navigationViewModel);
         mainWindow.Show();
+        
+        // Uygulama başladığında arka planda güncelleme kontrolü yap (sessiz mod)
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(3000); // 3 saniye bekle (uygulama yüklensin)
+            var updateService = new UpdateService();
+            await updateService.CheckForUpdatesAsync(silent: true);
+        });
     }
 
     private void ConfigureServices(IServiceCollection services)
@@ -32,6 +41,7 @@ public partial class App : Application
         services.AddSingleton<IPdfToExcelConverter, PdfToExcelConverter>();
         services.AddSingleton<IDocumentService, DocumentService>();
         services.AddSingleton<ISearchService, SearchService>();
+        services.AddSingleton<UpdateService>();
 
         // ViewModels
         services.AddTransient<MainViewModel>();

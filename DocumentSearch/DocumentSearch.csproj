@@ -9,12 +9,13 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
     <AssemblyName>DocumentSearch</AssemblyName>
     <Product>Belge İçerik Arama Uygulaması</Product>
-    <Version>2.1.6</Version>
+    <Version>2.1.7</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="ClosedXML" Version="0.104.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="DeltaCompressionDotNet" Version="1.0.0" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />

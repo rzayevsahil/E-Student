@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using DeltaCompressionDotNet;
+using DeltaCompressionDotNet.MsDelta;
 using DocumentSearch.Views;
 
 namespace DocumentSearch.Services;
@@ -170,7 +172,7 @@ public class UpdateService
     }
     
     /// <summary>
-    /// Güncellemeyi indirir ve kurar (otomatik indirme, progress gösterimi)
+    /// Güncellemeyi indirir ve kurar (delta güncelleme desteği ile)
     /// </summary>
     public async Task DownloadAndInstallUpdateAsync()
     {
@@ -185,7 +187,7 @@ public class UpdateService
                 downloadWindow.Show();
             });
             
-            // GitHub Releases API'den indirme URL'ini al
+            // GitHub Releases API'den assets listesini al
             var response = await _httpClient.GetStringAsync(LatestReleaseUrl);
             var jsonDoc = JsonDocument.Parse(response);
             
@@ -199,87 +201,214 @@ public class UpdateService
                 return;
             }
             
-            // Setup.exe veya .msi dosyasını bul
-            string? downloadUrl = null;
-            string? fileName = null;
-            long? fileSize = null;
+            // Patch dosyası adını oluştur (örn: v2.1.4-to-v2.1.5.patch)
+            var patchFileName = $"v{_currentVersion}-to-v{LatestVersion}.patch";
+            string? patchUrl = null;
+            string? patchFileNameFromAsset = null;
+            long? patchFileSize = null;
             
+            // Tam exe dosyası bilgileri (fallback için)
+            string? fullExeUrl = null;
+            string? fullExeFileName = null;
+            long? fullExeFileSize = null;
+            
+            // Assets listesini kontrol et
             foreach (var asset in assets.EnumerateArray())
             {
-                if (asset.TryGetProperty("browser_download_url", out var url))
+                if (asset.TryGetProperty("browser_download_url", out var url) && 
+                    asset.TryGetProperty("name", out var name))
                 {
                     var urlString = url.GetString();
-                    if (urlString != null && (urlString.EndsWith(".exe") || urlString.EndsWith(".msi")))
+                    var nameString = name.GetString();
+                    
+                    if (urlString == null || nameString == null) continue;
+                    
+                    // Patch dosyası var mı?
+                    if (nameString.Equals(patchFileName, StringComparison.OrdinalIgnoreCase) || 
+                        nameString.EndsWith(".patch", StringComparison.OrdinalIgnoreCase))
                     {
-                        downloadUrl = urlString;
-                        if (asset.TryGetProperty("name", out var name))
-                        {
-                            fileName = name.GetString();
-                        }
+                        patchUrl = urlString;
+                        patchFileNameFromAsset = nameString;
                         if (asset.TryGetProperty("size", out var size))
                         {
-                            fileSize = size.GetInt64();
+                            patchFileSize = size.GetInt64();
                         }
-                        break;
+                    }
+                    // Tam exe dosyası (fallback için)
+                    else if (nameString.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                    {
+                        fullExeUrl = urlString;
+                        fullExeFileName = nameString;
+                        if (asset.TryGetProperty("size", out var size))
+                        {
+                            fullExeFileSize = size.GetInt64();
+                        }
                     }
                 }
             }
             
-            if (downloadUrl == null)
+            var tempPath = Path.GetTempPath();
+            string? updateFilePath = null;
+            bool usePatch = false;
+            
+            // Patch dosyası varsa delta güncelleme kullan
+            if (patchUrl != null && patchFileNameFromAsset != null)
+            {
+                usePatch = true;
+                var patchFilePath = Path.Combine(tempPath, patchFileNameFromAsset);
+                
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    downloadWindow?.SetStatus($"Delta güncelleme indiriliyor: {patchFileNameFromAsset} ({(patchFileSize.HasValue ? (patchFileSize.Value / 1024.0 / 1024.0).ToString("F2") : "?")} MB)");
+                });
+                
+                // Patch dosyasını indir
+                using (var responseStream = await _httpClient.GetStreamAsync(patchUrl))
+                using (var fileStream = new FileStream(patchFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    var buffer = new byte[8192];
+                    long totalBytesRead = 0;
+                    int bytesRead;
+                    
+                    while ((bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                    {
+                        await fileStream.WriteAsync(buffer, 0, bytesRead);
+                        totalBytesRead += bytesRead;
+                        
+                        if (patchFileSize.HasValue)
+                        {
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                downloadWindow?.UpdateProgress(totalBytesRead, patchFileSize.Value);
+                            });
+                        }
+                    }
+                }
+                
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    downloadWindow?.SetStatus("Patch uygulanıyor...");
+                });
+                
+                // Mevcut exe'nin yolunu al
+                var currentExePath = Process.GetCurrentProcess().MainModule?.FileName;
+                if (string.IsNullOrEmpty(currentExePath) || !File.Exists(currentExePath))
+                {
+                    throw new FileNotFoundException("Mevcut uygulama dosyası bulunamadı.");
+                }
+                
+                // Yeni exe dosyası yolu
+                var currentExeDir = Path.GetDirectoryName(currentExePath);
+                var currentExeName = Path.GetFileNameWithoutExtension(currentExePath);
+                updateFilePath = Path.Combine(tempPath, $"{currentExeName}_New_{LatestVersion}.exe");
+                
+                // Patch'i uygula
+                try
+                {
+                    var deltaCompression = new MsDeltaCompression();
+                    deltaCompression.ApplyDelta(currentExePath, patchFilePath, updateFilePath);
+                }
+                catch (Exception patchEx)
+                {
+                    // Patch uygulama başarısız olursa tam exe'ye geç
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        downloadWindow?.SetStatus("Patch uygulanamadı, tam güncelleme indiriliyor...");
+                    });
+                    
+                    usePatch = false;
+                    File.Delete(patchFilePath);
+                    
+                    if (fullExeUrl == null)
+                    {
+                        throw new Exception("Patch uygulanamadı ve tam güncelleme dosyası bulunamadı.", patchEx);
+                    }
+                }
+            }
+            
+            // Patch yoksa veya başarısız olduysa tam exe indir
+            if (!usePatch)
+            {
+                if (fullExeUrl == null || fullExeFileName == null)
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        downloadWindow?.Close();
+                        MessageBox.Show("Güncelleme dosyası bulunamadı. Lütfen manuel olarak indirin.", 
+                            "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                    });
+                    return;
+                }
+                
+                updateFilePath = Path.Combine(tempPath, fullExeFileName);
+                
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    downloadWindow?.SetStatus($"Güncelleme dosyası indiriliyor: {fullExeFileName} ({(fullExeFileSize.HasValue ? (fullExeFileSize.Value / 1024.0 / 1024.0).ToString("F2") : "?")} MB)");
+                });
+                
+                // Tam exe'yi indir
+                using (var responseStream = await _httpClient.GetStreamAsync(fullExeUrl))
+                using (var fileStream = new FileStream(updateFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    var buffer = new byte[8192];
+                    long totalBytesRead = 0;
+                    int bytesRead;
+                    
+                    while ((bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                    {
+                        await fileStream.WriteAsync(buffer, 0, bytesRead);
+                        totalBytesRead += bytesRead;
+                        
+                        if (fullExeFileSize.HasValue)
+                        {
+                            Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                downloadWindow?.UpdateProgress(totalBytesRead, fullExeFileSize.Value);
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // İndirme/Uygulama tamamlandı
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                downloadWindow?.SetStatus("Güncelleme hazır. Uygulama kapatılıyor...");
+                downloadWindow?.UpdateProgress(100, 100);
+            });
+            
+            await Task.Delay(1000);
+            
+            // Mevcut exe'nin yolunu al
+            var currentExePathForReplace = Process.GetCurrentProcess().MainModule?.FileName;
+            if (string.IsNullOrEmpty(currentExePathForReplace))
+            {
+                throw new FileNotFoundException("Mevcut uygulama dosyası bulunamadı.");
+            }
+            
+            // updateFilePath kontrolü
+            if (string.IsNullOrEmpty(updateFilePath) || !File.Exists(updateFilePath))
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     downloadWindow?.Close();
-                    MessageBox.Show("Güncelleme dosyası bulunamadı. Lütfen manuel olarak indirin.", 
+                    MessageBox.Show("Güncelleme dosyası oluşturulamadı.", 
                         "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
                 });
                 return;
             }
             
-            // Temp klasörüne indir
-            var tempPath = Path.GetTempPath();
-            var updateFileName = fileName ?? $"DocumentSearch_Update_{LatestVersion}.exe";
-            var updateFilePath = Path.Combine(tempPath, updateFileName);
-            
-            // Durum mesajını güncelle
-            Application.Current.Dispatcher.Invoke(() =>
+            // Eski exe'yi yedekle
+            var backupPath = currentExePathForReplace + ".old";
+            if (File.Exists(backupPath))
             {
-                downloadWindow?.SetStatus($"Güncelleme dosyası indiriliyor: {updateFileName}");
-            });
-            
-            // İlerlemeli indirme
-            using (var responseStream = await _httpClient.GetStreamAsync(downloadUrl))
-            using (var fileStream = new FileStream(updateFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                var buffer = new byte[8192];
-                long totalBytesRead = 0;
-                int bytesRead;
-                
-                while ((bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                {
-                    await fileStream.WriteAsync(buffer, 0, bytesRead);
-                    totalBytesRead += bytesRead;
-                    
-                    // Progress güncelle
-                    if (fileSize.HasValue)
-                    {
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            downloadWindow?.UpdateProgress(totalBytesRead, fileSize.Value);
-                        });
-                    }
-                }
+                File.Delete(backupPath);
             }
+            File.Copy(currentExePathForReplace, backupPath);
             
-            // İndirme tamamlandı
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                downloadWindow?.SetStatus("İndirme tamamlandı. Uygulama kapatılıyor...");
-                downloadWindow?.UpdateProgress(100, 100);
-            });
-            
-            // Kısa bir bekleme (kullanıcı mesajı görebilsin)
-            await Task.Delay(1000);
+            // Yeni exe'yi mevcut konuma kopyala
+            File.Copy(updateFilePath, currentExePathForReplace, true);
             
             // İndirme penceresini kapat
             Application.Current.Dispatcher.Invoke(() =>
@@ -290,15 +419,33 @@ public class UpdateService
             // Yeni exe'yi çalıştır
             var processStartInfo = new ProcessStartInfo
             {
-                FileName = updateFilePath,
+                FileName = currentExePathForReplace,
                 UseShellExecute = true,
-                WorkingDirectory = Path.GetDirectoryName(updateFilePath)
+                WorkingDirectory = Path.GetDirectoryName(currentExePathForReplace)
             };
             
             Process.Start(processStartInfo);
             
-            // Uygulamayı kapat (yeni sürüm açılacak)
-            await Task.Delay(500); // Yeni process'in başlaması için kısa bekleme
+            // Cleanup batch script oluştur (yedek ve temp dosyaları temizlemek için)
+            var cleanupScript = Path.Combine(Path.GetTempPath(), $"DocumentSearch_Cleanup_{Guid.NewGuid()}.bat");
+            var scriptContent = $@"@echo off
+timeout /t 3 /nobreak >nul
+del ""{backupPath}"" 2>nul
+del ""{updateFilePath}"" 2>nul
+del ""{cleanupScript}"" 2>nul";
+            File.WriteAllText(cleanupScript, scriptContent);
+            
+            var cleanupProcess = new ProcessStartInfo
+            {
+                FileName = cleanupScript,
+                UseShellExecute = true,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true
+            };
+            Process.Start(cleanupProcess);
+            
+            // Uygulamayı kapat
+            await Task.Delay(500);
             Application.Current.Dispatcher.Invoke(() =>
             {
                 Application.Current.Shutdown();

@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using DocumentSearch.Views;
 
 namespace DocumentSearch.Services;
 
@@ -77,19 +78,22 @@ public class UpdateService
             
             if (hasUpdate)
             {
-                // Yeni sürüm bulundu
-                var result = MessageBox.Show(
-                    $"Yeni bir sürüm mevcut!\n\n" +
-                    $"Mevcut Sürüm: {_currentVersion}\n" +
-                    $"Yeni Sürüm: {latestVersion}\n\n" +
-                    $"Güncellemeyi şimdi indirmek ister misiniz?",
-                    "Yeni Güncelleme Mevcut",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
-                
-                if (result == MessageBoxResult.Yes)
+                // Yeni sürüm bulundu - Sessiz modda sadece durumu güncelle, manuel kontrol için MessageBox göster
+                if (!silent)
                 {
-                    await DownloadAndInstallUpdateAsync();
+                    var result = MessageBox.Show(
+                        $"Yeni bir sürüm mevcut!\n\n" +
+                        $"Mevcut Sürüm: {_currentVersion}\n" +
+                        $"Yeni Sürüm: {latestVersion}\n\n" +
+                        $"Güncellemeyi şimdi indirmek ister misiniz?",
+                        "Yeni Güncelleme Mevcut",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
+                    
+                    if (result == MessageBoxResult.Yes)
+                    {
+                        await DownloadAndInstallUpdateAsync();
+                    }
                 }
             }
             else
@@ -166,25 +170,39 @@ public class UpdateService
     }
     
     /// <summary>
-    /// Güncellemeyi indirir ve kurar
+    /// Güncellemeyi indirir ve kurar (otomatik indirme, progress gösterimi)
     /// </summary>
-    private async Task DownloadAndInstallUpdateAsync()
+    public async Task DownloadAndInstallUpdateAsync()
     {
+        UpdateDownloadWindow? downloadWindow = null;
+        
         try
         {
+            // İndirme penceresini göster
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                downloadWindow = new UpdateDownloadWindow();
+                downloadWindow.Show();
+            });
+            
             // GitHub Releases API'den indirme URL'ini al
             var response = await _httpClient.GetStringAsync(LatestReleaseUrl);
             var jsonDoc = JsonDocument.Parse(response);
             
             if (!jsonDoc.RootElement.TryGetProperty("assets", out var assets))
             {
-                MessageBox.Show("Güncelleme dosyası bulunamadı.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    downloadWindow?.Close();
+                    MessageBox.Show("Güncelleme dosyası bulunamadı.", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                });
                 return;
             }
             
             // Setup.exe veya .msi dosyasını bul
             string? downloadUrl = null;
             string? fileName = null;
+            long? fileSize = null;
             
             foreach (var asset in assets.EnumerateArray())
             {
@@ -198,6 +216,10 @@ public class UpdateService
                         {
                             fileName = name.GetString();
                         }
+                        if (asset.TryGetProperty("size", out var size))
+                        {
+                            fileSize = size.GetInt64();
+                        }
                         break;
                     }
                 }
@@ -205,42 +227,94 @@ public class UpdateService
             
             if (downloadUrl == null)
             {
-                MessageBox.Show("Güncelleme dosyası bulunamadı. Lütfen manuel olarak indirin.", 
-                    "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    downloadWindow?.Close();
+                    MessageBox.Show("Güncelleme dosyası bulunamadı. Lütfen manuel olarak indirin.", 
+                        "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+                });
                 return;
             }
             
-            // Kullanıcıya indirme konumunu sor
-            var saveDialog = new Microsoft.Win32.SaveFileDialog
+            // Temp klasörüne indir
+            var tempPath = Path.GetTempPath();
+            var updateFileName = fileName ?? $"DocumentSearch_Update_{LatestVersion}.exe";
+            var updateFilePath = Path.Combine(tempPath, updateFileName);
+            
+            // Durum mesajını güncelle
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                FileName = fileName ?? "DocumentSearch_Update.exe",
-                Filter = "Executable Files|*.exe|All Files|*.*"
+                downloadWindow?.SetStatus($"Güncelleme dosyası indiriliyor: {updateFileName}");
+            });
+            
+            // İlerlemeli indirme
+            using (var responseStream = await _httpClient.GetStreamAsync(downloadUrl))
+            using (var fileStream = new FileStream(updateFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                var buffer = new byte[8192];
+                long totalBytesRead = 0;
+                int bytesRead;
+                
+                while ((bytesRead = await responseStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                {
+                    await fileStream.WriteAsync(buffer, 0, bytesRead);
+                    totalBytesRead += bytesRead;
+                    
+                    // Progress güncelle
+                    if (fileSize.HasValue)
+                    {
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            downloadWindow?.UpdateProgress(totalBytesRead, fileSize.Value);
+                        });
+                    }
+                }
+            }
+            
+            // İndirme tamamlandı
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                downloadWindow?.SetStatus("İndirme tamamlandı. Uygulama kapatılıyor...");
+                downloadWindow?.UpdateProgress(100, 100);
+            });
+            
+            // Kısa bir bekleme (kullanıcı mesajı görebilsin)
+            await Task.Delay(1000);
+            
+            // İndirme penceresini kapat
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                downloadWindow?.Close();
+            });
+            
+            // Yeni exe'yi çalıştır
+            var processStartInfo = new ProcessStartInfo
+            {
+                FileName = updateFilePath,
+                UseShellExecute = true,
+                WorkingDirectory = Path.GetDirectoryName(updateFilePath)
             };
             
-            if (saveDialog.ShowDialog() == true)
+            Process.Start(processStartInfo);
+            
+            // Uygulamayı kapat (yeni sürüm açılacak)
+            await Task.Delay(500); // Yeni process'in başlaması için kısa bekleme
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                // Dosyayı indir
-                var fileBytes = await _httpClient.GetByteArrayAsync(downloadUrl);
-                await File.WriteAllBytesAsync(saveDialog.FileName, fileBytes);
-                
-                // İndirilen dosyayı çalıştır
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = saveDialog.FileName,
-                    UseShellExecute = true
-                });
-                
-                // Uygulamayı kapat (güncelleme kurulumu başlatıldı)
                 Application.Current.Shutdown();
-            }
+            });
         }
         catch (Exception ex)
         {
-            MessageBox.Show(
-                $"Güncelleme indirme sırasında hata oluştu:\n{ex.Message}",
-                "Hata",
-                MessageBoxButton.OK,
-                MessageBoxImage.Error);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                downloadWindow?.Close();
+                MessageBox.Show(
+                    $"Güncelleme indirme sırasında hata oluştu:\n{ex.Message}",
+                    "Hata",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            });
         }
     }
     

@@ -134,7 +134,16 @@ public partial class NavigationViewModel : ObservableObject
     {
         if (_updateService != null)
         {
-            await _updateService.CheckForUpdatesAsync(silent: false);
+            // Eğer güncelleme varsa direkt indirmeyi başlat
+            if (_updateService.HasUpdate)
+            {
+                await _updateService.DownloadAndInstallUpdateAsync();
+            }
+            else
+            {
+                // Güncelleme yoksa kontrol yap
+                await _updateService.CheckForUpdatesAsync(silent: false);
+            }
         }
     }
 

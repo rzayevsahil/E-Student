@@ -190,4 +190,11 @@ dotnet add package AutoUpdater.NET
 - [.NET Assembly Versioning](https://docs.microsoft.com/en-us/dotnet/standard/assembly/versioning)
 - [AutoUpdater.NET](https://github.com/ravibpatel/AutoUpdater.NET)
 
+Publish exe oluşturma:
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o ./publish-single
+
+Patch oluşturma:
+.\create-patch.ps1 -OldExe "v2.1.6.exe" -NewExe "v2.1.7.exe" -OutputPatch "v2.1.6-to-v2.1.7.patch"
+
+Exe'yi v2.1.7.exe olarak kaydedin:
+Copy-Item "DocumentSearch\bin\Release\net8.0-windows\win-x64\publish\DocumentSearch.exe" -Destination "v2.1.7.exe"

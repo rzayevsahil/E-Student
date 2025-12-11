@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using DocumentSearch.Services;
 using DocumentSearch.Views;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -30,6 +31,9 @@ public partial class NavigationViewModel : ObservableObject
 
     [ObservableProperty]
     private bool isUpdateAvailable = false;
+
+    [ObservableProperty]
+    private string currentVersion = GetCurrentVersion();
 
     public NavigationViewModel(IServiceProvider? serviceProvider = null)
     {
@@ -131,6 +135,34 @@ public partial class NavigationViewModel : ObservableObject
         if (_updateService != null)
         {
             await _updateService.CheckForUpdatesAsync(silent: false);
+        }
+    }
+
+    /// <summary>
+    /// Mevcut sürüm bilgisini alır (son .0 kısmını kaldırır)
+    /// </summary>
+    private static string GetCurrentVersion()
+    {
+        try
+        {
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            if (version != null)
+            {
+                // Eğer Revision (4. parça) 0 ise, sadece Major.Minor.Build göster
+                if (version.Revision == 0)
+                {
+                    return $"v{version.Major}.{version.Minor}.{version.Build}";
+                }
+                else
+                {
+                    return $"v{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+                }
+            }
+            return "v1.0.0";
+        }
+        catch
+        {
+            return "v1.0.0";
         }
     }
 }

@@ -23,7 +23,13 @@
                 BorderBrush="#E0E0E0" 
                 BorderThickness="0,0,1,0" 
                 Background="#F8F9FA">
-            <StackPanel Margin="0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Margin="0">
                 <!-- Logo/Header -->
                 <Border Background="#ffffff" 
                         Padding="0"
@@ -158,6 +164,19 @@
                     </Button>
                 </StackPanel>
             </StackPanel>
+
+            <!-- Sürüm Bilgisi (Alt Kısım) -->
+            <Border Grid.Row="2"
+                    Background="#F0F0F0" 
+                    Padding="10,15"
+                    Margin="0">
+                <TextBlock Text="{Binding CurrentVersion}" 
+                           FontSize="12" 
+                           Foreground="#666"
+                           HorizontalAlignment="Center"
+                           TextAlignment="Center"/>
+            </Border>
+            </Grid>
         </Border>
 
         <!-- Splitter -->

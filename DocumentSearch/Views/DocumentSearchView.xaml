@@ -245,7 +245,7 @@
         </Grid>
 
         <!-- Status Bar -->
-        <Border Grid.Row="3" 
+        <!--<Border Grid.Row="3" 
                 Background="#F5F5F5" 
                 BorderBrush="#E0E0E0" 
                 BorderThickness="0,1,0,0"
@@ -254,7 +254,7 @@
             <TextBlock Text="{Binding StatusMessage}" 
                        FontSize="11" 
                        Foreground="Gray"/>
-        </Border>
+        </Border>-->
     </Grid>
 </UserControl>
 

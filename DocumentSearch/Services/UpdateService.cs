@@ -450,36 +450,102 @@ public class UpdateService
             
             // Update batch script oluştur
             var updateScript = Path.Combine(Path.GetTempPath(), $"DocumentSearch_Update_{Guid.NewGuid()}.bat");
+            var logFile = Path.Combine(Path.GetTempPath(), $"DocumentSearch_Update_{Guid.NewGuid()}.log");
             var scriptContent = $@"@echo off
-REM Uygulamanin kapanmasini bekle
+REM Log dosyasi
+echo [%date% %time%] Update script basladi > ""{logFile}""
+
+REM Uygulamanin kapanmasini bekle (maksimum 30 saniye)
+set /a COUNTER=0
 :WAIT
 tasklist /FI ""IMAGENAME eq {updateExeFileName}"" 2>NUL | find /I /N ""{updateExeFileName}"">NUL
 if ""%ERRORLEVEL%""==""0"" (
+    set /a COUNTER+=1
+    if %COUNTER% GTR 30 (
+        echo [%date% %time%] Uygulama kapanmadi, zorla devam ediliyor >> ""{logFile}""
+        goto CONTINUE
+    )
     timeout /t 1 /nobreak >nul
     goto WAIT
 )
 
+:CONTINUE
 REM Kisa bir bekleme daha (dosya kilidi kalkmasi icin)
-timeout /t 2 /nobreak >nul
+echo [%date% %time%] Uygulama kapandi, dosya kilidi bekleniyor... >> ""{logFile}""
+timeout /t 3 /nobreak >nul
+
+REM Yeni exe dosyasinin varligini kontrol et
+if not exist ""{newExePath}"" (
+    echo [%date% %time%] HATA: Yeni exe bulunamadi: {newExePath} >> ""{logFile}""
+    exit /b 1
+)
+echo [%date% %time%] Yeni exe bulundu: {newExePath} >> ""{logFile}""
 
 REM Eski exe'yi yedekle
 if exist ""{currentExePathForReplace}"" (
+    echo [%date% %time%] Eski exe yedekleniyor... >> ""{logFile}""
     copy ""{currentExePathForReplace}"" ""{backupPath}"" >nul 2>&1
+    if errorlevel 1 (
+        echo [%date% %time%] UYARI: Yedekleme basarisiz >> ""{logFile}""
+    ) else (
+        echo [%date% %time%] Yedekleme basarili >> ""{logFile}""
+    )
 )
 
-REM Eski exe'yi sil
+REM Eski exe'yi sil (birkaç deneme)
+echo [%date% %time%] Eski exe siliniyor... >> ""{logFile}""
+set /a DEL_COUNTER=0
+:DELETE_LOOP
 del ""{currentExePathForReplace}"" >nul 2>&1
+if exist ""{currentExePathForReplace}"" (
+    set /a DEL_COUNTER+=1
+    if %DEL_COUNTER% GTR 5 (
+        echo [%date% %time%] HATA: Eski exe silinemedi >> ""{logFile}""
+        exit /b 1
+    )
+    timeout /t 1 /nobreak >nul
+    goto DELETE_LOOP
+)
+echo [%date% %time%] Eski exe silindi >> ""{logFile}""
 
 REM Yeni exe'yi eski isme tasi
+echo [%date% %time%] Yeni exe tasiniyor... >> ""{logFile}""
 move ""{newExePath}"" ""{currentExePathForReplace}"" >nul 2>&1
+if errorlevel 1 (
+    echo [%date% %time%] HATA: Yeni exe tasinamadi >> ""{logFile}""
+    REM Yedekten geri yukle
+    if exist ""{backupPath}"" (
+        copy ""{backupPath}"" ""{currentExePathForReplace}"" >nul 2>&1
+    )
+    exit /b 1
+)
+echo [%date% %time%] Yeni exe basariyla tasindi >> ""{logFile}""
+
+REM Yeni exe'nin varligini kontrol et
+if not exist ""{currentExePathForReplace}"" (
+    echo [%date% %time%] HATA: Yeni exe tasindiktan sonra bulunamadi >> ""{logFile}""
+    exit /b 1
+)
 
 REM Yeni exe'yi baslat
+echo [%date% %time%] Yeni exe baslatiliyor... >> ""{logFile}""
 start """" ""{currentExePathForReplace}""
+if errorlevel 1 (
+    echo [%date% %time%] HATA: Yeni exe baslatilamadi >> ""{logFile}""
+    exit /b 1
+)
+echo [%date% %time%] Yeni exe baslatildi >> ""{logFile}""
 
 REM Yedek ve temp dosyalarini temizle
-timeout /t 3 /nobreak >nul
-del ""{backupPath}"" >nul 2>&1
-del ""{updateFilePath}"" >nul 2>&1
+timeout /t 5 /nobreak >nul
+echo [%date% %time%] Temp dosyalar temizleniyor... >> ""{logFile}""
+if exist ""{backupPath}"" del ""{backupPath}"" >nul 2>&1
+if exist ""{updateFilePath}"" del ""{updateFilePath}"" >nul 2>&1
+
+REM Log dosyasini da temizle (basarili ise)
+echo [%date% %time%] Update script basariyla tamamlandi >> ""{logFile}""
+timeout /t 2 /nobreak >nul
+del ""{logFile}"" >nul 2>&1
 del ""{updateScript}"" >nul 2>&1";
             
             File.WriteAllText(updateScript, scriptContent);

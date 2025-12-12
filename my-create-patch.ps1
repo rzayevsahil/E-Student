@@ -335,6 +335,7 @@ Write-Host ""
 
 # Patch dosyasi olustur
 Write-Host "Patch dosyasi yaziliyor..." -ForegroundColor Cyan
+Write-Host ""
 
 $patchStream = [System.IO.File]::Create($patchFullPath)
 $writer = New-Object System.IO.BinaryWriter($patchStream)
@@ -348,6 +349,12 @@ try {
     # Degisiklik sayisi (4 byte)
     $writer.Write([int32]$changes.Count)
     
+    # Progress tracking
+    $totalChanges = $changes.Count
+    $processedChanges = 0
+    $lastProgressPercent = -1
+    $lastProgressTime = Get-Date
+    
     # Her degisiklik
     foreach ($change in $changes) {
         $writer.Write([int32]$change.Offset)      # Offset (4 byte)
@@ -358,8 +365,23 @@ try {
         if ($change.NewLength -gt 0) {
             $writer.Write($change.NewData)
         }
+        
+        # Progress goster
+        $processedChanges++
+        $currentProgress = ($processedChanges / $totalChanges) * 100
+        $currentTime = Get-Date
+        $timeDiff = ($currentTime - $lastProgressTime).TotalSeconds
+        
+        if (($currentProgress -ge $lastProgressPercent + 1) -or ($timeDiff -ge 0.5)) {
+            $progressLine = "   Ilerleme: %$([math]::Round($currentProgress, 1)) ($processedChanges / $totalChanges degisiklik)        "
+            Write-Host "`r$progressLine" -NoNewline
+            $lastProgressPercent = [math]::Floor($currentProgress)
+            $lastProgressTime = $currentTime
+        }
     }
     
+    # Son satiri temizle
+    Write-Host ""
     Write-Host "Patch dosyasi olusturuldu!" -ForegroundColor Green
 }
 finally {

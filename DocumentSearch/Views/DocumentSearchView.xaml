@@ -204,11 +204,24 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         
-                        <TextBlock Grid.Row="0" 
-                                   Text="{Binding SearchResults.Count, StringFormat='Arama Sonuçları ({0})'}" 
-                                   FontWeight="Bold" 
-                                   Padding="10"
-                                   Background="#F5F5F5"/>
+                        <Grid Grid.Row="0" Background="#F5F5F5">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0"
+                                       Text="{Binding SearchResults.Count, StringFormat='Arama Sonuçları ({0})'}" 
+                                       FontWeight="Bold" 
+                                       Padding="10,10,10,5"/>
+                            <TextBlock Grid.Row="1"
+                                       FontSize="10"
+                                       Foreground="#666666"
+                                       Padding="10,0,10,10"
+                                       FontStyle="Italic">
+                                <Run Text="💡 İpucu:" Foreground="DarkOrange" FontWeight="SemiBold"/>
+                                <Run Text=" Sonuçlara çift tıklayarak dosyayı ilgili sayfadan açabilirsiniz"/>
+                            </TextBlock>
+                        </Grid>
                         
                         <DataGrid Grid.Row="1" 
                                   ItemsSource="{Binding SearchResults}"
@@ -218,7 +231,26 @@
                                   HeadersVisibility="Column"
                                   SelectionMode="Single"
                                   Margin="5"
-                                  MouseDoubleClick="SearchResultsDataGrid_MouseDoubleClick">
+                                  MouseDoubleClick="SearchResultsDataGrid_MouseDoubleClick"
+                                  Cursor="Hand">
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="ToolTip">
+                                        <Setter.Value>
+                                            <TextBlock>
+                                                <Run Text="Çift tıklayarak dosyayı "/>
+                                                <Run Text="{Binding PageNumber, StringFormat='sayfa {0}'}" FontWeight="Bold"/>
+                                                <Run Text="'den aç"/>
+                                            </TextBlock>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding PageNumber}" Value="0">
+                                            <Setter Property="ToolTip" Value="Çift tıklayarak dosyayı aç"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="Dosya" 
                                                     Binding="{Binding DocumentName}" 

@@ -431,12 +431,12 @@ public class UpdateService
             
             // Exe değiştirme batch script'i oluştur
             // Bu script uygulama kapandıktan sonra exe'yi değiştirecek
-            var currentExeDir = Path.GetDirectoryName(currentExePathForReplace);
-            var currentExeName = Path.GetFileNameWithoutExtension(currentExePathForReplace);
-            var currentExeExt = Path.GetExtension(currentExePathForReplace);
-            var currentExeFileName = Path.GetFileName(currentExePathForReplace);
-            var newExeName = $"{currentExeName}_New{currentExeExt}";
-            var newExePath = Path.Combine(currentExeDir, newExeName);
+            var updateExeDir = Path.GetDirectoryName(currentExePathForReplace);
+            var updateExeName = Path.GetFileNameWithoutExtension(currentExePathForReplace);
+            var updateExeExt = Path.GetExtension(currentExePathForReplace);
+            var updateExeFileName = Path.GetFileName(currentExePathForReplace);
+            var newExeName = $"{updateExeName}_New{updateExeExt}";
+            var newExePath = Path.Combine(updateExeDir, newExeName);
             
             // Yeni exe'yi geçici isimle kaydet (aynı klasörde)
             File.Copy(updateFilePath, newExePath, true);
@@ -453,7 +453,7 @@ public class UpdateService
             var scriptContent = $@"@echo off
 REM Uygulamanin kapanmasini bekle
 :WAIT
-tasklist /FI ""IMAGENAME eq {currentExeFileName}"" 2>NUL | find /I /N ""{currentExeFileName}"">NUL
+tasklist /FI ""IMAGENAME eq {updateExeFileName}"" 2>NUL | find /I /N ""{updateExeFileName}"">NUL
 if ""%ERRORLEVEL%""==""0"" (
     timeout /t 1 /nobreak >nul
     goto WAIT

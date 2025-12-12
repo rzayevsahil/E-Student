@@ -87,9 +87,6 @@ public static class MyPatchService
                 // Yeni exe'yi kaydet
                 File.WriteAllBytes(newExePath, newStream.ToArray());
             }
-            
-            // Yeni exe'yi kaydet
-            File.WriteAllBytes(newExePath, newBytes);
         }
     }
 }

@@ -193,8 +193,18 @@ dotnet add package AutoUpdater.NET
 Publish exe oluşturma:
 dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o ./publish-single
 
+Artık yukardaki publish exe yerine bunu da yazabilirim. direk versiyon ismiyle oluşacak:
+Yöntem 1: PowerShell script ile (önerilen)
+.\publish-version.ps1 -Version "v2.2.0"
+veya
+.\publish-version.ps1 "v2.2.0"
+
+Yöntem 2: Doğrudan komut satırı
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -p:AssemblyName=v2.2.0 -o ./publish-single
+
 Patch oluşturma:
 .\create-patch.ps1 -OldExe "v2.1.6.exe" -NewExe "v2.1.7.exe" -OutputPatch "v2.1.6-to-v2.1.7.patch"
+.\my-create-patch.ps1 -OldExe "v1.0.0.exe" -NewExe "v2.1.7.exe" -OutputPatch "v1.0.0-to-v2.1.7.patch"
 
 Exe'yi v2.1.7.exe olarak kaydedin:
 Copy-Item "DocumentSearch\bin\Release\net8.0-windows\win-x64\publish\DocumentSearch.exe" -Destination "v2.1.7.exe"

@@ -223,7 +223,7 @@ public class UpdateService
                     
                     if (urlString == null || nameString == null) continue;
                     
-                    // Patch dosyası var mı?
+                    // Patch dosyası var mı? (.patch)
                     if (nameString.Equals(patchFileName, StringComparison.OrdinalIgnoreCase) || 
                         nameString.EndsWith(".patch", StringComparison.OrdinalIgnoreCase))
                     {
@@ -305,8 +305,38 @@ public class UpdateService
                 // Patch'i uygula
                 try
                 {
-                    var deltaCompression = new MsDeltaCompression();
-                    deltaCompression.ApplyDelta(currentExePath, patchFilePath, updateFilePath);
+                    // Patch dosyasının magic number'ını kontrol et
+                    // "MYPT" ise kendi patch sistemimizi kullan, değilse MsDeltaCompression
+                    bool useMyPatch = false;
+                    try
+                    {
+                        using (var patchStream = File.OpenRead(patchFilePath))
+                        using (var reader = new BinaryReader(patchStream))
+                        {
+                            var magic = System.Text.Encoding.ASCII.GetString(reader.ReadBytes(4));
+                            if (magic == "MYPT")
+                            {
+                                useMyPatch = true;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // Magic number okunamazsa MsDeltaCompression dene
+                        useMyPatch = false;
+                    }
+                    
+                    if (useMyPatch)
+                    {
+                        // Kendi patch sistemimizi kullan
+                        MyPatchService.ApplyPatch(currentExePath, patchFilePath, updateFilePath);
+                    }
+                    else
+                    {
+                        // Normal patch dosyası için MsDeltaCompression kullan
+                        var deltaCompression = new MsDeltaCompression();
+                        deltaCompression.ApplyDelta(currentExePath, patchFilePath, updateFilePath);
+                    }
                 }
                 catch (Exception patchEx)
                 {
@@ -399,16 +429,60 @@ public class UpdateService
                 return;
             }
             
+            // Exe değiştirme batch script'i oluştur
+            // Bu script uygulama kapandıktan sonra exe'yi değiştirecek
+            var currentExeDir = Path.GetDirectoryName(currentExePathForReplace);
+            var currentExeName = Path.GetFileNameWithoutExtension(currentExePathForReplace);
+            var currentExeExt = Path.GetExtension(currentExePathForReplace);
+            var currentExeFileName = Path.GetFileName(currentExePathForReplace);
+            var newExeName = $"{currentExeName}_New{currentExeExt}";
+            var newExePath = Path.Combine(currentExeDir, newExeName);
+            
+            // Yeni exe'yi geçici isimle kaydet (aynı klasörde)
+            File.Copy(updateFilePath, newExePath, true);
+            
             // Eski exe'yi yedekle
             var backupPath = currentExePathForReplace + ".old";
             if (File.Exists(backupPath))
             {
                 File.Delete(backupPath);
             }
-            File.Copy(currentExePathForReplace, backupPath);
             
-            // Yeni exe'yi mevcut konuma kopyala
-            File.Copy(updateFilePath, currentExePathForReplace, true);
+            // Update batch script oluştur
+            var updateScript = Path.Combine(Path.GetTempPath(), $"DocumentSearch_Update_{Guid.NewGuid()}.bat");
+            var scriptContent = $@"@echo off
+REM Uygulamanin kapanmasini bekle
+:WAIT
+tasklist /FI ""IMAGENAME eq {currentExeFileName}"" 2>NUL | find /I /N ""{currentExeFileName}"">NUL
+if ""%ERRORLEVEL%""==""0"" (
+    timeout /t 1 /nobreak >nul
+    goto WAIT
+)
+
+REM Kisa bir bekleme daha (dosya kilidi kalkmasi icin)
+timeout /t 2 /nobreak >nul
+
+REM Eski exe'yi yedekle
+if exist ""{currentExePathForReplace}"" (
+    copy ""{currentExePathForReplace}"" ""{backupPath}"" >nul 2>&1
+)
+
+REM Eski exe'yi sil
+del ""{currentExePathForReplace}"" >nul 2>&1
+
+REM Yeni exe'yi eski isme tasi
+move ""{newExePath}"" ""{currentExePathForReplace}"" >nul 2>&1
+
+REM Yeni exe'yi baslat
+start """" ""{currentExePathForReplace}""
+
+REM Yedek ve temp dosyalarini temizle
+timeout /t 3 /nobreak >nul
+del ""{backupPath}"" >nul 2>&1
+del ""{updateFilePath}"" >nul 2>&1
+del ""{updateScript}"" >nul 2>&1";
+            
+            File.WriteAllText(updateScript, scriptContent);
             
             // İndirme penceresini kapat
             Application.Current.Dispatcher.Invoke(() =>
@@ -416,33 +490,15 @@ public class UpdateService
                 downloadWindow?.Close();
             });
             
-            // Yeni exe'yi çalıştır
-            var processStartInfo = new ProcessStartInfo
+            // Update script'i çalıştır (arka planda)
+            var updateProcess = new ProcessStartInfo
             {
-                FileName = currentExePathForReplace,
-                UseShellExecute = true,
-                WorkingDirectory = Path.GetDirectoryName(currentExePathForReplace)
-            };
-            
-            Process.Start(processStartInfo);
-            
-            // Cleanup batch script oluştur (yedek ve temp dosyaları temizlemek için)
-            var cleanupScript = Path.Combine(Path.GetTempPath(), $"DocumentSearch_Cleanup_{Guid.NewGuid()}.bat");
-            var scriptContent = $@"@echo off
-timeout /t 3 /nobreak >nul
-del ""{backupPath}"" 2>nul
-del ""{updateFilePath}"" 2>nul
-del ""{cleanupScript}"" 2>nul";
-            File.WriteAllText(cleanupScript, scriptContent);
-            
-            var cleanupProcess = new ProcessStartInfo
-            {
-                FileName = cleanupScript,
+                FileName = updateScript,
                 UseShellExecute = true,
                 WindowStyle = ProcessWindowStyle.Hidden,
                 CreateNoWindow = true
             };
-            Process.Start(cleanupProcess);
+            Process.Start(updateProcess);
             
             // Uygulamayı kapat
             await Task.Delay(500);

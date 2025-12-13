@@ -455,13 +455,13 @@ public class UpdateService
 REM Log dosyasi
 echo [%date% %time%] Update script basladi > ""{logFile}""
 
-REM Uygulamanin kapanmasini bekle (maksimum 30 saniye)
+REM Uygulamanin kapanmasini bekle (maksimum 60 saniye)
 set /a COUNTER=0
 :WAIT
 tasklist /FI ""IMAGENAME eq {updateExeFileName}"" 2>NUL | find /I /N ""{updateExeFileName}"">NUL
 if ""%ERRORLEVEL%""==""0"" (
     set /a COUNTER+=1
-    if %COUNTER% GTR 30 (
+    if %COUNTER% GTR 60 (
         echo [%date% %time%] Uygulama kapanmadi, zorla devam ediliyor >> ""{logFile}""
         goto CONTINUE
     )
@@ -470,9 +470,27 @@ if ""%ERRORLEVEL%""==""0"" (
 )
 
 :CONTINUE
-REM Kisa bir bekleme daha (dosya kilidi kalkmasi icin)
+REM Uzun bir bekleme (dosya kilidi kalkmasi icin - versiyonlu exe'ler icin daha uzun gerekebilir)
 echo [%date% %time%] Uygulama kapandi, dosya kilidi bekleniyor... >> ""{logFile}""
-timeout /t 3 /nobreak >nul
+timeout /t 5 /nobreak >nul
+REM Ek bir kontrol: Dosyanin kullanilabilir oldugundan emin ol
+set /a FILE_CHECK_COUNTER=0
+:FILE_CHECK
+if exist ""{currentExePathForReplace}"" (
+    REM Dosyayi okumaya calis (kilidi kontrol et)
+    type ""{currentExePathForReplace}"" >nul 2>&1
+    if errorlevel 1 (
+        set /a FILE_CHECK_COUNTER+=1
+        if %FILE_CHECK_COUNTER% GTR 10 (
+            echo [%date% %time%] UYARI: Dosya hala kilitli, devam ediliyor >> ""{logFile}""
+            goto FILE_CHECK_DONE
+        )
+        timeout /t 1 /nobreak >nul
+        goto FILE_CHECK
+    )
+)
+:FILE_CHECK_DONE
+echo [%date% %time%] Dosya kilidi kontrolu tamamlandi >> ""{logFile}""
 
 REM Yeni exe dosyasinin varligini kontrol et
 if not exist ""{newExePath}"" (
@@ -508,24 +526,46 @@ if exist ""{currentExePathForReplace}"" (
 )
 echo [%date% %time%] Eski exe silindi >> ""{logFile}""
 
-REM Yeni exe'yi eski isme tasi
-echo [%date% %time%] Yeni exe tasiniyor... >> ""{logFile}""
-move ""{newExePath}"" ""{currentExePathForReplace}"" >nul 2>&1
+REM Yeni exe'yi eski isme tasi (copy + delete yontemi, daha guvenilir)
+echo [%date% %time%] Yeni exe kopyalaniyor... >> ""{logFile}""
+REM Once eski exe'yi sil (birkaç deneme)
+set /a COPY_DEL_COUNTER=0
+:COPY_DEL_LOOP
+REM Eski exe varsa sil
+if exist ""{currentExePathForReplace}"" (
+    del ""{currentExePathForReplace}"" >nul 2>&1
+    timeout /t 1 /nobreak >nul
+    if exist ""{currentExePathForReplace}"" (
+        set /a COPY_DEL_COUNTER+=1
+        if %COPY_DEL_COUNTER% GTR 10 (
+            echo [%date% %time%] HATA: Eski exe silinemedi (10 deneme) >> ""{logFile}""
+            REM Yedekten geri yukle
+            if exist ""{backupPath}"" (
+                copy ""{backupPath}"" ""{currentExePathForReplace}"" >nul 2>&1
+            )
+            exit /b 1
+        )
+        goto COPY_DEL_LOOP
+    )
+)
+REM Yeni exe'yi kopyala
+copy ""{newExePath}"" ""{currentExePathForReplace}"" >nul 2>&1
 if errorlevel 1 (
-    echo [%date% %time%] HATA: Yeni exe tasinamadi >> ""{logFile}""
+    echo [%date% %time%] HATA: Yeni exe kopyalanamadi >> ""{logFile}""
     REM Yedekten geri yukle
     if exist ""{backupPath}"" (
         copy ""{backupPath}"" ""{currentExePathForReplace}"" >nul 2>&1
     )
     exit /b 1
 )
-echo [%date% %time%] Yeni exe basariyla tasindi >> ""{logFile}""
-
 REM Yeni exe'nin varligini kontrol et
 if not exist ""{currentExePathForReplace}"" (
-    echo [%date% %time%] HATA: Yeni exe tasindiktan sonra bulunamadi >> ""{logFile}""
+    echo [%date% %time%] HATA: Yeni exe kopyalandiktan sonra bulunamadi >> ""{logFile}""
     exit /b 1
 )
+REM Geçici dosyayı sil
+if exist ""{newExePath}"" del ""{newExePath}"" >nul 2>&1
+echo [%date% %time%] Yeni exe basariyla kopyalandi >> ""{logFile}""
 
 REM Yeni exe'yi baslat
 echo [%date% %time%] Yeni exe baslatiliyor... >> ""{logFile}""
@@ -542,10 +582,11 @@ echo [%date% %time%] Temp dosyalar temizleniyor... >> ""{logFile}""
 if exist ""{backupPath}"" del ""{backupPath}"" >nul 2>&1
 if exist ""{updateFilePath}"" del ""{updateFilePath}"" >nul 2>&1
 
-REM Log dosyasini da temizle (basarili ise)
+REM Log dosyasini koru (hata ayiklama icin)
 echo [%date% %time%] Update script basariyla tamamlandi >> ""{logFile}""
+REM Log dosyasini 1 saat sonra sil (gecikmeli silme)
 timeout /t 2 /nobreak >nul
-del ""{logFile}"" >nul 2>&1
+REM Script'i sil ama log'u koru
 del ""{updateScript}"" >nul 2>&1";
             
             File.WriteAllText(updateScript, scriptContent);

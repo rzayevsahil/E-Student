@@ -4,6 +4,8 @@
 
 **E-Student**, öğrencilerin ders materyallerini yönetmelerini, dokümanları içerisinde anında arama yapmalarını ve Pomodoro tekniği ile çalışma verimliliklerini artırmalarını sağlayan modern bir Windows masaüstü asistanıdır.
 
+🌐 **Resmi Web Sitesi**: [https://rzayevsahil.github.io/E-Student/](https://rzayevsahil.github.io/E-Student/)
+
 ---
 
 ## 🌟 Öne Çıkan Özellikler

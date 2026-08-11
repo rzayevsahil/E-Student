@@ -19,6 +19,7 @@
                    Text="Belge İçerik Arama Uygulaması" 
                    FontSize="24" 
                    FontWeight="Bold" 
+                   Foreground="{DynamicResource PrimaryTextBrush}"
                    Margin="0,0,0,20"
                    HorizontalAlignment="Center"/>
 
@@ -26,10 +27,10 @@
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
             <Button Content="Dosya Yükle" 
                     Command="{Binding LoadFilesCommand}"
-                    Padding="15,5"
+                    Padding="15,7"
                     FontSize="14"
                     Margin="0,0,10,0"
-                    Background="#2196F3"
+                    Background="{DynamicResource AccentBrush}"
                     Foreground="White"
                     BorderThickness="0"
                     Cursor="Hand"/>
@@ -37,7 +38,7 @@
                        VerticalAlignment="Center" 
                        Margin="10,0,0,0"
                        FontSize="12"
-                       Foreground="Gray"/>
+                       Foreground="{DynamicResource SecondaryTextBrush}"/>
         </StackPanel>
 
         <!-- Main Content -->
@@ -50,10 +51,10 @@
 
             <!-- Left Panel - Documents List -->
             <Border Grid.Column="0" 
-                    BorderBrush="#E0E0E0" 
+                    BorderBrush="{DynamicResource BorderBrush}" 
                     BorderThickness="1" 
-                    Background="White"
-                    CornerRadius="5">
+                    Background="{DynamicResource CardBackgroundBrush}"
+                    CornerRadius="6">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -63,12 +64,15 @@
                     <TextBlock Grid.Row="0" 
                                Text="Yüklenen Dosyalar" 
                                FontWeight="Bold" 
-                               Padding="10"
-                               Background="#F5F5F5"/>
+                               Padding="12"
+                               Foreground="{DynamicResource PrimaryTextBrush}"
+                               Background="{DynamicResource CardHeaderBackgroundBrush}"/>
                     
                     <ListBox Grid.Row="1" 
                              ItemsSource="{Binding Documents}"
                              Margin="5"
+                             Background="Transparent"
+                             BorderThickness="0"
                              MouseDoubleClick="DocumentListBox_MouseDoubleClick">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
@@ -87,11 +91,12 @@
                                     <TextBlock Grid.Column="0" Grid.Row="0"
                                                Text="{Binding FileName}" 
                                                FontWeight="SemiBold"
+                                               Foreground="{DynamicResource PrimaryTextBrush}"
                                                TextWrapping="Wrap"
                                                Margin="0,0,5,0"
                                                VerticalAlignment="Center"/>
                                     
-                                    <!-- X butonu - sabit konumda, tüm satırlarda aynı hizada -->
+                                    <!-- X butonu -->
                                     <Button Grid.Column="1" Grid.Row="0"
                                             Grid.RowSpan="3"
                                             Content="✕" 
@@ -103,7 +108,7 @@
                                             FontSize="12"
                                             Background="Transparent"
                                             BorderThickness="0"
-                                            Foreground="Red"
+                                            Foreground="#EF4444"
                                             Cursor="Hand"
                                             Click="RemoveDocument_Click"
                                             ToolTip="Dosyayı kaldır"
@@ -113,16 +118,16 @@
                                     <TextBlock Grid.Column="0" Grid.Row="1"
                                                Text="{Binding FileExtension, StringFormat='{}{0} dosyası'}" 
                                                FontSize="10" 
-                                               Foreground="Gray"
+                                               Foreground="{DynamicResource SecondaryTextBrush}"
                                                Margin="0,2,0,0"/>
                                     
                                     <!-- Çift tıklama mesajı -->
                                     <TextBlock Grid.Column="0" Grid.Row="2"
                                                Text="📄 Çift tıklayarak aç"
                                                FontSize="9"
-                                               Foreground="#2196F3"
+                                               Foreground="{DynamicResource AccentBrush}"
                                                Margin="0,3,0,0"
-                                               Opacity="0.8"/>
+                                               Opacity="0.9"/>
                                 </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -133,7 +138,7 @@
             <!-- Splitter -->
             <GridSplitter Grid.Column="1" 
                           HorizontalAlignment="Stretch" 
-                          Background="#E0E0E0"/>
+                          Background="{DynamicResource SplitterBrush}"/>
 
             <!-- Right Panel - Search and Results -->
             <Grid Grid.Column="2" Margin="10,0,0,0">
@@ -144,24 +149,27 @@
 
                 <!-- Search Box -->
                 <Border Grid.Row="0" 
-                        BorderBrush="#E0E0E0" 
+                        BorderBrush="{DynamicResource BorderBrush}" 
                         BorderThickness="1" 
-                        Background="White"
-                        CornerRadius="5"
-                        Padding="10"
+                        Background="{DynamicResource CardBackgroundBrush}"
+                        CornerRadius="6"
+                        Padding="12"
                         Margin="0,0,0,10">
                     <StackPanel>
                         <TextBlock Text="Arama" 
                                    FontWeight="Bold" 
+                                   Foreground="{DynamicResource PrimaryTextBrush}"
                                    Margin="0,0,0,5"/>
                         <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
-                                 FontSize="18"
-                                 Padding="5"
-                                 BorderBrush="#E0E0E0"
+                                 FontSize="16"
+                                 Padding="8"
+                                 Background="{DynamicResource InputBackgroundBrush}"
+                                 Foreground="{DynamicResource PrimaryTextBrush}"
+                                 BorderBrush="{DynamicResource BorderBrush}"
                                  BorderThickness="1"
                                  VerticalContentAlignment="Center"
-                                 MinHeight="60"
-                                 Height="60">
+                                 MinHeight="50"
+                                 Height="50">
                             <TextBox.Style>
                                 <Style TargetType="TextBox">
                                     <Setter Property="Template">
@@ -170,7 +178,7 @@
                                                 <Border Background="{TemplateBinding Background}"
                                                         BorderBrush="{TemplateBinding BorderBrush}"
                                                         BorderThickness="{TemplateBinding BorderThickness}"
-                                                        CornerRadius="3"
+                                                        CornerRadius="4"
                                                         MinHeight="{TemplateBinding MinHeight}">
                                                     <ScrollViewer x:Name="PART_ContentHost" 
                                                                   Margin="{TemplateBinding Padding}"
@@ -187,24 +195,24 @@
                         </TextBox>
                         <TextBlock Text="Yazdıkça otomatik arama yapılır" 
                                    FontSize="12" 
-                                   Foreground="Gray"
+                                   Foreground="{DynamicResource SecondaryTextBrush}"
                                    Margin="0,5,0,0"/>
                     </StackPanel>
                 </Border>
 
                 <!-- Results -->
                 <Border Grid.Row="1" 
-                        BorderBrush="#E0E0E0" 
+                        BorderBrush="{DynamicResource BorderBrush}" 
                         BorderThickness="1" 
-                        Background="White"
-                        CornerRadius="5">
+                        Background="{DynamicResource CardBackgroundBrush}"
+                        CornerRadius="6">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         
-                        <Grid Grid.Row="0" Background="#F5F5F5">
+                        <Grid Grid.Row="0" Background="{DynamicResource CardHeaderBackgroundBrush}">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -212,10 +220,11 @@
                             <TextBlock Grid.Row="0"
                                        Text="{Binding SearchResults.Count, StringFormat='Arama Sonuçları ({0})'}" 
                                        FontWeight="Bold" 
+                                       Foreground="{DynamicResource PrimaryTextBrush}"
                                        Padding="10,10,10,5"/>
                             <TextBlock Grid.Row="1"
                                        FontSize="10"
-                                       Foreground="#666666"
+                                       Foreground="{DynamicResource SecondaryTextBrush}"
                                        Padding="10,0,10,10"
                                        FontStyle="Italic">
                                 <Run Text="💡 İpucu:" Foreground="DarkOrange" FontWeight="SemiBold"/>
@@ -230,11 +239,27 @@
                                   GridLinesVisibility="Horizontal"
                                   HeadersVisibility="Column"
                                   SelectionMode="Single"
+                                  Background="Transparent"
+                                  Foreground="{DynamicResource PrimaryTextBrush}"
+                                  HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
+                                  BorderThickness="0"
                                   Margin="5"
                                   MouseDoubleClick="SearchResultsDataGrid_MouseDoubleClick"
                                   Cursor="Hand">
-                            <DataGrid.RowStyle>
+                             <DataGrid.ColumnHeaderStyle>
+                                 <Style TargetType="DataGridColumnHeader">
+                                     <Setter Property="Background" Value="{DynamicResource CardHeaderBackgroundBrush}"/>
+                                     <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                                     <Setter Property="FontWeight" Value="SemiBold"/>
+                                     <Setter Property="Padding" Value="10,8"/>
+                                     <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                                     <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                 </Style>
+                             </DataGrid.ColumnHeaderStyle>
+                             <DataGrid.RowStyle>
                                 <Style TargetType="DataGridRow">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
                                     <Setter Property="ToolTip">
                                         <Setter.Value>
                                             <TextBlock>
@@ -248,6 +273,13 @@
                                         <DataTrigger Binding="{Binding PageNumber}" Value="0">
                                             <Setter Property="ToolTip" Value="Çift tıklayarak dosyayı aç"/>
                                         </DataTrigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource SelectedBackgroundBrush}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource SelectedForegroundBrush}"/>
+                                        </Trigger>
                                     </Style.Triggers>
                                 </Style>
                             </DataGrid.RowStyle>
@@ -275,18 +307,5 @@
                 </Border>
             </Grid>
         </Grid>
-
-        <!-- Status Bar -->
-        <!--<Border Grid.Row="3" 
-                Background="#F5F5F5" 
-                BorderBrush="#E0E0E0" 
-                BorderThickness="0,1,0,0"
-                Padding="10,5"
-                Margin="0,10,0,0">
-            <TextBlock Text="{Binding StatusMessage}" 
-                       FontSize="11" 
-                       Foreground="Gray"/>
-        </Border>-->
     </Grid>
 </UserControl>
-

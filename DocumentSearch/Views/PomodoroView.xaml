@@ -26,7 +26,7 @@
                    Margin="0,0,0,25"
                    HorizontalAlignment="Center">
             <Run Foreground="#FF6B35" Text="🍅"/>
-            <Run Foreground="#1E293B" Text=" Pomodoro Tekniği"/>
+            <Run Foreground="{DynamicResource PrimaryTextBrush}" Text=" Pomodoro Tekniği"/>
         </TextBlock>
 
         <!-- Timer Display (Exact Dual-Color Glow Ring + Digital LED Clock) -->
@@ -226,9 +226,9 @@
 
         <!-- Info Section -->
         <Border Grid.Row="3" 
-                BorderBrush="#E2E8F0" 
+                BorderBrush="{DynamicResource BorderBrush}" 
                 BorderThickness="1" 
-                Background="#F8FAFC"
+                Background="{DynamicResource CardBackgroundBrush}"
                 CornerRadius="12"
                 Padding="20">
             <ScrollViewer VerticalScrollBarVisibility="Auto"
@@ -244,7 +244,7 @@
                                Text="Tamamlanan Pomodorolar" 
                                FontSize="16" 
                                FontWeight="Bold"
-                               Foreground="#1E293B"
+                               Foreground="{DynamicResource PrimaryTextBrush}"
                                Margin="0,0,0,8"/>
                     
                     <TextBlock Grid.Row="1" 
@@ -257,7 +257,7 @@
                     <TextBlock Grid.Row="2" 
                                Text="{Binding InfoText}" 
                                FontSize="13" 
-                               Foreground="#64748B"
+                               Foreground="{DynamicResource SecondaryTextBrush}"
                                TextWrapping="Wrap"
                                LineHeight="22"
                                Margin="0,5,0,0"/>
@@ -268,23 +268,23 @@
                         <TextBlock Text="📌 Pomodoro Tekniği Nasıl Çalışır?" 
                                    FontSize="15" 
                                    FontWeight="Bold"
-                                   Foreground="#0F172A"
+                                   Foreground="{DynamicResource PrimaryTextBrush}"
                                    Margin="0,0,0,8"/>
                         <TextBlock Text="1. 25 dakika boyunca odaklanarak çalışın" 
                                    FontSize="13" 
-                                   Foreground="#475569"
+                                   Foreground="{DynamicResource SecondaryTextBrush}"
                                    Margin="0,4,0,0"/>
                         <TextBlock Text="2. Çalışma süresi bitince 5 dakika kısa mola verin" 
                                    FontSize="13" 
-                                   Foreground="#475569"
+                                   Foreground="{DynamicResource SecondaryTextBrush}"
                                    Margin="0,4,0,0"/>
                         <TextBlock Text="3. Her 4 pomodoroda bir 15 dakika uzun mola verin" 
                                    FontSize="13" 
-                                   Foreground="#475569"
+                                   Foreground="{DynamicResource SecondaryTextBrush}"
                                    Margin="0,4,0,0"/>
                         <TextBlock Text="4. Bu döngüyü tekrarlayarak verimliliğinizi artırın" 
                                    FontSize="13" 
-                                   Foreground="#475569"
+                                   Foreground="{DynamicResource SecondaryTextBrush}"
                                    Margin="0,4,0,0"/>
                     </StackPanel>
                 </Grid>

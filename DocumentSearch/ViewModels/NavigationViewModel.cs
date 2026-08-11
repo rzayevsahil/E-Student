@@ -15,6 +15,7 @@ public partial class NavigationViewModel : ObservableObject
 {
     private readonly IServiceProvider? _serviceProvider;
     private readonly UpdateService? _updateService;
+    private readonly ThemeService? _themeService;
     private DispatcherTimer? _updateCheckTimer;
 
     [ObservableProperty]
@@ -35,10 +36,20 @@ public partial class NavigationViewModel : ObservableObject
     [ObservableProperty]
     private string currentVersion = GetCurrentVersion();
 
+    [ObservableProperty]
+    private string themeButtonText = "🌙 Koyu Mod";
+
     public NavigationViewModel(IServiceProvider? serviceProvider = null)
     {
         _serviceProvider = serviceProvider;
         _updateService = serviceProvider?.GetService<UpdateService>();
+        _themeService = serviceProvider?.GetService<ThemeService>();
+
+        if (_themeService != null)
+        {
+            UpdateThemeButtonText();
+            _themeService.ThemeChanged += (sender, isDark) => UpdateThemeButtonText();
+        }
         
         // Güncelleme durumu değiştiğinde buton metnini güncelle
         if (_updateService != null)
@@ -144,6 +155,20 @@ public partial class NavigationViewModel : ObservableObject
                 // Güncelleme yoksa kontrol yap
                 await _updateService.CheckForUpdatesAsync(silent: false);
             }
+        }
+    }
+
+    [RelayCommand]
+    private void ToggleTheme()
+    {
+        _themeService?.ToggleTheme();
+    }
+
+    private void UpdateThemeButtonText()
+    {
+        if (_themeService != null)
+        {
+            ThemeButtonText = _themeService.IsDarkMode ? "☀️ Açık Mod" : "🌙 Koyu Mod";
         }
     }
 

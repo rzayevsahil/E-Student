@@ -11,7 +11,8 @@
         Width="1150"
         MinHeight="600"
         MinWidth="950"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource WindowBackgroundBrush}">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
     </Window.Resources>
@@ -28,171 +29,201 @@
 
         <!-- Left Menu -->
         <Border Grid.Column="0" 
-                BorderBrush="#E0E0E0" 
+                BorderBrush="{DynamicResource BorderBrush}" 
                 BorderThickness="0,0,1,0" 
-                Background="#F8F9FA">
+                Background="{DynamicResource SidebarBackgroundBrush}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-            <StackPanel Grid.Row="0" Margin="0">
-                <!-- Logo/Header -->
-                <Border Background="#ffffff" 
-                        Padding="15,20,15,15"
-                        Margin="0,0,0,10"
-                        BorderBrush="#E0E0E0"
-                        BorderThickness="0,0,0,1">
-                    <StackPanel Orientation="Horizontal" 
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center">
-                        <!-- Logo (Logo dosyası varsa göster) -->
-                        <Image x:Name="LogoImage"
-                               Width="85" 
-                               Height="85" 
-                               Margin="0"
-                               Stretch="Uniform"
-                               Visibility="Collapsed"/>
-                        <!-- E-Student Text -->
-                        <!--<TextBlock Text="E-Student" 
-                                   FontSize="22" 
-                                   FontWeight="Bold"
-                                   Foreground="Black"
-                                   VerticalAlignment="Center"/>-->
+
+                <StackPanel Grid.Row="0" Margin="0">
+                    <!-- Logo/Header -->
+                    <Border Background="{DynamicResource HeaderBackgroundBrush}" 
+                            Padding="15,20,15,15"
+                            Margin="0,0,0,10"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="0,0,0,1">
+                        <StackPanel Orientation="Horizontal" 
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+                            <!-- Logo -->
+                            <Image x:Name="LogoImage"
+                                   Width="85" 
+                                   Height="85" 
+                                   Margin="0"
+                                   Stretch="Uniform"
+                                   Visibility="Collapsed"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Menu Items -->
+                    <StackPanel>
+                        <Button Content="📄 Belge Arama" 
+                                Command="{Binding NavigateToDocumentSearchCommand}"
+                                Margin="10,5"
+                                Padding="15,12"
+                                HorizontalContentAlignment="Left">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="FontSize" Value="14"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="6"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedMenuItem}" Value="DocumentSearch">
+                                            <Setter Property="Background" Value="{DynamicResource SelectedBackgroundBrush}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource SelectedForegroundBrush}"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                        </DataTrigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <Button Content="🍅 Pomodoro" 
+                                Command="{Binding NavigateToPomodoroCommand}"
+                                Margin="10,5"
+                                Padding="15,12"
+                                HorizontalContentAlignment="Left">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="FontSize" Value="14"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="6"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedMenuItem}" Value="Pomodoro">
+                                            <Setter Property="Background" Value="{DynamicResource SelectedBackgroundBrush}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource SelectedForegroundBrush}"/>
+                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                        </DataTrigger>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <!-- Tema Değiştirme Butonu (Light/Dark) -->
+                        <Button Content="{Binding ThemeButtonText}" 
+                                Command="{Binding ToggleThemeCommand}"
+                                Margin="10,15,10,5"
+                                Padding="15,12"
+                                HorizontalContentAlignment="Left">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="FontSize" Value="14"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="6"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <!-- Güncelleme Butonu -->
+                        <Button Content="{Binding UpdateButtonText}" 
+                                Command="{Binding CheckForUpdatesCommand}"
+                                Margin="10,15,10,5"
+                                Padding="15,12"
+                                HorizontalContentAlignment="Left"
+                                Foreground="{Binding UpdateButtonForeground}"
+                                Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="FontSize" Value="13"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="6"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
                     </StackPanel>
-                </Border>
-
-                <!-- Menu Items -->
-                <StackPanel>
-                    <Button Content="📄 Belge Arama" 
-                            Command="{Binding NavigateToDocumentSearchCommand}"
-                            Margin="10,5"
-                            Padding="15,12"
-                            HorizontalContentAlignment="Left">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="#333"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="FontSize" Value="14"/>
-                                <Setter Property="Cursor" Value="Hand"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="5"
-                                                    Padding="{TemplateBinding Padding}">
-                                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedMenuItem}" Value="DocumentSearch">
-                                        <Setter Property="Background" Value="#E3F2FD"/>
-                                        <Setter Property="Foreground" Value="#2196F3"/>
-                                        <Setter Property="FontWeight" Value="SemiBold"/>
-                                    </DataTrigger>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#F0F0F0"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <Button Content="🍅 Pomodoro" 
-                            Command="{Binding NavigateToPomodoroCommand}"
-                            Margin="10,5"
-                            Padding="15,12"
-                            HorizontalContentAlignment="Left">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="#333"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="FontSize" Value="14"/>
-                                <Setter Property="Cursor" Value="Hand"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="5"
-                                                    Padding="{TemplateBinding Padding}">
-                                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedMenuItem}" Value="Pomodoro">
-                                        <Setter Property="Background" Value="#E3F2FD"/>
-                                        <Setter Property="Foreground" Value="#2196F3"/>
-                                        <Setter Property="FontWeight" Value="SemiBold"/>
-                                    </DataTrigger>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#F0F0F0"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <!-- Güncelleme Butonu (Sadece güncelleme varsa göster) -->
-                    <Button Content="{Binding UpdateButtonText}" 
-                            Command="{Binding CheckForUpdatesCommand}"
-                            Margin="10,20,10,5"
-                            Padding="15,12"
-                            HorizontalContentAlignment="Left"
-                            Foreground="{Binding UpdateButtonForeground}"
-                            Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Setter Property="FontSize" Value="13"/>
-                                <Setter Property="Cursor" Value="Hand"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="5"
-                                                    Padding="{TemplateBinding Padding}">
-                                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#E8F5E9"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
                 </StackPanel>
-            </StackPanel>
 
-            <!-- Sürüm Bilgisi (Alt Kısım) -->
-            <Border Grid.Row="2"
-                    Background="#F0F0F0" 
-                    Padding="10,15"
-                    Margin="0">
-                <TextBlock Text="{Binding CurrentVersion}" 
-                           FontSize="12" 
-                           Foreground="#666"
-                           HorizontalAlignment="Center"
-                           TextAlignment="Center"/>
-            </Border>
+                <!-- Sürüm Bilgisi (Alt Kısım) -->
+                <Border Grid.Row="2"
+                        Background="{DynamicResource FooterBackgroundBrush}" 
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="0,1,0,0"
+                        Padding="10,15"
+                        Margin="0">
+                    <TextBlock Text="{Binding CurrentVersion}" 
+                               FontSize="12" 
+                               Foreground="{DynamicResource SecondaryTextBrush}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"/>
+                </Border>
             </Grid>
         </Border>
 
         <!-- Splitter -->
         <GridSplitter Grid.Column="1" 
                       HorizontalAlignment="Stretch" 
-                      Background="#E0E0E0"/>
+                      Background="{DynamicResource SplitterBrush}"/>
 
         <!-- Content Area -->
         <ContentControl Grid.Column="2" 
@@ -204,13 +235,13 @@
         <Border Grid.Row="1"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
-                Background="#F5F5F5"
-                BorderBrush="#E0E0E0"
+                Background="{DynamicResource FooterBackgroundBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="0,1,0,0"
                 Padding="10,8">
             <TextBlock Text="Geliştirici: Sahil Rzayev" 
                        FontSize="12" 
-                       Foreground="#999"
+                       Foreground="{DynamicResource SecondaryTextBrush}"
                        HorizontalAlignment="Center"/>
         </Border>
     </Grid>

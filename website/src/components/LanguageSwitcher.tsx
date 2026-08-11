@@ -60,7 +60,7 @@ export function LanguageSwitcher() {
   const { lang, setLang } = useLanguage();
 
   return (
-    <div className="inline-flex w-[176px] shrink-0 items-center justify-between gap-1 rounded-lg border border-navy/15 bg-card/80 p-1 shadow-sm backdrop-blur">
+    <div className="inline-flex items-center gap-1 rounded-lg border border-navy/15 bg-card/80 p-1 shadow-sm backdrop-blur">
       {languages.map((item) => {
         const isActive = lang === item.code;
         return (
@@ -68,7 +68,7 @@ export function LanguageSwitcher() {
             key={item.code}
             type="button"
             onClick={() => setLang(item.code)}
-            className={`flex w-[54px] shrink-0 items-center justify-center gap-1.5 rounded-md py-1 text-xs font-bold transition-all duration-150 ${
+            className={`flex items-center justify-center gap-1.5 rounded-md px-2.5 py-1 text-xs font-bold transition-all duration-150 ${
               isActive
                 ? "bg-brand text-accent-foreground shadow-xs"
                 : "text-navy-500 hover:bg-surface-2 hover:text-navy"

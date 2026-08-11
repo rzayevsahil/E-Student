@@ -60,3 +60,6 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        env:
+          NODE_TLS_REJECT_UNAUTHORIZED: '0'
+          ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: 'true'

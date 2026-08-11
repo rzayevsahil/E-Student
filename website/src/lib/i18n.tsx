@@ -27,7 +27,7 @@ export interface Translations {
     docSearchTitle: string;
     docSearchBody: string;
     docSearchPoints: string[];
-    
+
     fastLabel: string;
     fastTitle: string;
     fastBody: string;
@@ -77,7 +77,7 @@ export const translations: Record<Language, Translations> = {
         "E-Student, PDF, Word, Excel ve PowerPoint belgeleriniz içinde anında arama yapmanızı sağlar ve Pomodoro zamanlayıcı ile çalışma odaklılığınızı artırır.",
       downloadBtn: "Windows için İndir",
       githubBtn: "GitHub'da İncele",
-      footerText: "Ücretsiz · Son sürüm v2.3.0 · Windows 10 & 11 Kurulumu",
+      footerText: "Ücretsiz · Son sürüm v2.3.1 · Windows 10 & 11 Kurulumu",
     },
     intro: {
       title: "Daha akıllı çalışmak için ihtiyacınız olan her şey.",
@@ -171,7 +171,7 @@ export const translations: Record<Language, Translations> = {
         "E-Student, PDF, Word, Excel və PowerPoint sənədlərinizdə anında axtarış etməyinizi təmin edir və Pomodoro taymeri ilə diqqətinizi artırır.",
       downloadBtn: "Windows üçün Yüklə",
       githubBtn: "GitHub-da Bax",
-      footerText: "Ödənişsiz · Son versiya v2.3.0 · Windows 10 & 11 Yükləyicisi",
+      footerText: "Ödənişsiz · Son versiya v2.3.1 · Windows 10 & 11 Yükləyicisi",
     },
     intro: {
       title: "Daha ağıllı təhsil almaq üçün ehtiyacınız olan hər şey.",
@@ -265,7 +265,7 @@ export const translations: Record<Language, Translations> = {
         "E-Student makes it easy to search through your PDF, Word, Excel and PowerPoint documents and keep your study sessions focused with a Pomodoro timer.",
       downloadBtn: "Download for Windows",
       githubBtn: "View on GitHub",
-      footerText: "Free · Latest version v2.3.0 · Installer for Windows 10 & 11",
+      footerText: "Free · Latest version v2.3.1 · Installer for Windows 10 & 11",
     },
     intro: {
       title: "Everything you need to study smarter.",

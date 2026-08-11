@@ -159,42 +159,46 @@
                         <TextBlock Text="Arama" 
                                    FontWeight="Bold" 
                                    Foreground="{DynamicResource PrimaryTextBrush}"
-                                   Margin="0,0,0,5"/>
-                        <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
-                                 FontSize="16"
-                                 Padding="8"
-                                 Background="{DynamicResource InputBackgroundBrush}"
-                                 Foreground="{DynamicResource PrimaryTextBrush}"
-                                 BorderBrush="{DynamicResource BorderBrush}"
-                                 BorderThickness="1"
-                                 VerticalContentAlignment="Center"
-                                 MinHeight="50"
-                                 Height="50">
-                            <TextBox.Style>
-                                <Style TargetType="TextBox">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="TextBox">
-                                                <Border Background="{TemplateBinding Background}"
-                                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                                        CornerRadius="4"
-                                                        MinHeight="{TemplateBinding MinHeight}">
-                                                    <ScrollViewer x:Name="PART_ContentHost" 
-                                                                  Margin="{TemplateBinding Padding}"
-                                                                  VerticalAlignment="Center"
-                                                                  HorizontalAlignment="Stretch"
-                                                                  VerticalScrollBarVisibility="Disabled"
-                                                                  HorizontalScrollBarVisibility="Disabled"/>
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </TextBox.Style>
-                        </TextBox>
+                                   Margin="0,0,0,6"/>
+                        
+                        <Border Background="{DynamicResource InputBackgroundBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Height="40">
+                            <Grid Margin="10,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Path Grid.Column="0" 
+                                      Data="M 7,2 A 5,5 0 1 0 7,12 A 5,5 0 1 0 7,2 Z M 10.5,10.5 L 15,15" 
+                                      Stroke="{DynamicResource PrimaryTextBrush}" 
+                                      StrokeThickness="2" 
+                                      StrokeLineJoin="Round"
+                                      StrokeEndLineCap="Round"
+                                      Width="14" 
+                                      Height="14" 
+                                      Stretch="Uniform" 
+                                      VerticalAlignment="Center" 
+                                      Margin="0,0,8,0" 
+                                      Opacity="0.8"/>
+                                <TextBox Grid.Column="1"
+                                         Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
+                                         FontSize="14"
+                                         Background="Transparent"
+                                         Foreground="{DynamicResource PrimaryTextBrush}"
+                                         CaretBrush="{DynamicResource PrimaryTextBrush}"
+                                         SelectionBrush="{DynamicResource AccentBrush}"
+                                         BorderThickness="0"
+                                         VerticalAlignment="Center"
+                                         VerticalContentAlignment="Center"
+                                         Padding="0"/>
+                            </Grid>
+                        </Border>
+
                         <TextBlock Text="Yazdıkça otomatik arama yapılır" 
-                                   FontSize="12" 
+                                   FontSize="11" 
                                    Foreground="{DynamicResource SecondaryTextBrush}"
                                    Margin="0,5,0,0"/>
                     </StackPanel>

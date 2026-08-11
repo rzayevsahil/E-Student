@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const GITHUB_REPO = "rzayevsahil/E-Student";
-const DEFAULT_VERSION = "v2.3.1";
+const DEFAULT_VERSION = "v2.3.2";
 
 export function useLatestRelease() {
   const [version, setVersion] = useState<string>(DEFAULT_VERSION);

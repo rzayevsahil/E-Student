@@ -25,31 +25,31 @@
 6. ✅ Güncelleme bildirimi duruyor
 ```
 
-## 📋 Doğru Sürüm Yönetimi Adımları
+## 📋 Doğru Sürüm Yönetimi Adımları (Otomatik GitHub Release)
 
-### Adım 1: Kod Değişikliklerini Yap
-```csharp
-// Kodunuzu güncelleyin
-```
-
-### Adım 2: csproj'daki Sürümü Güncelle
-```xml
-<!-- DocumentSearch.csproj -->
-<Version>2.1.3</Version>  <!-- Önceki: 2.1.1 -->
-```
-
-### Adım 3: Projeyi Publish Et
+### Adım 1: Kod Değişikliklerini Yap & Commit Et
 ```bash
-dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o ./publish-single
+git add .
+git commit -m "feat: yeni özellikler ve güncellemeler"
+git push origin main
 ```
 
-### Adım 4: GitHub Release Oluştur
-1. GitHub'a gidin
-2. Releases → Create a new release
-3. **Tag version**: `v2.1.3` (csproj'daki ile aynı!)
-4. **Release title**: `Version 2.1.3`
-5. **Binary files**: `publish-single/DocumentSearch.exe` dosyasını ekleyin
-6. Publish release
+### Adım 2: csproj'daki Sürümü Güncelle (Opsiyonel ama Önerilen)
+```xml
+<!-- DocumentSearch/DocumentSearch.csproj -->
+<Version>1.0.0</Version>
+```
+
+### Adım 3: Git Tag Oluştur ve GitHub'a Push Et (Otomatik Release)
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+> 🚀 **Otomatik Süreç:** Tag push yapıldığında **GitHub Actions** devreye girer:
+> 1. Projeyi Windows ortamında .NET 8 ile publish eder.
+> 2. `DocumentSearch.exe` ve `v1.0.0.exe` dosyalarını oluşturur.
+> 3. Otomatik olarak GitHub'da `v1.0.0` isimli bir Release açıp exe dosyalarını ekler.
 
 ## 🔍 Sürüm Kontrolü Nasıl Çalışır?
 

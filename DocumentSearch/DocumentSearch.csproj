@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Assets\logo.png" Condition="Exists('Assets\logo.png')" />
+    <Resource Include="Assets\Fonts\DSEG7Classic-Regular.ttf" Condition="Exists('Assets\Fonts\DSEG7Classic-Regular.ttf')" />
   </ItemGroup>
 
 </Project>

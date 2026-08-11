@@ -126,17 +126,17 @@ function Hero() {
             "radial-gradient(900px 420px at 82% -6%, var(--sky-soft), transparent 70%), radial-gradient(700px 380px at 4% 6%, var(--brand-soft), transparent 68%)",
         }}
       />
-      <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-5 py-16 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:py-24">
-        <Reveal>
+      <div className="mx-auto grid w-full max-w-6xl items-center gap-10 px-5 py-14 lg:grid-cols-2 lg:gap-12 lg:py-20">
+        <Reveal className="min-w-0">
           <p className="inline-flex items-center gap-2 rounded-full border border-navy/12 bg-card px-3 py-1.5 text-[11px] font-bold tracking-[0.14em] text-navy-500">
             <WindowsIcon className="h-3 w-3 text-sky" />
             {t.hero.badge}
           </p>
-          <h1 className="mt-5 text-4xl leading-[1.08] font-extrabold text-navy sm:text-5xl lg:text-[3.4rem]">
+          <h1 className="mt-5 text-3xl leading-[1.12] font-extrabold text-navy sm:text-4xl lg:text-[3.1rem]">
             {t.hero.titlePart1}
-            <span className="relative whitespace-nowrap text-brand">{t.hero.titlePart2}</span>
+            <span className="relative text-brand">{t.hero.titlePart2}</span>
           </h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-navy-500">
+          <p className="mt-5 max-w-xl text-base leading-relaxed text-navy-500 sm:text-lg">
             {t.hero.description}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
@@ -155,7 +155,7 @@ function Hero() {
         </Reveal>
 
         <Reveal delay={120} className="min-w-0">
-          <WindowFrame className="lg:scale-[1.03] lg:origin-left">
+          <WindowFrame>
             <SearchScreen />
           </WindowFrame>
         </Reveal>

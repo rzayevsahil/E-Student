@@ -1,5 +1,7 @@
 # DocumentSearch - Belge Arama Uygulaması
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Windows masaüstü uygulaması - PDF, Excel ve Word dosyalarını yükleme ve içeriklerinde arama yapma sistemi.
 
 ## Özellikler
@@ -89,5 +91,5 @@ DocumentSearch/
 
 ## Lisans
 
-Bu proje eğitim amaçlıdır.
+Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına göz atabilirsiniz.
 

@@ -26,26 +26,24 @@ export function Sidebar({ active }: { active: "search" | "pomodoro" }) {
       </div>
       <div className="flex flex-col gap-1 p-2">
         <div
-          className={`${base} ${
-            active === "search"
+          className={`${base} ${active === "search"
               ? "bg-sky-soft font-semibold text-sky"
               : "text-navy-500 hover:bg-muted"
-          }`}
+            }`}
         >
           <span aria-hidden>📄</span> Belge Arama
         </div>
         <div
-          className={`${base} ${
-            active === "pomodoro"
+          className={`${base} ${active === "pomodoro"
               ? "bg-sky-soft font-semibold text-sky"
               : "text-navy-500 hover:bg-muted"
-          }`}
+            }`}
         >
           <span aria-hidden>🍅</span> Pomodoro
         </div>
       </div>
       <div className="mt-auto border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
-        v2.2.6
+        v2.3.0
       </div>
     </aside>
   );

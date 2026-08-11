@@ -4,6 +4,8 @@ import { Reveal } from "@/components/Reveal";
 import { WindowFrame } from "@/components/app-ui/WindowFrame";
 import { SearchScreen } from "@/components/app-ui/SearchScreen";
 import { PomodoroScreen } from "@/components/app-ui/PomodoroScreen";
+import { useLanguage } from "@/lib/i18n";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const DOWNLOAD_URL = "https://github.com/rzayevsahil/E-Student/releases/latest";
 const GITHUB_URL = "https://github.com/rzayevsahil/E-Student";
@@ -76,26 +78,31 @@ function Btn({
 }
 
 function Nav() {
+  const { t } = useLanguage();
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur">
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center gap-4 px-5">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5">
         <a href="#top" className="flex items-center gap-2">
           <img src={logo} alt="E-Student logo" className="h-9 w-9 object-contain" />
           <span className="font-display text-lg font-extrabold text-navy">E-Student</span>
         </a>
-        <nav className="ml-auto hidden items-center gap-7 text-sm font-medium text-navy-500 sm:flex">
+        
+        <nav className="hidden items-center gap-7 text-sm font-medium text-navy-500 md:flex">
           <a href="#features" className="transition-colors hover:text-brand">
-            Features
+            {t.nav.features}
           </a>
           <a href="#screenshots" className="transition-colors hover:text-brand">
-            Screenshots
+            {t.nav.screenshots}
           </a>
           <a href="#download" className="transition-colors hover:text-brand">
-            Download
+            {t.nav.download}
           </a>
         </nav>
-        <div className="ml-auto sm:ml-0">
-          <Btn href={DOWNLOAD_URL}>Download</Btn>
+
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher />
+          <Btn href={DOWNLOAD_URL}>{t.nav.download}</Btn>
         </div>
       </div>
     </header>
@@ -103,6 +110,8 @@ function Nav() {
 }
 
 function Hero() {
+  const { t } = useLanguage();
+
   return (
     <section id="top" className="relative overflow-hidden">
       <div
@@ -117,28 +126,27 @@ function Hero() {
         <Reveal>
           <p className="inline-flex items-center gap-2 rounded-full border border-navy/12 bg-card px-3 py-1.5 text-[11px] font-bold tracking-[0.14em] text-navy-500">
             <WindowsIcon className="h-3 w-3 text-sky" />
-            WINDOWS DESKTOP APPLICATION
+            {t.hero.badge}
           </p>
           <h1 className="mt-5 text-4xl leading-[1.08] font-extrabold text-navy sm:text-5xl lg:text-[3.4rem]">
-            Find your study materials{" "}
-            <span className="relative whitespace-nowrap text-brand">in seconds.</span>
+            {t.hero.titlePart1}
+            <span className="relative whitespace-nowrap text-brand">{t.hero.titlePart2}</span>
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-navy-500">
-            E-Student makes it easy to search through your PDF, Word and Excel documents and keep
-            your study sessions focused.
+            {t.hero.description}
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Btn href={DOWNLOAD_URL} size="lg">
               <WindowsIcon className="h-4 w-4" />
-              Download for Windows
+              {t.hero.downloadBtn}
             </Btn>
             <Btn href={GITHUB_URL} variant="outline" size="lg">
               <GithubIcon className="h-4 w-4" />
-              View on GitHub
+              {t.hero.githubBtn}
             </Btn>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
-            Free · Latest version v2.2.6 · Installer for Windows 10 &amp; 11
+            {t.hero.footerText}
           </p>
         </Reveal>
 
@@ -152,40 +160,22 @@ function Hero() {
   );
 }
 
-const intro = [
-  {
-    title: "Find information quickly",
-    body: "Type a word and see exactly which document and page it appears on.",
-  },
-  {
-    title: "Search across your documents",
-    body: "PDF, Word and Excel files are all searched together, in one place.",
-  },
-  {
-    title: "Keep materials organized",
-    body: "Load your lecture notes once and keep them ready for every study session.",
-  },
-  {
-    title: "Stay focused with Pomodoro",
-    body: "Work in focused sessions with a built-in timer and break reminders.",
-  },
-];
-
 function Intro() {
+  const { t } = useLanguage();
+
   return (
     <section className="border-y border-border bg-card">
       <div className="mx-auto w-full max-w-6xl px-5 py-16 lg:py-20">
         <Reveal className="max-w-2xl">
           <h2 className="text-3xl font-extrabold text-navy sm:text-4xl">
-            Everything you need to study smarter.
+            {t.intro.title}
           </h2>
           <p className="mt-4 text-lg text-navy-500">
-            E-Student keeps all of your course material in one window — searchable, organized and
-            ready when you need it.
+            {t.intro.subtitle}
           </p>
         </Reveal>
         <div className="mt-10 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-4">
-          {intro.map((item, i) => (
+          {t.intro.items.map((item, i) => (
             <Reveal key={item.title} delay={i * 80}>
               <div className="h-full bg-card p-6 transition-colors hover:bg-surface-2">
                 <span className="font-display text-sm font-bold text-brand">
@@ -242,17 +232,15 @@ function FeatureRow({
 }
 
 function Features() {
+  const { t } = useLanguage();
+
   return (
     <section id="features" className="mx-auto w-full max-w-6xl space-y-20 px-5 py-16 lg:py-24">
       <FeatureRow
-        label="DOCUMENT SEARCH"
-        title="Search through your documents."
-        body="Add your PDF, Word and Excel files once, then type what you're looking for. E-Student searches inside every document and shows you the file and the page where your words appear."
-        points={[
-          "Works with PDF, Word (.doc, .docx) and Excel (.xls, .xlsx) files",
-          "Results appear as you type — no separate search button",
-          "Double-click a result to open the file on the right page",
-        ]}
+        label={t.features.docSearchLabel}
+        title={t.features.docSearchTitle}
+        body={t.features.docSearchBody}
+        points={t.features.docSearchPoints}
         visual={
           <WindowFrame>
             <SearchScreen query="regresyon" />
@@ -261,14 +249,10 @@ function Features() {
       />
       <FeatureRow
         flip
-        label="FAST & CONVENIENT"
-        title="Stop opening documents one by one."
-        body="No more scrolling through a dozen lecture notes to find a single definition. Everything you loaded is searched at once, and results come back instantly — even across thousands of pages."
-        points={[
-          "One search covers all of your loaded study material",
-          "Documents are remembered, so the next search starts instantly",
-          "Jump straight to the exact page instead of skimming",
-        ]}
+        label={t.features.fastLabel}
+        title={t.features.fastTitle}
+        body={t.features.fastBody}
+        points={t.features.fastPoints}
         visual={
           <WindowFrame>
             <SearchScreen query="türev formülü" />
@@ -276,14 +260,10 @@ function Features() {
         }
       />
       <FeatureRow
-        label="POMODORO"
-        title="Stay focused on what matters."
-        body="A focus timer lives right next to your notes. Study in 25-minute sessions, take short breaks, and see how many rounds you've finished — all without leaving the app."
-        points={[
-          "Focus sessions with short and long breaks",
-          "Skip or reset a session whenever your plan changes",
-          "Keep track of the pomodoros you completed today",
-        ]}
+        label={t.features.pomodoroLabel}
+        title={t.features.pomodoroTitle}
+        body={t.features.pomodoroBody}
+        points={t.features.pomodoroPoints}
         visual={
           <WindowFrame>
             <PomodoroScreen />
@@ -295,17 +275,18 @@ function Features() {
 }
 
 function Screenshots() {
+  const { t } = useLanguage();
+
   return (
     <section id="screenshots" className="bg-navy">
       <div className="mx-auto w-full max-w-6xl px-5 py-16 lg:py-24">
         <Reveal className="max-w-2xl">
-          <p className="text-xs font-bold tracking-[0.16em] text-brand">SCREENSHOTS</p>
+          <p className="text-xs font-bold tracking-[0.16em] text-brand">{t.screenshots.label}</p>
           <h2 className="mt-3 text-3xl font-extrabold text-white sm:text-4xl">
-            See E-Student in action.
+            {t.screenshots.title}
           </h2>
           <p className="mt-4 text-lg text-white/70">
-            A clean, familiar Windows interface — a sidebar for navigation, your files on the left
-            and your results on the right.
+            {t.screenshots.subtitle}
           </p>
         </Reveal>
 
@@ -333,29 +314,31 @@ function Screenshots() {
 }
 
 function Download() {
+  const { t } = useLanguage();
+
   return (
     <section id="download" className="border-b border-border bg-card">
       <div className="mx-auto w-full max-w-6xl px-5 py-20">
         <Reveal className="mx-auto max-w-2xl text-center">
           <img src={logo} alt="E-Student logo" className="mx-auto h-16 w-16 object-contain" />
           <h2 className="mt-6 text-3xl font-extrabold text-navy sm:text-4xl">
-            Ready to study smarter?
+            {t.download.title}
           </h2>
           <p className="mt-4 text-lg text-navy-500">
-            Download E-Student and keep your study materials searchable and organized.
+            {t.download.subtitle}
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Btn href={DOWNLOAD_URL} size="lg">
               <WindowsIcon className="h-4 w-4" />
-              Download for Windows
+              {t.download.downloadBtn}
             </Btn>
             <Btn href={GITHUB_URL} variant="outline" size="lg">
               <GithubIcon className="h-4 w-4" />
-              View on GitHub
+              {t.download.githubBtn}
             </Btn>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
-            Guided installer · Automatic updates · Free to use
+            {t.download.footerText}
           </p>
         </Reveal>
       </div>
@@ -364,6 +347,8 @@ function Download() {
 }
 
 function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="bg-navy text-background">
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:grid-cols-2 lg:grid-cols-4">
@@ -373,8 +358,7 @@ function Footer() {
             <span className="font-display text-lg font-extrabold">E-Student</span>
           </div>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-background/70">
-            Search. Organize. Focus. A lightweight Windows study companion for finding your
-            documents fast and keeping your focus sessions on track.
+            {t.footer.tagline}
           </p>
           <a
             href={DOWNLOAD_URL}
@@ -383,23 +367,23 @@ function Footer() {
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-navy transition-transform hover:-translate-y-0.5"
           >
             <WindowsIcon className="h-4 w-4" />
-            Download for Windows
+            {t.footer.downloadBtn}
           </a>
         </div>
 
         <div>
           <h3 className="text-xs font-bold uppercase tracking-widest text-background/50">
-            Explore
+            {t.footer.explore}
           </h3>
           <nav className="mt-4 flex flex-col gap-3 text-sm text-background/80">
             <a href="#features" className="w-fit hover:text-brand">
-              Features
+              {t.nav.features}
             </a>
             <a href="#screenshots" className="w-fit hover:text-brand">
-              Screenshots
+              {t.nav.screenshots}
             </a>
             <a href="#download" className="w-fit hover:text-brand">
-              Download
+              {t.nav.download}
             </a>
             <a
               href={GITHUB_URL}
@@ -414,12 +398,12 @@ function Footer() {
 
         <div>
           <h3 className="text-xs font-bold uppercase tracking-widest text-background/50">
-            Developer
+            {t.footer.developer}
           </h3>
           <div className="mt-4 rounded-2xl border border-background/15 bg-background/5 p-4">
             <p className="font-display text-base font-bold">Sahil Rzayev</p>
             <p className="mt-1 text-sm text-background/70">
-              Creator &amp; maintainer of E-Student
+              {t.footer.developerTitle}
             </p>
             <div className="mt-4 flex flex-col gap-2 text-sm">
               <a
@@ -437,7 +421,7 @@ function Footer() {
                 rel="noreferrer"
                 className="text-background/80 hover:text-brand"
               >
-                Send feedback
+                {t.footer.feedback}
               </a>
             </div>
           </div>
@@ -445,8 +429,8 @@ function Footer() {
       </div>
       <div className="border-t border-background/10">
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-2 px-5 py-6 text-xs text-background/60 sm:flex-row sm:items-center sm:justify-between">
-          <p>© 2026 E-Student. All rights reserved.</p>
-          <p>Made with care for students · Free to use</p>
+          <p>{t.footer.copyright}</p>
+          <p>{t.footer.madeWithLove}</p>
         </div>
       </div>
     </footer>

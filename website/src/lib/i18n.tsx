@@ -1,0 +1,394 @@
+import React, { createContext, useContext, useState, useEffect } from "react";
+
+export type Language = "tr" | "az" | "en";
+
+export interface Translations {
+  nav: {
+    features: string;
+    screenshots: string;
+    download: string;
+  };
+  hero: {
+    badge: string;
+    titlePart1: string;
+    titlePart2: string;
+    description: string;
+    downloadBtn: string;
+    githubBtn: string;
+    footerText: string;
+  };
+  intro: {
+    title: string;
+    subtitle: string;
+    items: Array<{ title: string; body: string }>;
+  };
+  features: {
+    docSearchLabel: string;
+    docSearchTitle: string;
+    docSearchBody: string;
+    docSearchPoints: string[];
+    
+    fastLabel: string;
+    fastTitle: string;
+    fastBody: string;
+    fastPoints: string[];
+
+    pomodoroLabel: string;
+    pomodoroTitle: string;
+    pomodoroBody: string;
+    pomodoroPoints: string[];
+  };
+  screenshots: {
+    label: string;
+    title: string;
+    subtitle: string;
+  };
+  download: {
+    title: string;
+    subtitle: string;
+    downloadBtn: string;
+    githubBtn: string;
+    footerText: string;
+  };
+  footer: {
+    tagline: string;
+    downloadBtn: string;
+    explore: string;
+    developer: string;
+    developerTitle: string;
+    feedback: string;
+    copyright: string;
+    madeWithLove: string;
+  };
+}
+
+export const translations: Record<Language, Translations> = {
+  tr: {
+    nav: {
+      features: "Özellikler",
+      screenshots: "Ekran Görüntüleri",
+      download: "İndir",
+    },
+    hero: {
+      badge: "WINDOWS MASAÜSTÜ UYGULAMASI",
+      titlePart1: "Ders materyallerinizi ",
+      titlePart2: "saniyeler içinde bulun.",
+      description:
+        "E-Student, PDF, Word ve Excel belgeleriniz içinde anında arama yapmanızı sağlar ve Pomodoro zamanlayıcı ile çalışma odaklılığınızı artırır.",
+      downloadBtn: "Windows için İndir",
+      githubBtn: "GitHub'da İncele",
+      footerText: "Ücretsiz · Son sürüm v2.2.6 · Windows 10 & 11 Kurulumu",
+    },
+    intro: {
+      title: "Daha akıllı çalışmak için ihtiyacınız olan her şey.",
+      subtitle:
+        "E-Student tüm ders materyallerinizi tek bir pencerede tutar — taranabilir, düzenli ve her an hazır.",
+      items: [
+        {
+          title: "Bilgiye anında ulaşın",
+          body: "Aradığınız sözcüğü yazın ve tam olarak hangi belgenin kaçıncı sayfasında geçtiğini görün.",
+        },
+        {
+          title: "Tüm dokümanlarda eşzamanlı arama",
+          body: "PDF, Word ve Excel dosyalarınızın tamamı tek bir noktadan aynı anda taranır.",
+        },
+        {
+          title: "Ders notlarınızı düzenli tutun",
+          body: "Ders notlarınızı bir kez yükleyin ve her çalışma oturumunda anında hazır bulundurun.",
+        },
+        {
+          title: "Pomodoro ile odaklanın",
+          body: "Entegre zamanlayıcı ve mola bildirimleri ile yüksek verimle çalışın.",
+        },
+      ],
+    },
+    features: {
+      docSearchLabel: "DOKÜMAN ARAMA",
+      docSearchTitle: "Belgelerinizin içerisinde özgürce arayın.",
+      docSearchBody:
+        "PDF, Word ve Excel dosyalarınızı ekleyin, ardından aradığınız terimi yazın. E-Student her bir dosyanın içeriğini tarar ve eşleşen sayfa numarasıyla birlikte önünüze getirir.",
+      docSearchPoints: [
+        "PDF, Word (.doc, .docx) ve Excel (.xls, .xlsx) formatlarını destekler",
+        "Siz yazdıkça sonuçlar anında listelenir — ayrı bir buton gerekmez",
+        "Sonuca çift tıklayarak ilgili belgeyi tam sayfasında açın",
+      ],
+      fastLabel: "HIZLI VE PRATİK",
+      fastTitle: "Dosyaları tek tek açıp okumaya son verin.",
+      fastBody:
+        "Tek bir tanımı bulmak için onlarca sayfa ders notunu kaydırmak zorunda kalmayın. Yüklediğiniz tüm materyal tek seferde taranır ve binlerce sayfa içinden milisaniyeler içinde sonuç döner.",
+      fastPoints: [
+        "Tek bir arama tüm ders materyalini kapsar",
+        "Yüklenen belgeler önbelleğe alınır, sonraki aramalar saliseler sürer",
+        "Göz gezdirmek yerine doğrudan ilgili sayfaya zıplayın",
+      ],
+      pomodoroLabel: "POMODORO ZAMANLAYICI",
+      pomodoroTitle: "Dikkat dağıtıcı unsurları engelleyin.",
+      pomodoroBody:
+        "Çalışma zamanlayıcınız notlarınızın hemen yanında yer alır. 25 dakikalık odaklanma turları yapın, kısa molalar verin ve gün boyu kaç Pomodoro tamamladığınızı takip edin.",
+      pomodoroPoints: [
+        "Odaklanma seansları, kısa ve uzun mola döngüleri",
+        "Planınız değiştiğinde turu atlayın veya sıfırlayın",
+        "Günlük tamamladığınız Pomodoro istatistiklerini takip edin",
+      ],
+    },
+    screenshots: {
+      label: "EKRAN GÖRÜNTÜLERİ",
+      title: "E-Student'ı iş başında görün.",
+      subtitle:
+        "Kullanıcı dostu Windows arayüzü — gezinme için yan menü, sol tarafta dosyalarınız ve sağ tarafta anlık arama sonuçları.",
+    },
+    download: {
+      title: "Daha akıllı çalışmaya hazır mısınız?",
+      subtitle:
+        "E-Student'ı ücretsiz indirerek ders materyallerinizi taranabilir ve düzenli tutun.",
+      downloadBtn: "Windows için İndir",
+      githubBtn: "GitHub'da İncele",
+      footerText: "Kolay Kurulum Sihirbazı · Otomatik Güncelleme · Tamamen Ücretsiz",
+    },
+    footer: {
+      tagline:
+        "Ara. Düzenle. Odaklan. Ders materyallerinizi anında bulmanızı ve çalışma oturumlarınızı takip etmenizi sağlayan Windows asistanı.",
+      downloadBtn: "Windows için İndir",
+      explore: "Keşfet",
+      developer: "Geliştirici",
+      developerTitle: "E-Student Geliştiricisi",
+      feedback: "Geri Bildirim Gönder",
+      copyright: "© 2026 E-Student. Tüm hakları saklıdır.",
+      madeWithLove: "Öğrenciler için özenle tasarlandı · Ücretsiz",
+    },
+  },
+  az: {
+    nav: {
+      features: "Xüsusiyyətlər",
+      screenshots: "Ekran Görüntüləri",
+      download: "Yüklə",
+    },
+    hero: {
+      badge: "WINDOWS MASAÜSTÜ TƏTBİQİ",
+      titlePart1: "Dərs materiallarınızı ",
+      titlePart2: "saniyələr içində tapın.",
+      description:
+        "E-Student, PDF, Word və Excel sənədlərinizdə anında axtarış etməyinizi təmin edir və Pomodoro taymeri ilə diqqətinizi artırır.",
+      downloadBtn: "Windows üçün Yüklə",
+      githubBtn: "GitHub-da Bax",
+      footerText: "Ödənişsiz · Son versiya v2.2.6 · Windows 10 & 11 Yükləyicisi",
+    },
+    intro: {
+      title: "Daha ağıllı təhsil almaq üçün ehtiyacınız olan hər şey.",
+      subtitle:
+        "E-Student bütün dərs materiallarınızı tək bir pəncərədə saxlayır — axtarıla bilən, mütəşəkkil və hər an hazır.",
+      items: [
+        {
+          title: "Məlumata anında çatın",
+          body: "Axtardığınız sözü yazın və dəqiq hansı sənədin neçənci səhifəsində olduğunu görün.",
+        },
+        {
+          title: "Bütün sənədlərdə eyni vaxtda axtarış",
+          body: "PDF, Word və Excel fayllarınızın hamısı tək bir yerdən eyni anda taranır.",
+        },
+        {
+          title: "Dərs qeydlərinizi nizamlı saxlayın",
+          body: "Qeydlərinizi bir dəfə yükləyin və hər təhsil seansında anında hazır bulundurun.",
+        },
+        {
+          title: "Pomodoro ilə diqqəti cəmləyin",
+          body: "Daxili taymer və fasilə bildirişləri ilə yüksək məhsuldarlıqla çalışın.",
+        },
+      ],
+    },
+    features: {
+      docSearchLabel: "SƏNƏD AXTARIŞI",
+      docSearchTitle: "Sənədlərinizin içərisində sərbəst axtarın.",
+      docSearchBody:
+        "PDF, Word və Excel fayllarınızı əlavə edin, sonra axtardığınız sözü yazın. E-Student hər bir sənədin məzmununu tarayır və uyğun gələn səhifə nömrəsi ilə təqdim edir.",
+      docSearchPoints: [
+        "PDF, Word (.doc, .docx) və Excel (.xls, .xlsx) formatlarını dəstəkləyir",
+        "Yazdıqca nəticələr anında siyahılanır — ayrı axtarış düyməsinə ehtiyac yoxdur",
+        "Nəticəyə iki dəfə klikləyərək müvafiq sənədi dəqiq səhifəsində açın",
+      ],
+      fastLabel: "SÜRƏTLİ VƏ RAHAT",
+      fastTitle: "Faylları tək-tək açıb oxumağa son qoyun.",
+      fastBody:
+        "Tək bir tərifi tapmaq üçün onlarla səhifə dərs qeydini vərəqləməyə ehtiyac yoxdur. Yüklədiyiniz bütün materiallar bir dəfəyə taranır və minlərlə səhifə içindən milisaniyələr içində nəticə qayıdır.",
+      fastPoints: [
+        "Tək bir axtarış bütün dərs materiallarını əhatə edir",
+        "Sənədlər keşlənir, növbəti axtarışlar salisələr çəkir",
+        "Səhifələri vərəqləmək əvəzinə birbaşa müvafiq səhifəyə keçin",
+      ],
+      pomodoroLabel: "POMODORO TAYMERİ",
+      pomodoroTitle: "Diqqəti cəmləyin və vaxtı idarə edin.",
+      pomodoroBody:
+        "Çalışma taymeriniz qeydlərinizin dərhal yanında yerləşir. 25 dəqiqəlik diqqət seansları edin, qısa fasilələr verin və gün ərzində neçə Pomodoro tamamladığınızı izləyin.",
+      pomodoroPoints: [
+        "Diqqət seansları, qısa və uzun fasilə dövrələri",
+        "Planınız dəyişdikdə dövrəni keçin və ya sıfırlayın",
+        "Gündəlik tamamladığınız Pomodoro statistikalarını izləyin",
+      ],
+    },
+    screenshots: {
+      label: "EKRAN GÖRÜNTÜLƏRİ",
+      title: "E-Student-i fəaliyyətdə görün.",
+      subtitle:
+        "İstifadəçi dostu Windows interfeysi — naviqasiya üçün yan menyu, sol tərəfdə fayllarınız və sağ tərəfdə axtarış nəticələri.",
+    },
+    download: {
+      title: "Daha ağıllı təhsil almağa hazırsınız?",
+      subtitle:
+        "E-Student-i ödənişsiz yükləyərək dərs materiallarınızı axtarıla bilən və mütəşəkkil saxlayın.",
+      downloadBtn: "Windows üçün Yüklə",
+      githubBtn: "GitHub-da Bax",
+      footerText: "Asan Yükləmə Sehrbazı · Avtomatik Yeniləmə · Tamamilə Ödənişsiz",
+    },
+    footer: {
+      tagline:
+        "Axtar. Təşkil et. Diqqəti cəmlə. Dərs materiallarınızı anında tapmağı və çalışma seanslarınızı izləməyi təmin edən Windows köməkçisi.",
+      downloadBtn: "Windows üçün Yüklə",
+      explore: "Kəşf et",
+      developer: "Tərtibatçı",
+      developerTitle: "E-Student Tərtibatçısı",
+      feedback: "Rəy Göndər",
+      copyright: "© 2026 E-Student. Bütün hüquqlar qorunur.",
+      madeWithLove: "Tələbələr üçün diqqətlə hazırlandı · Ödənişsiz",
+    },
+  },
+  en: {
+    nav: {
+      features: "Features",
+      screenshots: "Screenshots",
+      download: "Download",
+    },
+    hero: {
+      badge: "WINDOWS DESKTOP APPLICATION",
+      titlePart1: "Find your study materials ",
+      titlePart2: "in seconds.",
+      description:
+        "E-Student makes it easy to search through your PDF, Word and Excel documents and keep your study sessions focused with a Pomodoro timer.",
+      downloadBtn: "Download for Windows",
+      githubBtn: "View on GitHub",
+      footerText: "Free · Latest version v2.2.6 · Installer for Windows 10 & 11",
+    },
+    intro: {
+      title: "Everything you need to study smarter.",
+      subtitle:
+        "E-Student keeps all of your course material in one window — searchable, organized and ready when you need it.",
+      items: [
+        {
+          title: "Find information quickly",
+          body: "Type a word and see exactly which document and page it appears on.",
+        },
+        {
+          title: "Search across your documents",
+          body: "PDF, Word and Excel files are all searched together, in one place.",
+        },
+        {
+          title: "Keep materials organized",
+          body: "Load your lecture notes once and keep them ready for every study session.",
+        },
+        {
+          title: "Stay focused with Pomodoro",
+          body: "Work in focused sessions with a built-in timer and break reminders.",
+        },
+      ],
+    },
+    features: {
+      docSearchLabel: "DOCUMENT SEARCH",
+      docSearchTitle: "Search through your documents.",
+      docSearchBody:
+        "Add your PDF, Word and Excel files once, then type what you're looking for. E-Student searches inside every document and shows you the file and the page where your words appear.",
+      docSearchPoints: [
+        "Works with PDF, Word (.doc, .docx) and Excel (.xls, .xlsx) files",
+        "Results appear as you type — no separate search button",
+        "Double-click a result to open the file on the right page",
+      ],
+      fastLabel: "FAST & CONVENIENT",
+      fastTitle: "Stop opening documents one by one.",
+      fastBody:
+        "No more scrolling through a dozen lecture notes to find a single definition. Everything you loaded is searched at once, and results come back instantly — even across thousands of pages.",
+      fastPoints: [
+        "One search covers all of your loaded study material",
+        "Documents are remembered, so the next search starts instantly",
+        "Jump straight to the exact page instead of skimming",
+      ],
+      pomodoroLabel: "POMODORO",
+      pomodoroTitle: "Stay focused on what matters.",
+      pomodoroBody:
+        "A focus timer lives right next to your notes. Study in 25-minute sessions, take short breaks, and see how many rounds you've finished — all without leaving the app.",
+      pomodoroPoints: [
+        "Focus sessions with short and long breaks",
+        "Skip or reset a session whenever your plan changes",
+        "Keep track of the pomodoros you completed today",
+      ],
+    },
+    screenshots: {
+      label: "SCREENSHOTS",
+      title: "See E-Student in action.",
+      subtitle:
+        "A clean, familiar Windows interface — a sidebar for navigation, your files on the left and your results on the right.",
+    },
+    download: {
+      title: "Ready to study smarter?",
+      subtitle:
+        "Download E-Student and keep your study materials searchable and organized.",
+      downloadBtn: "Download for Windows",
+      githubBtn: "View on GitHub",
+      footerText: "Guided installer · Automatic updates · Free to use",
+    },
+    footer: {
+      tagline:
+        "Search. Organize. Focus. A lightweight Windows study companion for finding your documents fast and keeping your focus sessions on track.",
+      downloadBtn: "Download for Windows",
+      explore: "Explore",
+      developer: "Developer",
+      developerTitle: "Creator & maintainer of E-Student",
+      feedback: "Send feedback",
+      copyright: "© 2026 E-Student. All rights reserved.",
+      madeWithLove: "Made with care for students · Free to use",
+    },
+  },
+};
+
+interface LanguageContextType {
+  lang: Language;
+  setLang: (lang: Language) => void;
+  t: Translations;
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+
+export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [lang, setLangState] = useState<Language>(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("estudent_lang") as Language;
+      if (saved && ["tr", "az", "en"].includes(saved)) return saved;
+      const browserLang = navigator.language.toLowerCase();
+      if (browserLang.startsWith("az")) return "az";
+      if (browserLang.startsWith("tr")) return "tr";
+    }
+    return "tr"; // Default to Turkish for regional preference or fallback
+  });
+
+  const setLang = (newLang: Language) => {
+    setLangState(newLang);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("estudent_lang", newLang);
+    }
+  };
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
+
+  return (
+    <LanguageContext.Provider value={{ lang, setLang, t: translations[lang] }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+};
+
+export const useLanguage = () => {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error("useLanguage must be used within a LanguageProvider");
+  }
+  return context;
+};

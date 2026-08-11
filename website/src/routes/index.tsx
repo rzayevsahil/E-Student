@@ -84,10 +84,10 @@ function Nav() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur">
-      <div className="mx-auto grid h-16 w-full max-w-6xl grid-cols-2 items-center px-5 md:grid-cols-[180px_1fr_auto]">
-        <a href="#top" className="flex items-center gap-2">
-          <img src={logo} alt="E-Student logo" className="h-9 w-9 object-contain" />
-          <span className="font-display text-lg font-extrabold text-navy">E-Student</span>
+      <div className="mx-auto grid h-16 w-full max-w-6xl grid-cols-2 items-center px-5 md:grid-cols-[210px_1fr_auto]">
+        <a href="#top" className="flex items-center gap-2.5">
+          <img src={logo} alt="E-Student logo" className="h-11 w-11 object-contain" />
+          <span className="font-display text-xl font-extrabold text-navy">E-Student</span>
         </a>
         
         <nav className="hidden items-center justify-center gap-7 text-sm font-medium text-navy-500 md:flex">
@@ -358,8 +358,8 @@ function Footer() {
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:grid-cols-2 lg:grid-cols-4">
         <div className="lg:col-span-2">
           <div className="flex items-center gap-2.5">
-            <img src={logo} alt="" className="h-9 w-9 object-contain" />
-            <span className="font-display text-lg font-extrabold">E-Student</span>
+            <img src={logo} alt="" className="h-11 w-11 object-contain" />
+            <span className="font-display text-xl font-extrabold">E-Student</span>
           </div>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-background/70">
             {t.footer.tagline}

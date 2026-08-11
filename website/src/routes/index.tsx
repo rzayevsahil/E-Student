@@ -324,7 +324,7 @@ function Download() {
     <section id="download" className="border-b border-border bg-card">
       <div className="mx-auto w-full max-w-6xl px-5 py-20">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <img src={logo} alt="E-Student logo" className="mx-auto h-16 w-16 object-contain" />
+          <img src={logo} alt="E-Student logo" className="mx-auto h-28 w-28 object-contain" />
           <h2 className="mt-6 text-3xl font-extrabold text-navy sm:text-4xl">
             {t.download.title}
           </h2>
@@ -357,9 +357,9 @@ function Footer() {
     <footer className="bg-navy text-background">
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-16 sm:grid-cols-2 lg:grid-cols-4">
         <div className="lg:col-span-2">
-          <div className="flex items-center gap-2.5">
-            <img src={logo} alt="" className="h-11 w-11 object-contain" />
-            <span className="font-display text-xl font-extrabold">E-Student</span>
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="" className="h-16 w-16 object-contain" />
+            <span className="font-display text-2xl font-extrabold">E-Student</span>
           </div>
           <p className="mt-3 max-w-sm text-sm leading-relaxed text-background/70">
             {t.footer.tagline}

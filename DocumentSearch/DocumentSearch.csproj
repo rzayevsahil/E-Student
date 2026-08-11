@@ -7,8 +7,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>app.ico</ApplicationIcon>
-    <AssemblyName>DocumentSearch</AssemblyName>
-    <Product>Belge İçerik Arama Uygulaması</Product>
+    <AssemblyName>E-Student</AssemblyName>
+    <Product>E-Student Belge Arama Uygulaması</Product>
     <Version>2.2.5</Version>
   </PropertyGroup>
 

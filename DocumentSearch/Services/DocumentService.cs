@@ -21,9 +21,16 @@ public class DocumentService : IDocumentService
         _wordParser = wordParser;
         _pdfToExcelConverter = pdfToExcelConverter;
         
-        // AppData/Local/DocumentSearch klasöründe sakla
+        // AppData/Local/E-Student klasöründe sakla (Eski DocumentSearch klasörünü otomatik taşı)
         var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-        var appFolder = Path.Combine(appDataPath, "DocumentSearch");
+        var appFolder = Path.Combine(appDataPath, "E-Student");
+        var oldAppFolder = Path.Combine(appDataPath, "DocumentSearch");
+
+        if (Directory.Exists(oldAppFolder) && !Directory.Exists(appFolder))
+        {
+            try { Directory.Move(oldAppFolder, appFolder); } catch { }
+        }
+
         Directory.CreateDirectory(appFolder);
         _storagePath = Path.Combine(appFolder, "documents.json");
         _tempFolder = Path.Combine(appFolder, "Temp");

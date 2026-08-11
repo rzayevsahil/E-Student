@@ -1,21 +1,35 @@
-# DocumentSearch - Belge Arama Uygulaması
+# E-Student - Akıllı Öğrenci Asistanı & Verimlilik Platformu
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Windows masaüstü uygulaması - PDF, Excel ve Word dosyalarını yükleme ve içeriklerinde arama yapma sistemi.
+**E-Student**, öğrencilerin ders materyallerini yönetmelerini, dokümanları içerisinde anında arama yapmalarını ve Pomodoro tekniği ile çalışma verimliliklerini artırmalarını sağlayan modern bir Windows masaüstü asistanıdır.
 
-## Özellikler
+---
 
-- ✅ **Çoklu Dosya Formatı Desteği**: PDF, Excel (.xlsx, .xls) ve Word (.docx, .doc) dosyalarını yükleme
-- ✅ **Akıllı & Hızlı Arama**: 
-  - Poz No, kelime, sayfa numarası ve dosya isimlerinde arama
-  - Çok çekirdekli (Parallel) arka plan arama motoru
-  - Türkçe karakter duyarlılığı ve normalizasyonu (ı/İ, ş/Ş, ğ/Ğ, ü/Ü, ö/Ö, ç/Ç)
-- ✅ **Yüksek Performans & Metin Önbellekleme**: Belgelerin metin içerikleri ilk yüklemede önbelleğe alınır, uygulama açılışları milisaniyeler sürer.
-- ✅ **Otomatik Güncelleme & Kurulum Sihirbazı**: Güncel sürümleri GitHub üzerinden kontrol etme ve Inno Setup ile tek tıkla arka planda güncelleme.
-- ✅ **Modern UI**: WPF ile temiz, ortalanmış ve modern kullanıcı arayüzü.
+## 🌟 Öne Çıkan Özellikler
 
-## Teknoloji Stack
+- 🔍 **Akıllı Belge ve Ders Notu Arama**:
+  - PDF, Word (`.docx`, `.doc`) ve Excel (`.xlsx`, `.xls`) dosyalarınızı yükleyin.
+  - Ders notları, poz numaraları, kelimeler ve tablolar içerisinde saliseler içinde arama yapın.
+  - Çok çekirdekli arka plan motoru ve akıllı yerel metin önbellekleme sayesinde binlerce sayfalık ders materyalinde anında arama.
+  
+- ⏱️ **Pomodoro Sayaç & Çalışma Yönetimi**:
+  - Odaklanma oturumları ve özelleştirilebilir mola zamanlayıcısı.
+  - Ders çalışma disiplini ve verimliliğini artırmaya yönelik akıllı Pomodoro aracı.
+
+- ⚡ **Yüksek Performans & Metin Önbellekleme**:
+  - Belgelerin içerikleri ilk taramada önbelleğe alınır, sonraki açılışlar milisaniyeler sürer.
+
+- 🔄 **Otomatik Güncelleme & Kolay Kurulum**:
+  - Inno Setup altyapısı ile hızlı kurulum sihirbazı.
+  - GitHub Releases üzerinden güncellemeleri otomatik denetleme ve arka planda sessiz güncelleme.
+
+- 🎨 **Modern ve Temiz Kullanıcı Arayüzü**:
+  - Kullanıcı dostu, modern WPF arayüzü ve sezgisel gezinme menüsü.
+
+---
+
+## 🛠️ Teknoloji Stack
 
 - **.NET 8.0 (Windows)** - Framework
 - **WPF** - UI Framework
@@ -23,73 +37,48 @@ Windows masaüstü uygulaması - PDF, Excel ve Word dosyalarını yükleme ve i�
 - **ClosedXML** - Excel işleme
 - **DocumentFormat.OpenXml** - Word işleme
 - **Inno Setup** - Windows Kurulum Sihirbazı
-- **CommunityToolkit.Mvvm** - MVVM pattern
+- **CommunityToolkit.Mvvm** - MVVM Pattern
 - **Microsoft.Extensions.DependencyInjection** - Dependency Injection
 
-## İndirme ve Kurulum
+---
+
+## 📦 İndirme ve Kurulum
 
 ### 🚀 Kullanıcılar İçin (Hızlı Kurulum)
 
-1. [GitHub Releases](https://github.com/rzayevsahil/E-Student/releases) sayfasından en son sürüme ait **`DocumentSearch-Setup-vX.X.X.exe`** kurulum dosyasını indirin.
-2. İndirdiğiniz `.exe` dosyasına çift tıklayarak kurulum sihirbazını adımlarını takip edin.
-3. Kurulum tamamlandıktan sonra Masaüstünüzde veya Başlat Menüsünde oluşan **E-Student** kısayolu ile uygulamayı çalıştırabilirsiniz.
+1. [GitHub Releases](https://github.com/rzayevsahil/E-Student/releases) sayfasından en son sürüm **`E-Student-Setup-vX.X.X.exe`** kurulum dosyasını indirin.
+2. İndirdiğiniz `.exe` dosyasına çift tıklayarak kurulum adımlarını takip edin.
+3. Masaüstünüzde veya Başlat Menüsünde oluşan **E-Student** simgesi ile uygulamayı başlatın.
 
 ### 💻 Geliştiriciler İçin (Kaynak Koddan Derleme)
 
 1. Projeyi klonlayın:
    ```bash
-   git clone https.github.com/rzayevsahil/E-Student.git
+   git clone https://github.com/rzayevsahil/E-Student.git
    cd E-Student
    ```
 2. Projeyi derleyin:
    ```bash
-   dotnet build
+   dotnet build DocumentSearch/DocumentSearch.csproj
    ```
 3. Uygulamayı çalıştırın:
    ```bash
-   dotnet run
+   dotnet run --project DocumentSearch/DocumentSearch.csproj
    ```
 
-## Kullanım
+---
 
-1. **Dosya Yükleme**: 
-   - "Dosya Yükle" butonuna tıklayın
-   - PDF, Excel veya Word dosyalarınızı seçin
-   - Çoklu dosya seçimi desteklenir
+## 💡 Kullanım Rehberi
 
-2. **Arama**:
-   - Arama kutusuna Poz No (örn: 15.100.1001) veya tanım ifadesi yazın
-   - Sonuçlar anında görüntülenecektir
-   - Arama, dosya isimlerinde, Poz No'larda ve tanımlarda yapılır
+1. **Belge Arama & Ders Notları**: 
+   - "Dosya Yükle" ile PDF, Excel ve Word formatındaki ders notlarınızı ve kaynaklarınızı ekleyin.
+   - Arama çubuğuna aradığınız kelimeyi veya ifadeyi yazın; sonuçlar ilgili sayfa ve konumla anında listelenir.
 
-3. **Sonuçları Görüntüleme**:
-   - Arama sonuçları tablo formatında gösterilir
-   - Dosya adı, Poz No, Tanım, Birim ve Fiyat bilgileri görüntülenir
-   - Eşleşme tipi (PozNo, Tanim, FileName) gösterilir
+2. **Pomodoro Odaklanma Modu**:
+   - Sol menüden Pomodoro sekmesine geçin, çalışma sürenizi başlatın ve mola aralıklarınızı düzenleyin.
 
-4. **Dosya Kaldırma**:
-   - Yüklenen dosyalar listesindeki ✕ butonuna tıklayarak dosyayı kaldırabilirsiniz
+---
 
-## Proje Yapısı
-
-```
-DocumentSearch/
-├── Models/          # Veri modelleri (PriceItem, Document, SearchResult)
-├── Services/        # İş mantığı servisleri (Parser'lar, Arama servisi)
-├── ViewModels/     # MVVM ViewModel'ler
-├── Views/          # XAML view dosyaları
-└── MainWindow.xaml # Ana pencere
-```
-
-## Geliştirme Notları
-
-- PDF parser, tablo formatını otomatik algılamaya çalışır
-- Excel parser, header satırını otomatik tespit eder
-- Word parser, tablo içeren Word dosyalarını işler
-- Arama servisi, Türkçe karakterleri normalize ederek arama yapar
-- Tüm servisler dependency injection ile yönetilir
-
-## Lisans
+## 📄 Lisans
 
 Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır. Detaylar için [LICENSE](LICENSE) dosyasına göz atabilirsiniz.
-

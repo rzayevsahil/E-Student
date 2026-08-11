@@ -1,7 +1,7 @@
 #define MyAppName "E-Student Belge Arama"
 #define MyAppPublisher "Sahil Rzayev"
 #define MyAppURL "https://github.com/rzayevsahil/E-Student"
-#define MyAppExeName "DocumentSearch.exe"
+#define MyAppExeName "E-Student.exe"
 
 #ifndef MyAppVersion
 #define MyAppVersion "2.2.5"
@@ -18,7 +18,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={localappdata}\Programs\E-Student
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-OutputBaseFilename=DocumentSearch-Setup
+OutputBaseFilename=E-Student-Setup
 SetupIconFile=DocumentSearch\app.ico
 Compression=lzma2/ultra64
 SolidCompression=yes
@@ -33,7 +33,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "publish\DocumentSearch.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "publish\E-Student.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"

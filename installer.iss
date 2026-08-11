@@ -4,7 +4,7 @@
 #define MyAppExeName "DocumentSearch.exe"
 
 #ifndef MyAppVersion
-#define MyAppVersion "2.2.4"
+#define MyAppVersion "2.2.5"
 #endif
 
 [Setup]

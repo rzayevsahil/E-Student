@@ -33,7 +33,6 @@ public partial class App : Application
         services.AddSingleton<IExcelParser, ExcelParser>();
         services.AddSingleton<IWordParser, WordParser>();
         services.AddSingleton<IPowerPointParser, PowerPointParser>();
-        services.AddSingleton<IPdfToExcelConverter, PdfToExcelConverter>();
         services.AddSingleton<IDocumentService, DocumentService>();
         services.AddSingleton<ISearchService, SearchService>();
         services.AddSingleton<UpdateService>();

@@ -1,4 +1,5 @@
 import logo from "@/assets/logo.png";
+import { useLatestRelease } from "@/hooks/useLatestRelease";
 
 const files = [
   { name: "Veri Yapıları - Hafta 5.pdf", ext: "PDF" },
@@ -17,6 +18,7 @@ const results = [
 ];
 
 export function Sidebar({ active }: { active: "search" | "pomodoro" }) {
+  const latestVersion = useLatestRelease();
   const base =
     "flex items-center gap-2 rounded-[5px] px-3 py-2.5 text-[13px] text-left transition-colors";
   return (
@@ -43,7 +45,7 @@ export function Sidebar({ active }: { active: "search" | "pomodoro" }) {
         </div>
       </div>
       <div className="mt-auto border-t border-border px-3 py-2 text-[10px] text-muted-foreground">
-        v2.3.1
+        {latestVersion}
       </div>
     </aside>
   );

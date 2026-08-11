@@ -5,9 +5,9 @@ import { WindowFrame } from "@/components/app-ui/WindowFrame";
 import { SearchScreen } from "@/components/app-ui/SearchScreen";
 import { PomodoroScreen } from "@/components/app-ui/PomodoroScreen";
 import { useLanguage } from "@/lib/i18n";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLatestRelease } from "@/hooks/useLatestRelease";
 
-const DOWNLOAD_URL = "https://github.com/rzayevsahil/E-Student/releases/latest";
+const DOWNLOAD_URL = "https://github.com/rzayevsahil/E-Student/releases/latest/download/E-Student.exe";
 const GITHUB_URL = "https://github.com/rzayevsahil/E-Student";
 
 export const Route = createFileRoute("/")({
@@ -115,6 +115,7 @@ function Nav() {
 
 function Hero() {
   const { t } = useLanguage();
+  const version = useLatestRelease();
 
   return (
     <section id="top" className="relative overflow-hidden">
@@ -150,7 +151,7 @@ function Hero() {
             </Btn>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
-            {t.hero.footerText}
+            {t.hero.footerText.replace("{version}", version)}
           </p>
         </Reveal>
 

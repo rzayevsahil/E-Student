@@ -29,6 +29,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string statusMessage = "Hazır";
 
+    private CancellationTokenSource? _searchCts;
+
     public MainViewModel(IDocumentService documentService, ISearchService searchService)
     {
         _documentService = documentService;
@@ -45,14 +47,7 @@ public partial class MainViewModel : ObservableObject
     {
         if (e.PropertyName == nameof(SearchQuery))
         {
-            // Kısa bir gecikme ile arama yap (kullanıcı yazmayı bitirsin)
-            _ = Task.Delay(300).ContinueWith(_ =>
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    PerformSearch();
-                });
-            });
+            _ = PerformSearchAsync();
         }
     }
     
@@ -66,6 +61,7 @@ public partial class MainViewModel : ObservableObject
             await _documentService.LoadSavedDocumentsAsync();
             var allDocuments = _documentService.GetAllDocuments();
             
+            Documents.Clear();
             foreach (var doc in allDocuments)
             {
                 Documents.Add(doc);
@@ -99,22 +95,30 @@ public partial class MainViewModel : ObservableObject
 
             try
             {
-                foreach (var filePath in dialog.FileNames)
+                var filesToLoad = dialog.FileNames
+                    .Where(path => !Documents.Any(d => d.FilePath.Equals(path, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+                if (filesToLoad.Any())
                 {
-                    // Eğer dosya zaten yüklenmişse, atla
-                    if (Documents.Any(d => d.FilePath.Equals(filePath, StringComparison.OrdinalIgnoreCase)))
-                        continue;
-                        
-                    var document = await _documentService.LoadDocumentAsync(filePath);
-                    Documents.Add(document);
+                    // Dosyaları paralel olarak yükle
+                    var tasks = filesToLoad.Select(filePath => _documentService.LoadDocumentAsync(filePath));
+                    var loadedDocs = await Task.WhenAll(tasks);
+
+                    foreach (var doc in loadedDocs)
+                    {
+                        if (!Documents.Any(d => d.FilePath.Equals(doc.FilePath, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            Documents.Add(doc);
+                        }
+                    }
                 }
 
-                StatusMessage = $"{dialog.FileNames.Length} dosya yüklendi. Toplam {Documents.Count} dosya.";
+                StatusMessage = $"{dialog.FileNames.Length} dosya işlendi. Toplam {Documents.Count} dosya.";
             }
             catch (Exception ex)
             {
                 StatusMessage = $"Hata: {ex.Message}";
-                // Hata detaylarını göster
                 System.Windows.MessageBox.Show(
                     $"Dosya yüklenirken hata oluştu:\n\n{ex.Message}\n\nDetay: {ex.InnerException?.Message ?? "Yok"}",
                     "Hata",
@@ -141,14 +145,28 @@ public partial class MainViewModel : ObservableObject
         // Arama sonuçlarını güncelle
         if (!string.IsNullOrWhiteSpace(SearchQuery))
         {
-            PerformSearch();
+            _ = PerformSearchAsync();
         }
     }
 
-
-    private void PerformSearch()
+    private async Task PerformSearchAsync()
     {
-        if (string.IsNullOrWhiteSpace(SearchQuery))
+        _searchCts?.Cancel();
+        _searchCts = new CancellationTokenSource();
+        var token = _searchCts.Token;
+
+        try
+        {
+            // Kullanıcı yazmayı tamamlasın diye 250ms gecikme (Debounce)
+            await Task.Delay(250, token);
+        }
+        catch (TaskCanceledException)
+        {
+            return;
+        }
+
+        var query = SearchQuery?.Trim();
+        if (string.IsNullOrWhiteSpace(query))
         {
             SearchResults.Clear();
             StatusMessage = "";
@@ -157,16 +175,18 @@ public partial class MainViewModel : ObservableObject
 
         var allDocuments = _documentService.GetAllDocuments();
         
-        // Eğer hiç doküman yoksa
         if (allDocuments == null || !allDocuments.Any())
         {
             SearchResults.Clear();
             StatusMessage = "Yüklenmiş dosya yok.";
             return;
         }
-        
-        var results = _searchService.Search(SearchQuery.Trim(), allDocuments);
-        
+
+        // Aramayı arka planda paralel çalıştır
+        var results = await Task.Run(() => _searchService.Search(query, allDocuments), token);
+
+        if (token.IsCancellationRequested) return;
+
         SearchResults.Clear();
         foreach (var result in results)
         {

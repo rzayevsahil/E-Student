@@ -37,20 +37,55 @@ public class DocumentService : IDocumentService
             if (!File.Exists(_storagePath))
                 return;
                 
-            var json = File.ReadAllText(_storagePath);
+            var json = await File.ReadAllTextAsync(_storagePath);
             var documentInfos = JsonConvert.DeserializeObject<List<DocumentInfo>>(json);
             
-            if (documentInfos == null)
+            if (documentInfos == null || !documentInfos.Any())
                 return;
             
-            // Kayıtlı dosyaları yükle (sadece dosya yolu geçerliyse)
+            var validDocs = new List<Document>();
+            var docsToReParse = new List<DocumentInfo>();
+
             foreach (var docInfo in documentInfos)
             {
                 if (string.IsNullOrEmpty(docInfo.FilePath) || !File.Exists(docInfo.FilePath))
                     continue;
+
+                var fileInfo = new FileInfo(docInfo.FilePath);
                 
-                // Dosyayı tekrar parse et
-                await LoadDocumentAsync(docInfo.FilePath);
+                // Eğer dosya tarihi ve boyutu değişmediyse ve önbellekte metni varsa direkt önbellekten yükle
+                if (!string.IsNullOrEmpty(docInfo.RawContent) &&
+                    docInfo.LastWriteTime == fileInfo.LastWriteTimeUtc &&
+                    docInfo.FileSize == fileInfo.Length)
+                {
+                    validDocs.Add(new Document
+                    {
+                        FilePath = docInfo.FilePath,
+                        FileName = docInfo.FileName,
+                        FileExtension = docInfo.FileExtension,
+                        FileSize = docInfo.FileSize,
+                        UploadDate = docInfo.UploadDate,
+                        RawContent = docInfo.RawContent
+                    });
+                }
+                else
+                {
+                    // Dosya değiştirilmiş veya metni yoksa tekrar parse et
+                    docsToReParse.Add(docInfo);
+                }
+            }
+
+            lock (_documents)
+            {
+                _documents.Clear();
+                _documents.AddRange(validDocs);
+            }
+
+            // Yeniden parse edilmesi gereken dosyaları paralel yükle
+            if (docsToReParse.Any())
+            {
+                var tasks = docsToReParse.Select(info => LoadDocumentAsync(info.FilePath));
+                await Task.WhenAll(tasks);
             }
         }
         catch
@@ -80,7 +115,6 @@ public class DocumentService : IDocumentService
             switch (extension)
             {
                 case ".pdf":
-                    // PDF'den sadece metin çıkar (parse etme)
                     rawContent = _pdfParser.ExtractText(filePath);
                     break;
                 case ".xlsx":
@@ -98,11 +132,12 @@ public class DocumentService : IDocumentService
 
             document.RawContent = rawContent;
 
-            // Eğer dosya zaten yüklenmişse, eski halini kaldır
-            _documents.RemoveAll(d => d.FilePath.Equals(filePath, StringComparison.OrdinalIgnoreCase));
-            _documents.Add(document);
+            lock (_documents)
+            {
+                _documents.RemoveAll(d => d.FilePath.Equals(filePath, StringComparison.OrdinalIgnoreCase));
+                _documents.Add(document);
+            }
             
-            // Dosya listesini kaydet
             SaveDocuments();
             
             return document;
@@ -111,29 +146,51 @@ public class DocumentService : IDocumentService
 
     public void RemoveDocument(string filePath)
     {
-        _documents.RemoveAll(d => d.FilePath.Equals(filePath, StringComparison.OrdinalIgnoreCase));
+        lock (_documents)
+        {
+            _documents.RemoveAll(d => d.FilePath.Equals(filePath, StringComparison.OrdinalIgnoreCase));
+        }
         SaveDocuments();
     }
 
     public List<Document> GetAllDocuments()
     {
-        return _documents.ToList();
+        lock (_documents)
+        {
+            return _documents.ToList();
+        }
     }
     
     private void SaveDocuments()
     {
         try
         {
-            // Sadece dosya bilgilerini kaydet
-            var documentInfos = _documents.Select(d => new DocumentInfo
+            List<DocumentInfo> documentInfos;
+            lock (_documents)
             {
-                FilePath = d.FilePath,
-                FileName = d.FileName,
-                FileExtension = d.FileExtension,
-                FileSize = d.FileSize,
-                UploadDate = d.UploadDate
-            }).ToList();
-            
+                documentInfos = _documents.Select(d =>
+                {
+                    DateTime lastWrite = DateTime.MinValue;
+                    try
+                    {
+                        if (File.Exists(d.FilePath))
+                            lastWrite = File.GetLastWriteTimeUtc(d.FilePath);
+                    }
+                    catch { }
+
+                    return new DocumentInfo
+                    {
+                        FilePath = d.FilePath,
+                        FileName = d.FileName,
+                        FileExtension = d.FileExtension,
+                        FileSize = d.FileSize,
+                        UploadDate = d.UploadDate,
+                        LastWriteTime = lastWrite,
+                        RawContent = d.RawContent
+                    };
+                }).ToList();
+            }
+
             var json = JsonConvert.SerializeObject(documentInfos, Formatting.Indented);
             File.WriteAllText(_storagePath, json);
         }
@@ -143,7 +200,6 @@ public class DocumentService : IDocumentService
         }
     }
     
-    
     private class DocumentInfo
     {
         public string FilePath { get; set; } = string.Empty;
@@ -151,6 +207,8 @@ public class DocumentService : IDocumentService
         public string FileExtension { get; set; } = string.Empty;
         public long FileSize { get; set; }
         public DateTime UploadDate { get; set; }
+        public DateTime LastWriteTime { get; set; }
+        public string RawContent { get; set; } = string.Empty;
     }
 }
 

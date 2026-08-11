@@ -237,11 +237,14 @@ public class UpdateService
                     // Tam exe dosyası (fallback için)
                     else if (nameString.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
                     {
-                        fullExeUrl = urlString;
-                        fullExeFileName = nameString;
-                        if (asset.TryGetProperty("size", out var size))
+                        if (fullExeUrl == null || nameString.Equals("DocumentSearch.exe", StringComparison.OrdinalIgnoreCase))
                         {
-                            fullExeFileSize = size.GetInt64();
+                            fullExeUrl = urlString;
+                            fullExeFileName = nameString;
+                            if (asset.TryGetProperty("size", out var size))
+                            {
+                                fullExeFileSize = size.GetInt64();
+                            }
                         }
                     }
                 }

@@ -10,11 +10,11 @@ public class SearchService : ISearchService
         if (string.IsNullOrWhiteSpace(query) || documents == null || !documents.Any())
             return new List<SearchResult>();
 
-        var results = new List<SearchResult>();
+        var results = new System.Collections.Concurrent.ConcurrentBag<SearchResult>();
         var normalizedQuery = NormalizeTurkish(query.ToLower().Trim());
         var trimmedQuery = query.Trim();
 
-        foreach (var document in documents)
+        Parallel.ForEach(documents, document =>
         {
             // Dosya isminde arama
             var normalizedFileName = NormalizeTurkish(document.FileName.ToLower());
@@ -40,7 +40,7 @@ public class SearchService : ISearchService
                 {
                     var pageContent = pages[pageIndex];
                     // Sayfa numarasını çıkar (---PAGE_1--- formatından)
-                    var pageNumberMatch = System.Text.RegularExpressions.Regex.Match(pageContent, @"^(\d+)---");
+                    var pageNumberMatch = Regex.Match(pageContent, @"^(\d+)---");
                     int pageNumber = pageIndex + 1;
                     if (pageNumberMatch.Success)
                     {
@@ -85,7 +85,7 @@ public class SearchService : ISearchService
                     }
                 }
             }
-        }
+        });
 
         // Tekrar eden sonuçları kaldır (aynı dosya ve sayfa)
         return results

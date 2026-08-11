@@ -5,37 +5,45 @@ Windows masaüstü uygulaması - PDF, Excel ve Word dosyalarını yükleme ve i�
 ## Özellikler
 
 - ✅ **Çoklu Dosya Formatı Desteği**: PDF, Excel (.xlsx, .xls) ve Word (.docx, .doc) dosyalarını yükleme
-- ✅ **Akıllı Arama**: 
-  - Poz No ile arama
-  - Tanım ifadelerine göre arama
-  - Dosya isimlerinde arama
-  - Türkçe karakter desteği (ı/İ, ş/Ş, ğ/Ğ, ü/Ü, ö/Ö, ç/Ç)
-- ✅ **Tablo Verisi Çıkarma**: PDF, Excel ve Word dosyalarındaki tablo verilerini otomatik olarak parse etme
-- ✅ **Modern UI**: WPF ile modern ve kullanıcı dostu arayüz
-- ✅ **Real-time Arama**: Yazarken anında arama sonuçları
+- ✅ **Akıllı & Hızlı Arama**: 
+  - Poz No, kelime, sayfa numarası ve dosya isimlerinde arama
+  - Çok çekirdekli (Parallel) arka plan arama motoru
+  - Türkçe karakter duyarlılığı ve normalizasyonu (ı/İ, ş/Ş, ğ/Ğ, ü/Ü, ö/Ö, ç/Ç)
+- ✅ **Yüksek Performans & Metin Önbellekleme**: Belgelerin metin içerikleri ilk yüklemede önbelleğe alınır, uygulama açılışları milisaniyeler sürer.
+- ✅ **Otomatik Güncelleme & Kurulum Sihirbazı**: Güncel sürümleri GitHub üzerinden kontrol etme ve Inno Setup ile tek tıkla arka planda güncelleme.
+- ✅ **Modern UI**: WPF ile temiz, ortalanmış ve modern kullanıcı arayüzü.
 
 ## Teknoloji Stack
 
-- **.NET 8.0** - Framework
+- **.NET 8.0 (Windows)** - Framework
 - **WPF** - UI Framework
 - **PdfPig** - PDF işleme
-- **EPPlus** - Excel işleme
+- **ClosedXML** - Excel işleme
 - **DocumentFormat.OpenXml** - Word işleme
+- **Inno Setup** - Windows Kurulum Sihirbazı
 - **CommunityToolkit.Mvvm** - MVVM pattern
 - **Microsoft.Extensions.DependencyInjection** - Dependency Injection
 
-## Kurulum
+## İndirme ve Kurulum
 
-1. Projeyi klonlayın veya indirin
-2. Terminal'de proje klasörüne gidin:
+### 🚀 Kullanıcılar İçin (Hızlı Kurulum)
+
+1. [GitHub Releases](https://github.com/rzayevsahil/E-Student/releases) sayfasından en son sürüme ait **`DocumentSearch-Setup-vX.X.X.exe`** kurulum dosyasını indirin.
+2. İndirdiğiniz `.exe` dosyasına çift tıklayarak kurulum sihirbazını adımlarını takip edin.
+3. Kurulum tamamlandıktan sonra Masaüstünüzde veya Başlat Menüsünde oluşan **E-Student** kısayolu ile uygulamayı çalıştırabilirsiniz.
+
+### 💻 Geliştiriciler İçin (Kaynak Koddan Derleme)
+
+1. Projeyi klonlayın:
    ```bash
-   cd DocumentSearch
+   git clone https.github.com/rzayevsahil/E-Student.git
+   cd E-Student
    ```
-3. Projeyi derleyin:
+2. Projeyi derleyin:
    ```bash
    dotnet build
    ```
-4. Uygulamayı çalıştırın:
+3. Uygulamayı çalıştırın:
    ```bash
    dotnet run
    ```

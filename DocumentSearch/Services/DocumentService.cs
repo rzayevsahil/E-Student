@@ -10,15 +10,17 @@ public class DocumentService : IDocumentService
     private readonly IPdfParser _pdfParser;
     private readonly IExcelParser _excelParser;
     private readonly IWordParser _wordParser;
+    private readonly IPowerPointParser _powerPointParser;
     private readonly IPdfToExcelConverter _pdfToExcelConverter;
     private readonly string _storagePath;
     private readonly string _tempFolder;
 
-    public DocumentService(IPdfParser pdfParser, IExcelParser excelParser, IWordParser wordParser, IPdfToExcelConverter pdfToExcelConverter)
+    public DocumentService(IPdfParser pdfParser, IExcelParser excelParser, IWordParser wordParser, IPowerPointParser powerPointParser, IPdfToExcelConverter pdfToExcelConverter)
     {
         _pdfParser = pdfParser;
         _excelParser = excelParser;
         _wordParser = wordParser;
+        _powerPointParser = powerPointParser;
         _pdfToExcelConverter = pdfToExcelConverter;
         
         // AppData/Local/E-Student klasöründe sakla (Eski DocumentSearch klasörünü otomatik taşı)
@@ -131,6 +133,10 @@ public class DocumentService : IDocumentService
                 case ".docx":
                 case ".doc":
                     rawContent = _wordParser.ExtractText(filePath);
+                    break;
+                case ".pptx":
+                case ".ppt":
+                    rawContent = _powerPointParser.ExtractText(filePath);
                     break;
                 default:
                     rawContent = string.Empty;

@@ -84,7 +84,7 @@ public partial class MainViewModel : ObservableObject
     {
         var dialog = new OpenFileDialog
         {
-            Filter = "Dosyalar|*.pdf;*.xlsx;*.xls;*.docx;*.doc|PDF Dosyaları|*.pdf|Excel Dosyaları|*.xlsx;*.xls|Word Dosyaları|*.docx;*.doc|Tüm Dosyalar|*.*",
+            Filter = "Desteklenen Dosyalar|*.pdf;*.xlsx;*.xls;*.docx;*.doc;*.pptx;*.ppt|PDF Dosyaları|*.pdf|Excel Dosyaları|*.xlsx;*.xls|Word Dosyaları|*.docx;*.doc|PowerPoint Sunumları|*.pptx;*.ppt|Tüm Dosyalar|*.*",
             Multiselect = true
         };
 

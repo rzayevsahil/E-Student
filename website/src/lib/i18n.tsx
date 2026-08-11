@@ -74,10 +74,10 @@ export const translations: Record<Language, Translations> = {
       titlePart1: "Ders materyallerinizi ",
       titlePart2: "saniyeler içinde bulun.",
       description:
-        "E-Student, PDF, Word ve Excel belgeleriniz içinde anında arama yapmanızı sağlar ve Pomodoro zamanlayıcı ile çalışma odaklılığınızı artırır.",
+        "E-Student, PDF, Word, Excel ve PowerPoint belgeleriniz içinde anında arama yapmanızı sağlar ve Pomodoro zamanlayıcı ile çalışma odaklılığınızı artırır.",
       downloadBtn: "Windows için İndir",
       githubBtn: "GitHub'da İncele",
-      footerText: "Ücretsiz · Son sürüm v2.2.6 · Windows 10 & 11 Kurulumu",
+      footerText: "Ücretsiz · Son sürüm v2.3.0 · Windows 10 & 11 Kurulumu",
     },
     intro: {
       title: "Daha akıllı çalışmak için ihtiyacınız olan her şey.",
@@ -86,11 +86,11 @@ export const translations: Record<Language, Translations> = {
       items: [
         {
           title: "Bilgiye anında ulaşın",
-          body: "Aradığınız sözcüğü yazın ve tam olarak hangi belgenin kaçıncı sayfasında geçtiğini görün.",
+          body: "Aradığınız sözcüğü yazın ve tam olarak hangi belgenin kaçıncı sayfasında veya slaydında geçtiğini görün.",
         },
         {
           title: "Tüm dokümanlarda eşzamanlı arama",
-          body: "PDF, Word ve Excel dosyalarınızın tamamı tek bir noktadan aynı anda taranır.",
+          body: "PDF, Word, Excel ve PowerPoint dosyalarınızın tamamı tek bir noktadan aynı anda taranır.",
         },
         {
           title: "Ders notlarınızı düzenli tutun",
@@ -106,11 +106,11 @@ export const translations: Record<Language, Translations> = {
       docSearchLabel: "DOKÜMAN ARAMA",
       docSearchTitle: "Belgelerinizin içerisinde özgürce arayın.",
       docSearchBody:
-        "PDF, Word ve Excel dosyalarınızı ekleyin, ardından aradığınız terimi yazın. E-Student her bir dosyanın içeriğini tarar ve eşleşen sayfa numarasıyla birlikte önünüze getirir.",
+        "PDF, Word, Excel ve PowerPoint dosyalarınızı ekleyin, ardından aradığınız terimi yazın. E-Student her bir dosyanın içeriğini tarar ve eşleşen sayfa/slayt numarasıyla birlikte önünüze getirir.",
       docSearchPoints: [
-        "PDF, Word (.doc, .docx) ve Excel (.xls, .xlsx) formatlarını destekler",
+        "PDF, Word (.docx), Excel (.xlsx) ve PowerPoint (.pptx, .ppt) formatlarını destekler",
         "Siz yazdıkça sonuçlar anında listelenir — ayrı bir buton gerekmez",
-        "Sonuca çift tıklayarak ilgili belgeyi tam sayfasında açın",
+        "Sonuca çift tıklayarak ilgili belgeyi tam sayfasında veya slaydında açın",
       ],
       fastLabel: "HIZLI VE PRATİK",
       fastTitle: "Dosyaları tek tek açıp okumaya son verin.",
@@ -168,10 +168,10 @@ export const translations: Record<Language, Translations> = {
       titlePart1: "Dərs materiallarınızı ",
       titlePart2: "saniyələr içində tapın.",
       description:
-        "E-Student, PDF, Word və Excel sənədlərinizdə anında axtarış etməyinizi təmin edir və Pomodoro taymeri ilə diqqətinizi artırır.",
+        "E-Student, PDF, Word, Excel və PowerPoint sənədlərinizdə anında axtarış etməyinizi təmin edir və Pomodoro taymeri ilə diqqətinizi artırır.",
       downloadBtn: "Windows üçün Yüklə",
       githubBtn: "GitHub-da Bax",
-      footerText: "Ödənişsiz · Son versiya v2.2.6 · Windows 10 & 11 Yükləyicisi",
+      footerText: "Ödənişsiz · Son versiya v2.3.0 · Windows 10 & 11 Yükləyicisi",
     },
     intro: {
       title: "Daha ağıllı təhsil almaq üçün ehtiyacınız olan hər şey.",
@@ -180,11 +180,11 @@ export const translations: Record<Language, Translations> = {
       items: [
         {
           title: "Məlumata anında çatın",
-          body: "Axtardığınız sözü yazın və dəqiq hansı sənədin neçənci səhifəsində olduğunu görün.",
+          body: "Axtardığınız sözü yazın və dəqiq hansı sənədin neçənci səhifəsində və ya slaydında olduğunu görün.",
         },
         {
           title: "Bütün sənədlərdə eyni vaxtda axtarış",
-          body: "PDF, Word və Excel fayllarınızın hamısı tək bir yerdən eyni anda taranır.",
+          body: "PDF, Word, Excel və PowerPoint fayllarınızın hamısı tək bir yerdən eyni anda taranır.",
         },
         {
           title: "Dərs qeydlərinizi nizamlı saxlayın",
@@ -200,11 +200,11 @@ export const translations: Record<Language, Translations> = {
       docSearchLabel: "SƏNƏD AXTARIŞI",
       docSearchTitle: "Sənədlərinizin içərisində sərbəst axtarın.",
       docSearchBody:
-        "PDF, Word və Excel fayllarınızı əlavə edin, sonra axtardığınız sözü yazın. E-Student hər bir sənədin məzmununu tarayır və uyğun gələn səhifə nömrəsi ilə təqdim edir.",
+        "PDF, Word, Excel və PowerPoint fayllarınızı əlavə edin, sonra axtardığınız sözü yazın. E-Student hər bir sənədin məzmununu tarayır və uyğun gələn səhifə/slayd nömrəsi ilə təqdim edir.",
       docSearchPoints: [
-        "PDF, Word (.doc, .docx) və Excel (.xls, .xlsx) formatlarını dəstəkləyir",
+        "PDF, Word (.docx), Excel (.xlsx) və PowerPoint (.pptx, .ppt) formatlarını dəstəkləyir",
         "Yazdıqca nəticələr anında siyahılanır — ayrı axtarış düyməsinə ehtiyac yoxdur",
-        "Nəticəyə iki dəfə klikləyərək müvafiq sənədi dəqiq səhifəsində açın",
+        "Nəticəyə iki dəfə klikləyərək müvafiq sənədi dəqiq səhifəsində və ya slaydında açın",
       ],
       fastLabel: "SÜRƏTLİ VƏ RAHAT",
       fastTitle: "Faylları tək-tək açıb oxumağa son qoyun.",
@@ -262,10 +262,10 @@ export const translations: Record<Language, Translations> = {
       titlePart1: "Find your study materials ",
       titlePart2: "in seconds.",
       description:
-        "E-Student makes it easy to search through your PDF, Word and Excel documents and keep your study sessions focused with a Pomodoro timer.",
+        "E-Student makes it easy to search through your PDF, Word, Excel and PowerPoint documents and keep your study sessions focused with a Pomodoro timer.",
       downloadBtn: "Download for Windows",
       githubBtn: "View on GitHub",
-      footerText: "Free · Latest version v2.2.6 · Installer for Windows 10 & 11",
+      footerText: "Free · Latest version v2.3.0 · Installer for Windows 10 & 11",
     },
     intro: {
       title: "Everything you need to study smarter.",
@@ -274,11 +274,11 @@ export const translations: Record<Language, Translations> = {
       items: [
         {
           title: "Find information quickly",
-          body: "Type a word and see exactly which document and page it appears on.",
+          body: "Type a word and see exactly which document, page or slide it appears on.",
         },
         {
           title: "Search across your documents",
-          body: "PDF, Word and Excel files are all searched together, in one place.",
+          body: "PDF, Word, Excel and PowerPoint files are all searched together, in one place.",
         },
         {
           title: "Keep materials organized",
@@ -294,11 +294,11 @@ export const translations: Record<Language, Translations> = {
       docSearchLabel: "DOCUMENT SEARCH",
       docSearchTitle: "Search through your documents.",
       docSearchBody:
-        "Add your PDF, Word and Excel files once, then type what you're looking for. E-Student searches inside every document and shows you the file and the page where your words appear.",
+        "Add your PDF, Word, Excel and PowerPoint files once, then type what you're looking for. E-Student searches inside every document and shows you the file, page or slide where your words appear.",
       docSearchPoints: [
-        "Works with PDF, Word (.doc, .docx) and Excel (.xls, .xlsx) files",
+        "Works with PDF, Word (.docx), Excel (.xlsx) and PowerPoint (.pptx, .ppt) files",
         "Results appear as you type — no separate search button",
-        "Double-click a result to open the file on the right page",
+        "Double-click a result to open the file on the right page or slide",
       ],
       fastLabel: "FAST & CONVENIENT",
       fastTitle: "Stop opening documents one by one.",

@@ -152,7 +152,7 @@ function Hero() {
             </Btn>
           </div>
           <p className="mt-4 text-sm text-muted-foreground">
-            {t.hero.footerText}
+            {(t.hero.footerText || "").replace("{version}", version)}
           </p>
         </Reveal>
 

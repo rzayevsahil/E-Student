@@ -234,16 +234,29 @@ public class UpdateService
                             patchFileSize = size.GetInt64();
                         }
                     }
-                    // Tam exe dosyası (fallback için)
+                    // Tam exe veya Setup dosyası
                     else if (nameString.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
                     {
-                        if (fullExeUrl == null || nameString.Equals("DocumentSearch.exe", StringComparison.OrdinalIgnoreCase))
+                        // Setup installer varsa en yüksek öncelikle tercih et
+                        if (nameString.Contains("Setup", StringComparison.OrdinalIgnoreCase))
                         {
                             fullExeUrl = urlString;
                             fullExeFileName = nameString;
                             if (asset.TryGetProperty("size", out var size))
                             {
                                 fullExeFileSize = size.GetInt64();
+                            }
+                        }
+                        else if (fullExeUrl == null || nameString.Equals("DocumentSearch.exe", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (fullExeUrl == null || !fullExeFileName!.Contains("Setup", StringComparison.OrdinalIgnoreCase))
+                            {
+                                fullExeUrl = urlString;
+                                fullExeFileName = nameString;
+                                if (asset.TryGetProperty("size", out var size))
+                                {
+                                    fullExeFileSize = size.GetInt64();
+                                }
                             }
                         }
                     }
@@ -430,6 +443,32 @@ public class UpdateService
                         "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
                 });
                 return;
+            }
+
+            // Indirilen dosya bir Setup dosyasi ise doğrudan sessiz kurulum başlat
+            if (updateFilePath.Contains("Setup", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var setupInfo = new ProcessStartInfo
+                    {
+                        FileName = updateFilePath,
+                        Arguments = "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART",
+                        UseShellExecute = true
+                    };
+                    Process.Start(setupInfo);
+
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        downloadWindow?.Close();
+                        Application.Current.Shutdown();
+                    });
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // Fallback to normal execution if setup fails
+                }
             }
             
             // Exe değiştirme batch script'i oluştur

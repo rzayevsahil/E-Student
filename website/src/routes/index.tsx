@@ -51,11 +51,13 @@ function Btn({
   variant = "primary",
   children,
   size = "md",
+  className = "",
 }: {
   href: string;
   variant?: "primary" | "outline" | "ghost";
   children: React.ReactNode;
   size?: "md" | "lg";
+  className?: string;
 }) {
   const styles = {
     primary:
@@ -70,7 +72,7 @@ function Btn({
       href={href}
       target="_blank"
       rel="noreferrer"
-      className={`inline-flex items-center justify-center gap-2.5 rounded-md font-semibold transition-all duration-200 ${pad} ${styles}`}
+      className={`inline-flex items-center justify-center gap-2.5 rounded-md font-semibold transition-all duration-200 ${pad} ${styles} ${className}`}
     >
       {children}
     </a>
@@ -82,13 +84,13 @@ function Nav() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/85 backdrop-blur">
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5">
+      <div className="mx-auto grid h-16 w-full max-w-6xl grid-cols-2 items-center px-5 md:grid-cols-[180px_1fr_auto]">
         <a href="#top" className="flex items-center gap-2">
           <img src={logo} alt="E-Student logo" className="h-9 w-9 object-contain" />
           <span className="font-display text-lg font-extrabold text-navy">E-Student</span>
         </a>
         
-        <nav className="hidden items-center gap-7 text-sm font-medium text-navy-500 md:flex">
+        <nav className="hidden items-center justify-center gap-7 text-sm font-medium text-navy-500 md:flex">
           <a href="#features" className="transition-colors hover:text-brand">
             {t.nav.features}
           </a>
@@ -100,9 +102,11 @@ function Nav() {
           </a>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-end gap-3 justify-self-end">
           <LanguageSwitcher />
-          <Btn href={DOWNLOAD_URL}>{t.nav.download}</Btn>
+          <Btn href={DOWNLOAD_URL} className="min-w-[92px] text-center">
+            {t.nav.download}
+          </Btn>
         </div>
       </div>
     </header>

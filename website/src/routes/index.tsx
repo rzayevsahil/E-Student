@@ -6,6 +6,7 @@ import { SearchScreen } from "@/components/app-ui/SearchScreen";
 import { PomodoroScreen } from "@/components/app-ui/PomodoroScreen";
 import { useLanguage } from "@/lib/i18n";
 import { useLatestRelease } from "@/hooks/useLatestRelease";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const DOWNLOAD_URL = "https://github.com/rzayevsahil/E-Student/releases/latest/download/E-Student.exe";
 const GITHUB_URL = "https://github.com/rzayevsahil/E-Student";

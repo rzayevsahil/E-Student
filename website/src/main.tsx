@@ -7,11 +7,20 @@ import "./styles.css";
 const router = getRouter();
 
 const rootElement = document.getElementById("root");
-if (rootElement && !rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-  root.render(
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>
-  );
+if (rootElement) {
+  if (!rootElement.innerHTML) {
+    const root = ReactDOM.createRoot(rootElement);
+    root.render(
+      <StrictMode>
+        <RouterProvider router={router} />
+      </StrictMode>
+    );
+  } else {
+    ReactDOM.hydrateRoot(
+      rootElement,
+      <StrictMode>
+        <RouterProvider router={router} />
+      </StrictMode>
+    );
+  }
 }

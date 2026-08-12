@@ -67,4 +67,49 @@ public class OcrService : IOcrService
             return string.Empty;
         }
     }
+
+    public async Task<string> ExtractTextFromBytesAsync(byte[] imageBytes)
+    {
+        if (imageBytes == null || imageBytes.Length == 0)
+            return string.Empty;
+
+        try
+        {
+            using var stream = new InMemoryRandomAccessStream();
+            using (var writer = new DataWriter(stream.GetOutputStreamAt(0)))
+            {
+                writer.WriteBytes(imageBytes);
+                await writer.StoreAsync();
+            }
+
+            var decoder = await BitmapDecoder.CreateAsync(stream);
+            var softwareBitmap = await decoder.GetSoftwareBitmapAsync();
+
+            if (softwareBitmap.BitmapPixelFormat != BitmapPixelFormat.Bgra8 ||
+                softwareBitmap.BitmapAlphaMode != BitmapAlphaMode.Premultiplied)
+            {
+                softwareBitmap = SoftwareBitmap.Convert(softwareBitmap, BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+            }
+
+            OcrEngine? ocrEngine = OcrEngine.TryCreateFromLanguage(new Windows.Globalization.Language("tr"))
+                                  ?? OcrEngine.TryCreateFromLanguage(new Windows.Globalization.Language("en"))
+                                  ?? OcrEngine.TryCreateFromUserProfileLanguages();
+
+            if (ocrEngine == null) return string.Empty;
+
+            var ocrResult = await ocrEngine.RecognizeAsync(softwareBitmap);
+            if (ocrResult == null || string.IsNullOrWhiteSpace(ocrResult.Text)) return string.Empty;
+
+            var sb = new StringBuilder();
+            foreach (var line in ocrResult.Lines)
+            {
+                sb.AppendLine(line.Text);
+            }
+            return sb.ToString().Trim();
+        }
+        catch
+        {
+            return string.Empty;
+        }
+    }
 }

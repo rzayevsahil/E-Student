@@ -59,6 +59,9 @@ public partial class MainViewModel : ObservableObject
     private bool isLoading;
 
     [ObservableProperty]
+    private ObservableCollection<TagFilterItem> availableTagFilters = new();
+
+    [ObservableProperty]
     private string statusMessage = string.Empty;
 
     [ObservableProperty]
@@ -288,6 +291,25 @@ public partial class MainViewModel : ObservableObject
         ExcelCount = Documents.Count(d => d.FileExtension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".xls", StringComparison.OrdinalIgnoreCase));
         PptCount = Documents.Count(d => d.FileExtension.Equals(".pptx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".ppt", StringComparison.OrdinalIgnoreCase));
 
+        // Etiket çip listesini güncelle
+        var tagGroups = Documents.Where(d => d.Tags != null)
+                                 .SelectMany(d => d.Tags)
+                                 .GroupBy(t => t, StringComparer.OrdinalIgnoreCase)
+                                 .Select(g => new TagFilterItem 
+                                 { 
+                                     TagName = g.Key, 
+                                     Count = g.Count(),
+                                     IsSelected = SelectedFileFilter == $"Tag:{g.Key}"
+                                 })
+                                 .OrderBy(t => t.TagName)
+                                 .ToList();
+
+        AvailableTagFilters.Clear();
+        foreach (var tagItem in tagGroups)
+        {
+            AvailableTagFilters.Add(tagItem);
+        }
+
         IEnumerable<Document> docs = Documents;
 
         if (!string.IsNullOrWhiteSpace(DocumentFilterText))
@@ -298,16 +320,24 @@ public partial class MainViewModel : ObservableObject
 
         if (SelectedFileFilter != "All")
         {
-            docs = SelectedFileFilter switch
+            if (SelectedFileFilter.StartsWith("Tag:"))
             {
-                "Favorites" => docs.Where(d => d.IsFavorite),
-                "Image" => docs.Where(d => d.FileExtension is ".png" or ".jpg" or ".jpeg" or ".bmp" or ".tiff"),
-                "PDF" => docs.Where(d => d.FileExtension.Equals(".pdf", StringComparison.OrdinalIgnoreCase)),
-                "Word" => docs.Where(d => d.FileExtension.Equals(".docx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".doc", StringComparison.OrdinalIgnoreCase)),
-                "Excel" => docs.Where(d => d.FileExtension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".xls", StringComparison.OrdinalIgnoreCase)),
-                "PowerPoint" => docs.Where(d => d.FileExtension.Equals(".pptx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".ppt", StringComparison.OrdinalIgnoreCase)),
-                _ => docs
-            };
+                var targetTag = SelectedFileFilter.Substring(4);
+                docs = docs.Where(d => d.Tags != null && d.Tags.Any(t => t.Equals(targetTag, StringComparison.OrdinalIgnoreCase)));
+            }
+            else
+            {
+                docs = SelectedFileFilter switch
+                {
+                    "Favorites" => docs.Where(d => d.IsFavorite),
+                    "Image" => docs.Where(d => d.FileExtension is ".png" or ".jpg" or ".jpeg" or ".bmp" or ".tiff"),
+                    "PDF" => docs.Where(d => d.FileExtension.Equals(".pdf", StringComparison.OrdinalIgnoreCase)),
+                    "Word" => docs.Where(d => d.FileExtension.Equals(".docx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".doc", StringComparison.OrdinalIgnoreCase)),
+                    "Excel" => docs.Where(d => d.FileExtension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".xls", StringComparison.OrdinalIgnoreCase)),
+                    "PowerPoint" => docs.Where(d => d.FileExtension.Equals(".pptx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".ppt", StringComparison.OrdinalIgnoreCase)),
+                    _ => docs
+                };
+            }
         }
 
         FilteredDocuments.Clear();
@@ -351,7 +381,16 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void RemoveTag(object? parameter)
     {
-        if (parameter is ValueTuple<Document, string> tuple)
+        if (parameter is DocumentTagParam tagParam)
+        {
+            if (tagParam.Document != null && tagParam.Document.Tags.Contains(tagParam.Tag))
+            {
+                tagParam.Document.Tags.Remove(tagParam.Tag);
+                _documentService.SaveDocumentMetadata();
+                UpdateFilteredDocuments();
+            }
+        }
+        else if (parameter is ValueTuple<Document, string> tuple)
         {
             var (doc, tag) = tuple;
             if (doc != null && doc.Tags.Contains(tag))

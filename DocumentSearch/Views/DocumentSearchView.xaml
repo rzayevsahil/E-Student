@@ -4,8 +4,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:DocumentSearch.ViewModels"
+             xmlns:converters="clr-namespace:DocumentSearch.Converters"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1200">
+    <UserControl.Resources>
+        <converters:TagParamConverter x:Key="TagParamConverter"/>
+    </UserControl.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -269,6 +273,25 @@
                                     <TextBlock Text="{Binding PptCount, StringFormat=' ({0})'}"/>
                                 </StackPanel>
                             </RadioButton>
+
+                            <!-- Dinamik Etiket Çip Filtreleri -->
+                            <ItemsControl ItemsSource="{Binding AvailableTagFilters}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <RadioButton Style="{StaticResource FilterChipStyle}" 
+                                                     GroupName="FileFilter" 
+                                                     Command="{Binding DataContext.SelectFilterCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                     CommandParameter="{Binding FilterParameter}">
+                                            <TextBlock Text="{Binding DisplayText}"/>
+                                        </RadioButton>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </StackPanel>
                     </ScrollViewer>
 
@@ -437,64 +460,86 @@
                                                            FontWeight="Bold" 
                                                            Foreground="White"/>
                                             </Border>
-                                        </StackPanel>
+                                         </StackPanel>
+                                         <!-- Etiketler Listesi & Etiket Ekleme Alanı -->
+                                         <WrapPanel Grid.Column="1" Grid.Row="2" Margin="0,4,0,0" VerticalAlignment="Center">
+                                             <!-- Mevcut Etiketler -->
+                                             <ItemsControl ItemsSource="{Binding Tags}">
+                                                 <ItemsControl.ItemsPanel>
+                                                     <ItemsPanelTemplate>
+                                                         <WrapPanel Orientation="Horizontal"/>
+                                                     </ItemsPanelTemplate>
+                                                 </ItemsControl.ItemsPanel>
+                                                 <ItemsControl.ItemTemplate>
+                                                     <DataTemplate>
+                                                         <Border Background="#3B82F6" CornerRadius="4" Padding="6,2" Margin="0,2,4,2">
+                                                             <StackPanel Orientation="Horizontal">
+                                                                 <TextBlock Text="{Binding StringFormat='#{0}'}" FontSize="10" Foreground="White" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                                 <Button Margin="4,0,0,0" 
+                                                                         Background="Transparent" 
+                                                                         Foreground="White" 
+                                                                         BorderThickness="0" 
+                                                                         FontSize="10" 
+                                                                         Cursor="Hand"
+                                                                         Padding="1,0"
+                                                                         ToolTip="Etiketi Sil"
+                                                                         Command="{Binding DataContext.RemoveTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}">
+                                                                     <Button.CommandParameter>
+                                                                         <MultiBinding Converter="{StaticResource TagParamConverter}">
+                                                                             <Binding Path="DataContext" RelativeSource="{RelativeSource AncestorType=ListBoxItem}"/>
+                                                                             <Binding Path="."/>
+                                                                         </MultiBinding>
+                                                                     </Button.CommandParameter>
+                                                                     <TextBlock Text="✕" FontSize="9" Foreground="White" Opacity="0.8"/>
+                                                                 </Button>
+                                                             </StackPanel>
+                                                         </Border>
+                                                     </DataTemplate>
+                                                 </ItemsControl.ItemTemplate>
+                                             </ItemsControl>
 
-                                        <!-- Etiketler Listesi -->
-                                        <ItemsControl Grid.Column="1" Grid.Row="2" ItemsSource="{Binding Tags}" Margin="0,4,0,0">
-                                            <ItemsControl.ItemsPanel>
-                                                <ItemsPanelTemplate>
-                                                    <WrapPanel Orientation="Horizontal"/>
-                                                </ItemsPanelTemplate>
-                                            </ItemsControl.ItemsPanel>
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Border Background="#3B82F6" CornerRadius="4" Padding="5,1" Margin="0,2,4,2">
-                                                        <TextBlock Text="{Binding StringFormat='#{0}'}" FontSize="10" Foreground="White" FontWeight="SemiBold"/>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-
-                                        <!-- Etiket Ekleme Input Alanı -->
-                                        <Grid Grid.Column="1" Grid.Row="3" Margin="0,4,0,2">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" 
-                                                    CornerRadius="3" 
-                                                    BorderBrush="{DynamicResource BorderBrush}" 
-                                                    BorderThickness="1"
-                                                    Background="{DynamicResource InputBackgroundBrush}">
-                                                <TextBox Text="{Binding TagInputText, UpdateSourceTrigger=PropertyChanged}"
-                                                         FontSize="10"
-                                                         Padding="4,2"
-                                                         Background="Transparent"
-                                                         Foreground="{DynamicResource PrimaryTextBrush}"
-                                                         CaretBrush="{DynamicResource PrimaryTextBrush}"
+                                             <!-- Küçük Etiket Ekleme Kutusu -->
+                                             <StackPanel Orientation="Horizontal" Margin="0,2,0,2">
+                                                 <Border CornerRadius="4" 
+                                                         BorderBrush="{DynamicResource BorderBrush}" 
+                                                         BorderThickness="1"
+                                                         Background="{DynamicResource InputBackgroundBrush}"
+                                                         Padding="2,0"
+                                                         Height="22"
+                                                         Width="100">
+                                                     <TextBox Text="{Binding TagInputText, UpdateSourceTrigger=PropertyChanged}"
+                                                              FontSize="10"
+                                                              Padding="2,1"
+                                                              VerticalAlignment="Center"
+                                                              Background="Transparent"
+                                                              Foreground="{DynamicResource PrimaryTextBrush}"
+                                                              CaretBrush="{DynamicResource PrimaryTextBrush}"
+                                                              BorderThickness="0"
+                                                              ToolTip="{DynamicResource Doc_TagPlaceholder}"/>
+                                                 </Border>
+                                                 <Button Command="{Binding DataContext.AddTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                         CommandParameter="{Binding .}"
+                                                         Content="+"
+                                                         ToolTip="{DynamicResource Doc_AddTag}"
+                                                         FontSize="11"
+                                                         FontWeight="Bold"
+                                                         Width="22"
+                                                         Height="22"
+                                                         Margin="3,0,0,0"
+                                                         Background="{DynamicResource AccentBrush}"
+                                                         Foreground="White"
                                                          BorderThickness="0"
-                                                         ToolTip="{DynamicResource Doc_TagPlaceholder}"/>
-                                            </Border>
-                                            <Button Grid.Column="1"
-                                                    Command="{Binding DataContext.AddTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                    CommandParameter="{Binding .}"
-                                                    Content="{DynamicResource Doc_AddTag}"
-                                                    FontSize="10"
-                                                    Padding="6,2"
-                                                    Margin="4,0,0,0"
-                                                    Background="{DynamicResource AccentBrush}"
-                                                    Foreground="White"
-                                                    BorderThickness="0"
-                                                    Cursor="Hand">
-                                                <Button.Template>
-                                                    <ControlTemplate TargetType="Button">
-                                                        <Border Background="{TemplateBinding Background}" CornerRadius="3" Padding="{TemplateBinding Padding}">
-                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        </Border>
-                                                    </ControlTemplate>
-                                                </Button.Template>
-                                            </Button>
-                                        </Grid>
+                                                         Cursor="Hand">
+                                                     <Button.Template>
+                                                         <ControlTemplate TargetType="Button">
+                                                             <Border Background="{TemplateBinding Background}" CornerRadius="4">
+                                                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                             </Border>
+                                                         </ControlTemplate>
+                                                     </Button.Template>
+                                                 </Button>
+                                             </StackPanel>
+                                         </WrapPanel>
 
                                         <!-- Sağ İkonlar: Göz/Önizleme & Kaldır Butonu -->
                                         <StackPanel Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" 

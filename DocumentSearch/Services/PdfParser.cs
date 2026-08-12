@@ -15,6 +15,13 @@ internal class ParsedLine
 
 public class PdfParser : IPdfParser
 {
+    private readonly IOcrService? _ocrService;
+
+    public PdfParser(IOcrService? ocrService = null)
+    {
+        _ocrService = ocrService;
+    }
+
     // Poz No pattern: 15.100.1001 gibi format (tam olarak 2 rakam.3 rakam.4 rakam)
     // Örnek: 15.100.1001 ✓, 15.100.10011 ✗ (bu durumda 15.100.1001 Poz No, "1" tanım olarak ayrılmalı)
     // Pattern: tam olarak 2 rakam.3 rakam.4 rakam, sonrasında rakam olmamalı veya boşluk olmalı
@@ -280,7 +287,36 @@ public class PdfParser : IPdfParser
             {
                 // Her sayfayı ayırmak için sayfa ayırıcı ekle
                 fullText.AppendLine($"---PAGE_{page.Number}---");
-                fullText.AppendLine(page.Text);
+                var pageText = page.Text;
+
+                if (!string.IsNullOrWhiteSpace(pageText))
+                {
+                    fullText.AppendLine(pageText);
+                }
+
+                // Eğer sayfa metni boşsa veya çok kısa ise ve OCR servisi varsa, sayfadaki resimleri OCR ile oku
+                if (_ocrService != null && (string.IsNullOrWhiteSpace(pageText) || pageText.Trim().Length < 20))
+                {
+                    try
+                    {
+                        var images = page.GetImages();
+                        foreach (var image in images)
+                        {
+                            if (image.TryGetBytes(out var bytes) && bytes != null && bytes.Count > 0)
+                            {
+                                var ocrText = _ocrService.ExtractTextFromBytesAsync(bytes.ToArray()).GetAwaiter().GetResult();
+                                if (!string.IsNullOrWhiteSpace(ocrText))
+                                {
+                                    fullText.AppendLine(ocrText);
+                                }
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        // OCR hatasında devam et
+                    }
+                }
             }
             
             return fullText.ToString();

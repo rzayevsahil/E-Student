@@ -4,7 +4,7 @@
 #define MyAppExeName "E-Student.exe"
 
 #ifndef MyAppVersion
-#define MyAppVersion "2.3.9"
+#define MyAppVersion "2.4.0"
 #endif
 
 [Setup]

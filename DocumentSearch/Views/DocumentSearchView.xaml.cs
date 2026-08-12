@@ -50,6 +50,15 @@ public partial class DocumentSearchView : UserControl
         e.Handled = true;
     }
 
+    private void OpenDocumentItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement element && element.DataContext is Document document)
+        {
+            OpenDocument(document);
+        }
+        e.Handled = true;
+    }
+
     private void RemoveDocument_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button button && button.DataContext is Document document)

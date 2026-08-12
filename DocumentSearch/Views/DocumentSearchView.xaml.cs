@@ -13,6 +13,31 @@ public partial class DocumentSearchView : UserControl
         InitializeComponent();
     }
 
+    private void DocumentsBorder_DragOver(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            e.Effects = DragDropEffects.Copy;
+        }
+        else
+        {
+            e.Effects = DragDropEffects.None;
+        }
+        e.Handled = true;
+    }
+
+    private async void DocumentsBorder_Drop(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            var files = e.Data.GetData(DataFormats.FileDrop) as string[];
+            if (files != null && files.Length > 0 && DataContext is MainViewModel viewModel)
+            {
+                await viewModel.LoadFilesFromPathsAsync(files);
+            }
+        }
+    }
+
     private void RemoveDocument_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button button && button.DataContext is Document document)

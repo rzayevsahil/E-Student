@@ -18,10 +18,34 @@ public partial class MainViewModel : ObservableObject
     private ObservableCollection<Document> documents = new();
 
     [ObservableProperty]
+    private ObservableCollection<Document> filteredDocuments = new();
+
+    [ObservableProperty]
     private ObservableCollection<SearchResult> searchResults = new();
 
     [ObservableProperty]
     private string searchQuery = string.Empty;
+
+    [ObservableProperty]
+    private string selectedFileFilter = "All"; // All, PDF, Word, Excel, PowerPoint
+
+    [ObservableProperty]
+    private string documentFilterText = string.Empty;
+
+    [ObservableProperty]
+    private int totalCount;
+
+    [ObservableProperty]
+    private int pdfCount;
+
+    [ObservableProperty]
+    private int wordCount;
+
+    [ObservableProperty]
+    private int excelCount;
+
+    [ObservableProperty]
+    private int pptCount;
 
     [ObservableProperty]
     private bool isLoading;
@@ -39,7 +63,7 @@ public partial class MainViewModel : ObservableObject
         // Uygulama başlarken kayıtlı dosyaları yükle
         _ = InitializeAsync();
         
-        // SearchQuery değiştiğinde otomatik arama yap
+        // SearchQuery veya Filtre değiştiğinde otomatik güncelle
         PropertyChanged += MainViewModel_PropertyChanged;
     }
     
@@ -48,6 +72,10 @@ public partial class MainViewModel : ObservableObject
         if (e.PropertyName == nameof(SearchQuery))
         {
             _ = PerformSearchAsync();
+        }
+        else if (e.PropertyName == nameof(SelectedFileFilter) || e.PropertyName == nameof(DocumentFilterText))
+        {
+            UpdateFilteredDocuments();
         }
     }
     
@@ -67,6 +95,7 @@ public partial class MainViewModel : ObservableObject
                 Documents.Add(doc);
             }
             
+            UpdateFilteredDocuments();
             StatusMessage = $"{allDocuments.Count} kayıtlı dosya yüklendi.";
         }
         catch (Exception ex)
@@ -76,6 +105,50 @@ public partial class MainViewModel : ObservableObject
         finally
         {
             IsLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    private void SelectFilter(string filterName)
+    {
+        if (!string.IsNullOrEmpty(filterName))
+        {
+            SelectedFileFilter = filterName;
+        }
+    }
+
+    public void UpdateFilteredDocuments()
+    {
+        TotalCount = Documents.Count;
+        PdfCount = Documents.Count(d => d.FileExtension.Equals(".pdf", StringComparison.OrdinalIgnoreCase));
+        WordCount = Documents.Count(d => d.FileExtension.Equals(".docx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".doc", StringComparison.OrdinalIgnoreCase));
+        ExcelCount = Documents.Count(d => d.FileExtension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".xls", StringComparison.OrdinalIgnoreCase));
+        PptCount = Documents.Count(d => d.FileExtension.Equals(".pptx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".ppt", StringComparison.OrdinalIgnoreCase));
+
+        IEnumerable<Document> docs = Documents;
+
+        if (!string.IsNullOrWhiteSpace(DocumentFilterText))
+        {
+            var filter = DocumentFilterText.Trim().ToLower();
+            docs = docs.Where(d => d.FileName.ToLower().Contains(filter));
+        }
+
+        if (SelectedFileFilter != "All")
+        {
+            docs = SelectedFileFilter switch
+            {
+                "PDF" => docs.Where(d => d.FileExtension.Equals(".pdf", StringComparison.OrdinalIgnoreCase)),
+                "Word" => docs.Where(d => d.FileExtension.Equals(".docx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".doc", StringComparison.OrdinalIgnoreCase)),
+                "Excel" => docs.Where(d => d.FileExtension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".xls", StringComparison.OrdinalIgnoreCase)),
+                "PowerPoint" => docs.Where(d => d.FileExtension.Equals(".pptx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".ppt", StringComparison.OrdinalIgnoreCase)),
+                _ => docs
+            };
+        }
+
+        FilteredDocuments.Clear();
+        foreach (var doc in docs)
+        {
+            FilteredDocuments.Add(doc);
         }
     }
 
@@ -112,6 +185,7 @@ public partial class MainViewModel : ObservableObject
                             Documents.Add(doc);
                         }
                     }
+                    UpdateFilteredDocuments();
                 }
 
                 StatusMessage = $"{dialog.FileNames.Length} dosya işlendi. Toplam {Documents.Count} dosya.";
@@ -132,6 +206,50 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    public async Task LoadFilesFromPathsAsync(IEnumerable<string> filePaths)
+    {
+        var validExtensions = new[] { ".pdf", ".docx", ".doc", ".xlsx", ".xls", ".pptx", ".ppt" };
+        var filesToLoad = filePaths
+            .Where(path => validExtensions.Contains(Path.GetExtension(path).ToLower()))
+            .Where(path => !Documents.Any(d => d.FilePath.Equals(path, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        if (!filesToLoad.Any()) return;
+
+        IsLoading = true;
+        StatusMessage = "Sürüklenen dosyalar yükleniyor...";
+
+        try
+        {
+            var tasks = filesToLoad.Select(filePath => _documentService.LoadDocumentAsync(filePath));
+            var loadedDocs = await Task.WhenAll(tasks);
+
+            foreach (var doc in loadedDocs)
+            {
+                if (!Documents.Any(d => d.FilePath.Equals(doc.FilePath, StringComparison.OrdinalIgnoreCase)))
+                {
+                    Documents.Add(doc);
+                }
+            }
+
+            UpdateFilteredDocuments();
+            StatusMessage = $"{filesToLoad.Count} dosya eklendi. Toplam {Documents.Count} dosya.";
+            
+            if (!string.IsNullOrWhiteSpace(SearchQuery))
+            {
+                _ = PerformSearchAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Hata: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
     [RelayCommand]
     private void RemoveDocument(Document? document)
     {
@@ -140,6 +258,7 @@ public partial class MainViewModel : ObservableObject
 
         _documentService.RemoveDocument(document.FilePath);
         Documents.Remove(document);
+        UpdateFilteredDocuments();
         StatusMessage = $"{document.FileName} kaldırıldı.";
         
         // Arama sonuçlarını güncelle

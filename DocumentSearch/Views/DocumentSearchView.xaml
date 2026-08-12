@@ -76,149 +76,319 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Left Panel - Documents List -->
+            <!-- Left Panel - Documents List with Drag & Drop & Filtering -->
             <Border Grid.Column="0" 
                     BorderBrush="{DynamicResource BorderBrush}" 
                     BorderThickness="1" 
                     Background="{DynamicResource CardBackgroundBrush}"
-                    CornerRadius="6">
+                    CornerRadius="6"
+                    AllowDrop="True"
+                    DragOver="DocumentsBorder_DragOver"
+                    Drop="DocumentsBorder_Drop">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     
-                    <TextBlock Grid.Row="0" 
-                               Text="Yüklenen Dosyalar" 
-                               FontWeight="Bold" 
-                               Padding="12"
-                               Foreground="{DynamicResource PrimaryTextBrush}"
-                               Background="{DynamicResource CardHeaderBackgroundBrush}"/>
-                    
-                    <ListBox Grid.Row="1" 
-                             ItemsSource="{Binding Documents}"
-                             Margin="5"
-                             Background="Transparent"
-                             BorderThickness="0"
-                             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                             MouseDoubleClick="DocumentListBox_MouseDoubleClick">
-                        <ListBox.ItemContainerStyle>
-                            <Style TargetType="ListBoxItem">
-                                <Setter Property="Padding" Value="0"/>
-                                <Setter Property="Margin" Value="0,2"/>
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="ToolTip" Value="Çift tıklayarak dosyayı aç"/>
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="ListBoxItem">
-                                            <Border x:Name="Border" 
-                                                    Background="{TemplateBinding Background}" 
-                                                    CornerRadius="6" 
-                                                    Padding="8,6"
-                                                    Margin="2,2">
-                                                <ContentPresenter />
-                                            </Border>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
-                                                </Trigger>
-                                                <Trigger Property="IsSelected" Value="True">
-                                                    <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectedBackgroundBrush}"/>
-                                                </Trigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Cursor="Hand">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    
-                                    <!-- Dosya adı -->
-                                    <TextBlock Grid.Column="0" Grid.Row="0"
-                                               Text="{Binding FileName}" 
-                                               FontWeight="SemiBold"
-                                               Foreground="{DynamicResource PrimaryTextBrush}"
-                                               TextWrapping="Wrap"
-                                               Margin="0,0,8,0"
-                                               VerticalAlignment="Center"/>
-                                    
-                                    <!-- Dosya Uzantısı Rozeti (File Extension Badge) -->
-                                    <Border Grid.Column="0" Grid.Row="1"
-                                            HorizontalAlignment="Left"
-                                            CornerRadius="4"
-                                            Padding="6,2"
-                                            Margin="0,5,0,0">
-                                        <Border.Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="Background" Value="#64748B"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding FileExtension}" Value=".pdf">
-                                                        <Setter Property="Background" Value="#DC2626"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding FileExtension}" Value=".docx">
-                                                        <Setter Property="Background" Value="#2563EB"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding FileExtension}" Value=".doc">
-                                                        <Setter Property="Background" Value="#2563EB"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding FileExtension}" Value=".xlsx">
-                                                        <Setter Property="Background" Value="#16A34A"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding FileExtension}" Value=".xls">
-                                                        <Setter Property="Background" Value="#16A34A"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding FileExtension}" Value=".pptx">
-                                                        <Setter Property="Background" Value="#EA580C"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding FileExtension}" Value=".ppt">
-                                                        <Setter Property="Background" Value="#EA580C"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Border.Style>
-                                        <TextBlock Text="{Binding FileExtension}" 
-                                                   FontSize="10" 
-                                                   FontWeight="Bold" 
-                                                   Foreground="White"/>
-                                    </Border>
+                    <!-- Header with Total Count -->
+                    <Grid Grid.Row="0" Background="{DynamicResource CardHeaderBackgroundBrush}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" 
+                                   Text="Yüklenen Dosyalar" 
+                                   FontWeight="Bold" 
+                                   Padding="12,10"
+                                   Foreground="{DynamicResource PrimaryTextBrush}"/>
+                        <TextBlock Grid.Column="1" 
+                                   Text="{Binding TotalCount, StringFormat='({0})'}" 
+                                   FontWeight="SemiBold" 
+                                   Padding="0,10,12,10"
+                                   Foreground="{DynamicResource SecondaryTextBrush}"/>
+                    </Grid>
 
-                                    <!-- Sağ İkonlar: Göz/Önizleme & Kaldır Butonu -->
-                                    <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" 
-                                                Orientation="Horizontal" 
-                                                VerticalAlignment="Center">
-                                        <TextBlock Text="👁️" 
-                                                   FontSize="12" 
-                                                   Margin="0,0,6,0" 
-                                                   Opacity="0.6" 
-                                                   ToolTip="Çift tıklayarak aç" 
+                    <!-- Mini Search / Filter Bar for Documents List -->
+                    <Border Grid.Row="1" Margin="8,6,8,2" 
+                            Background="{DynamicResource InputBackgroundBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="4"
+                            Height="30">
+                        <Grid Margin="8,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="🔍" FontSize="11" VerticalAlignment="Center" Margin="0,0,6,0" Opacity="0.5"/>
+                            <Grid Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="Listede ara..." 
+                                           FontSize="11" 
+                                           Foreground="{DynamicResource SecondaryTextBrush}" 
+                                           Opacity="0.5" 
+                                           VerticalAlignment="Center"
+                                           IsHitTestVisible="False">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding DocumentFilterText}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding DocumentFilterText}" Value="{x:Null}">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                                <TextBox Text="{Binding DocumentFilterText, UpdateSourceTrigger=PropertyChanged}"
+                                         FontSize="12"
+                                         Background="Transparent"
+                                         Foreground="{DynamicResource PrimaryTextBrush}"
+                                         CaretBrush="{DynamicResource PrimaryTextBrush}"
+                                         BorderThickness="0"
+                                         Padding="0"/>
+                            </Grid>
+                        </Grid>
+                    </Border>
+
+                    <!-- Filter Chips (Mini Filter Buttons) -->
+                    <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Margin="6,4,6,6">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel.Resources>
+                                <Style TargetType="RadioButton" x:Key="FilterChipStyle">
+                                    <Setter Property="Margin" Value="2,0"/>
+                                    <Setter Property="Padding" Value="8,4"/>
+                                    <Setter Property="FontSize" Value="11"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="RadioButton">
+                                                <Border x:Name="chipBorder" 
+                                                        Background="{DynamicResource InputBackgroundBrush}" 
+                                                        BorderBrush="{DynamicResource BorderBrush}" 
+                                                        BorderThickness="1" 
+                                                        CornerRadius="12" 
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" 
+                                                                      VerticalAlignment="Center"
+                                                                      ContentStringFormat="{TemplateBinding ContentStringFormat}"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsChecked" Value="True">
+                                                        <Setter TargetName="chipBorder" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                                        <Setter TargetName="chipBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="chipBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </StackPanel.Resources>
+
+                            <RadioButton Style="{StaticResource FilterChipStyle}" 
+                                         GroupName="FileFilter" 
+                                         IsChecked="True" 
+                                         Command="{Binding SelectFilterCommand}" 
+                                         CommandParameter="All" 
+                                         Content="{Binding TotalCount}"
+                                         ContentStringFormat="Tümü ({0})"/>
+                            <RadioButton Style="{StaticResource FilterChipStyle}" 
+                                         GroupName="FileFilter" 
+                                         Command="{Binding SelectFilterCommand}" 
+                                         CommandParameter="PDF" 
+                                         Content="{Binding PdfCount}"
+                                         ContentStringFormat="PDF ({0})"/>
+                            <RadioButton Style="{StaticResource FilterChipStyle}" 
+                                         GroupName="FileFilter" 
+                                         Command="{Binding SelectFilterCommand}" 
+                                         CommandParameter="Word" 
+                                         Content="{Binding WordCount}"
+                                         ContentStringFormat="Word ({0})"/>
+                            <RadioButton Style="{StaticResource FilterChipStyle}" 
+                                         GroupName="FileFilter" 
+                                         Command="{Binding SelectFilterCommand}" 
+                                         CommandParameter="Excel" 
+                                         Content="{Binding ExcelCount}"
+                                         ContentStringFormat="Excel ({0})"/>
+                            <RadioButton Style="{StaticResource FilterChipStyle}" 
+                                         GroupName="FileFilter" 
+                                         Command="{Binding SelectFilterCommand}" 
+                                         CommandParameter="PowerPoint" 
+                                         Content="{Binding PptCount}"
+                                         ContentStringFormat="PPT ({0})"/>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <!-- ListBox and Empty Dropzone -->
+                    <Grid Grid.Row="3">
+                        <!-- Drag & Drop Dropzone Empty State Placeholder -->
+                        <Border Margin="10" 
+                                BorderBrush="{DynamicResource BorderBrush}" 
+                                BorderThickness="2" 
+                                CornerRadius="8" 
+                                Background="Transparent"
+                                VerticalAlignment="Center">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding FilteredDocuments.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackPanel Margin="15,25" HorizontalAlignment="Center">
+                                <TextBlock Text="📥" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,8" Opacity="0.7"/>
+                                <TextBlock Text="Dosyaları Buraya Sürükleyin" 
+                                           FontSize="13" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="{DynamicResource PrimaryTextBrush}" 
+                                           HorizontalAlignment="Center" 
+                                           TextAlignment="Center"/>
+                                <TextBlock Text="veya 'Dosya Yükle' butonunu kullanın" 
+                                           FontSize="11" 
+                                           Foreground="{DynamicResource SecondaryTextBrush}" 
+                                           HorizontalAlignment="Center" 
+                                           TextAlignment="Center" 
+                                           Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <ListBox ItemsSource="{Binding FilteredDocuments}"
+                                 Margin="5"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 MouseDoubleClick="DocumentListBox_MouseDoubleClick">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="0"/>
+                                    <Setter Property="Margin" Value="0,2"/>
+                                    <Setter Property="Background" Value="Transparent"/>
+                                    <Setter Property="ToolTip" Value="Çift tıklayarak dosyayı aç"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border x:Name="Border" 
+                                                        Background="{TemplateBinding Background}" 
+                                                        CornerRadius="6" 
+                                                        Padding="8,6"
+                                                        Margin="2,2">
+                                                    <ContentPresenter />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectedBackgroundBrush}"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Cursor="Hand">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        
+                                        <!-- Dosya adı -->
+                                        <TextBlock Grid.Column="0" Grid.Row="0"
+                                                   Text="{Binding FileName}" 
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource PrimaryTextBrush}"
+                                                   TextWrapping="Wrap"
+                                                   Margin="0,0,8,0"
                                                    VerticalAlignment="Center"/>
-                                        <Button Content="✕" 
-                                                Width="24"
-                                                Height="24"
-                                                Padding="0"
-                                                FontSize="12"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                Foreground="#EF4444"
-                                                Cursor="Hand"
-                                                Click="RemoveDocument_Click"
-                                                ToolTip="Dosyayı kaldır"
-                                                VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                                        
+                                        <!-- Dosya Uzantısı Rozeti (File Extension Badge) -->
+                                        <Border Grid.Column="0" Grid.Row="1"
+                                                HorizontalAlignment="Left"
+                                                CornerRadius="4"
+                                                Padding="6,2"
+                                                Margin="0,5,0,0">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#64748B"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".pdf">
+                                                            <Setter Property="Background" Value="#DC2626"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".docx">
+                                                            <Setter Property="Background" Value="#2563EB"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".doc">
+                                                            <Setter Property="Background" Value="#2563EB"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".xlsx">
+                                                            <Setter Property="Background" Value="#16A34A"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".xls">
+                                                            <Setter Property="Background" Value="#16A34A"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".pptx">
+                                                            <Setter Property="Background" Value="#EA580C"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".ppt">
+                                                            <Setter Property="Background" Value="#EA580C"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="{Binding FileExtension}" 
+                                                       FontSize="10" 
+                                                       FontWeight="Bold" 
+                                                       Foreground="White"/>
+                                        </Border>
+
+                                        <!-- Sağ İkonlar: Göz/Önizleme & Kaldır Butonu -->
+                                        <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" 
+                                                    Orientation="Horizontal" 
+                                                    VerticalAlignment="Center">
+                                            <TextBlock Text="👁️" 
+                                                       FontSize="12" 
+                                                       Margin="0,0,6,0" 
+                                                       Opacity="0.6" 
+                                                       ToolTip="Çift tıklayarak aç" 
+                                                       VerticalAlignment="Center"/>
+                                            <Button Content="✕" 
+                                                    Width="24"
+                                                    Height="24"
+                                                    Padding="0"
+                                                    FontSize="12"
+                                                    Background="Transparent"
+                                                    BorderThickness="0"
+                                                    Foreground="#EF4444"
+                                                    Cursor="Hand"
+                                                    Click="RemoveDocument_Click"
+                                                    ToolTip="Dosyayı kaldır"
+                                                    VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
                 </Grid>
             </Border>
 

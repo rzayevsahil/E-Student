@@ -48,8 +48,8 @@ public partial class App : Application
         services.AddSingleton<PomodoroService>();
 
         // ViewModels
-        services.AddTransient<MainViewModel>();
-        services.AddTransient<PomodoroViewModel>();
+        services.AddSingleton<MainViewModel>();
+        services.AddSingleton<PomodoroViewModel>();
         // NavigationViewModel'i singleton olarak kaydetme, constructor'da ServiceProvider geçireceğiz
 
         // Views

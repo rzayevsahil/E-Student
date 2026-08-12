@@ -18,6 +18,8 @@ public partial class NavigationViewModel : ObservableObject
     private readonly ThemeService? _themeService;
     private readonly LanguageService? _languageService;
     private DispatcherTimer? _updateCheckTimer;
+    private DocumentSearchView? _documentSearchView;
+    private PomodoroView? _pomodoroView;
 
     [ObservableProperty]
     private UserControl? currentView;
@@ -135,26 +137,32 @@ public partial class NavigationViewModel : ObservableObject
     private void NavigateToDocumentSearch()
     {
         SelectedMenuItem = "DocumentSearch";
-        var view = new DocumentSearchView();
-        if (_serviceProvider != null)
+        if (_documentSearchView == null)
         {
-            var viewModel = _serviceProvider.GetRequiredService<MainViewModel>();
-            view.DataContext = viewModel;
+            _documentSearchView = new DocumentSearchView();
+            if (_serviceProvider != null)
+            {
+                var viewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+                _documentSearchView.DataContext = viewModel;
+            }
         }
-        CurrentView = view;
+        CurrentView = _documentSearchView;
     }
 
     [RelayCommand]
     private void NavigateToPomodoro()
     {
         SelectedMenuItem = "Pomodoro";
-        var view = new PomodoroView();
-        if (_serviceProvider != null)
+        if (_pomodoroView == null)
         {
-            var viewModel = _serviceProvider.GetRequiredService<PomodoroViewModel>();
-            view.DataContext = viewModel;
+            _pomodoroView = new PomodoroView();
+            if (_serviceProvider != null)
+            {
+                var viewModel = _serviceProvider.GetRequiredService<PomodoroViewModel>();
+                _pomodoroView.DataContext = viewModel;
+            }
         }
-        CurrentView = view;
+        CurrentView = _pomodoroView;
     }
 
     [RelayCommand]

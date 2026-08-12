@@ -16,18 +16,6 @@ public class SearchService : ISearchService
 
         Parallel.ForEach(documents, document =>
         {
-            // Dosya isminde arama
-            var normalizedFileName = NormalizeTurkish(document.FileName.ToLower());
-            if (normalizedFileName.IndexOf(normalizedQuery, StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                results.Add(new SearchResult
-                {
-                    DocumentPath = document.FilePath,
-                    DocumentName = document.FileName,
-                    PageNumber = 0 // Dosya adında eşleşme, sayfa yok
-                });
-            }
-
             // İçerikte sayfa/slayt bazlı arama (PDF, Word ve PowerPoint için)
             var ext = document.FileExtension.ToLower();
             if ((ext == ".pdf" || ext == ".docx" || ext == ".doc" || ext == ".pptx" || ext == ".ppt") 
@@ -63,7 +51,10 @@ public class SearchService : ISearchService
                         {
                             DocumentPath = document.FilePath,
                             DocumentName = document.FileName,
-                            PageNumber = pageNumber
+                            PageNumber = pageNumber,
+                            FileExtension = document.FileExtension,
+                            Snippet = CreateSnippet(pageContent, query),
+                            PageText = pageContent.Trim()
                         });
                     }
                 }
@@ -81,7 +72,10 @@ public class SearchService : ISearchService
                         {
                             DocumentPath = document.FilePath,
                             DocumentName = document.FileName,
-                            PageNumber = 0 // Excel'de sayfa yok
+                            PageNumber = 0,
+                            FileExtension = document.FileExtension,
+                            Snippet = CreateSnippet(document.RawContent, query),
+                            PageText = document.RawContent.Trim()
                         });
                     }
                 }
@@ -95,6 +89,30 @@ public class SearchService : ISearchService
             .OrderBy(r => r.DocumentName)
             .ThenBy(r => r.PageNumber)
             .ToList();
+    }
+
+    private string CreateSnippet(string content, string query)
+    {
+        if (string.IsNullOrWhiteSpace(content)) return string.Empty;
+        if (string.IsNullOrWhiteSpace(query)) return content.Length > 200 ? content.Substring(0, 200) + "..." : content;
+
+        var normalizedContent = NormalizeTurkish(content.ToLower());
+        var normalizedQuery = NormalizeTurkish(query.ToLower().Trim());
+
+        int index = normalizedContent.IndexOf(normalizedQuery, StringComparison.OrdinalIgnoreCase);
+        if (index < 0)
+        {
+            return content.Length > 200 ? content.Substring(0, 200) + "..." : content;
+        }
+
+        int start = Math.Max(0, index - 50);
+        int length = Math.Min(content.Length - start, query.Length + 120);
+
+        string snippet = content.Substring(start, length).Replace("\r", " ").Replace("\n", " ");
+        if (start > 0) snippet = "..." + snippet;
+        if (start + length < content.Length) snippet += "...";
+
+        return snippet;
     }
 
     private string NormalizeTurkish(string text)

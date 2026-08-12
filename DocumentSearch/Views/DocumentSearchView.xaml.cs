@@ -58,6 +58,20 @@ public partial class DocumentSearchView : UserControl
         }
     }
 
+    private void OpenExternalFromPreview_Click(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is MainViewModel viewModel && !string.IsNullOrEmpty(viewModel.PreviewDocumentPath))
+        {
+            var document = new Document
+            {
+                FilePath = viewModel.PreviewDocumentPath,
+                FileName = viewModel.PreviewDocumentName,
+                FileExtension = viewModel.PreviewFileExtension
+            };
+            OpenDocument(document, viewModel.PreviewCurrentPage > 0 ? viewModel.PreviewCurrentPage : null);
+        }
+    }
+
     private void SearchResultsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         OpenSelectedSearchResult(sender);

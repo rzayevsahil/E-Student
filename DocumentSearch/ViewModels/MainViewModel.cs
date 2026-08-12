@@ -53,6 +53,38 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string statusMessage = "Hazır";
 
+    [ObservableProperty]
+    private SearchResult? selectedSearchResult;
+
+    [ObservableProperty]
+    private bool isPreviewOpen;
+
+    [ObservableProperty]
+    private string previewDocumentName = string.Empty;
+
+    [ObservableProperty]
+    private int previewPageNumber;
+
+    [ObservableProperty]
+    private string previewSnippet = string.Empty;
+
+    [ObservableProperty]
+    private string previewPageText = string.Empty;
+
+    [ObservableProperty]
+    private string previewFileExtension = string.Empty;
+
+    [ObservableProperty]
+    private string previewDocumentPath = string.Empty;
+
+    [ObservableProperty]
+    private int previewCurrentPage = 1;
+
+    [ObservableProperty]
+    private int previewTotalPages = 1;
+
+    private List<string> _currentPreviewPages = new();
+
     private CancellationTokenSource? _searchCts;
 
     public MainViewModel(IDocumentService documentService, ISearchService searchService)
@@ -76,6 +108,117 @@ public partial class MainViewModel : ObservableObject
         else if (e.PropertyName == nameof(SelectedFileFilter) || e.PropertyName == nameof(DocumentFilterText))
         {
             UpdateFilteredDocuments();
+        }
+        else if (e.PropertyName == nameof(SelectedSearchResult))
+        {
+            if (SelectedSearchResult != null)
+            {
+                OpenSearchResultPreview(SelectedSearchResult);
+            }
+        }
+    }
+
+    public void OpenSearchResultPreview(SearchResult result)
+    {
+        if (result == null) return;
+
+        PreviewDocumentName = result.DocumentName;
+        PreviewDocumentPath = result.DocumentPath;
+        PreviewFileExtension = result.FileExtension;
+        PreviewSnippet = result.Snippet;
+
+        var doc = Documents.FirstOrDefault(d => d.FilePath.Equals(result.DocumentPath, StringComparison.OrdinalIgnoreCase));
+        if (doc != null)
+        {
+            _currentPreviewPages = ExtractPages(doc.RawContent);
+            PreviewTotalPages = _currentPreviewPages.Count > 0 ? _currentPreviewPages.Count : 1;
+        }
+        else
+        {
+            _currentPreviewPages = new List<string> { result.PageText };
+            PreviewTotalPages = 1;
+        }
+
+        PreviewPageNumber = result.PageNumber;
+        if (result.PageNumber > 0 && result.PageNumber <= PreviewTotalPages && _currentPreviewPages.Count >= result.PageNumber)
+        {
+            PreviewCurrentPage = result.PageNumber;
+            PreviewPageText = _currentPreviewPages[result.PageNumber - 1];
+        }
+        else
+        {
+            PreviewCurrentPage = 1;
+            PreviewPageText = _currentPreviewPages.Count > 0 ? _currentPreviewPages[0] : result.PageText;
+        }
+
+        IsPreviewOpen = true;
+    }
+
+    [RelayCommand]
+    private void OpenDocumentPreview(Document? doc)
+    {
+        if (doc == null) return;
+
+        PreviewDocumentName = doc.FileName;
+        PreviewDocumentPath = doc.FilePath;
+        PreviewFileExtension = doc.FileExtension;
+        PreviewSnippet = $"Dosya Adı: {doc.FileName}";
+
+        _currentPreviewPages = ExtractPages(doc.RawContent);
+        PreviewTotalPages = _currentPreviewPages.Count > 0 ? _currentPreviewPages.Count : 1;
+        PreviewCurrentPage = 1;
+        PreviewPageText = _currentPreviewPages.Count > 0 ? _currentPreviewPages[0] : (string.IsNullOrWhiteSpace(doc.RawContent) ? "İçerik okunamadı veya boş." : doc.RawContent);
+        PreviewPageNumber = 1;
+
+        IsPreviewOpen = true;
+    }
+
+    private List<string> ExtractPages(string rawContent)
+    {
+        if (string.IsNullOrWhiteSpace(rawContent)) return new List<string>();
+        var pageSeparator = "---PAGE_";
+        var rawPages = rawContent.Split(new[] { pageSeparator }, StringSplitOptions.RemoveEmptyEntries);
+        var pages = new List<string>();
+        
+        foreach (var rawPage in rawPages)
+        {
+            var match = System.Text.RegularExpressions.Regex.Match(rawPage, @"^(\d+)---");
+            if (match.Success)
+            {
+                pages.Add(rawPage.Substring(match.Length).Trim());
+            }
+            else
+            {
+                pages.Add(rawPage.Trim());
+            }
+        }
+        return pages;
+    }
+
+    [RelayCommand]
+    private void ClosePreview()
+    {
+        IsPreviewOpen = false;
+        SelectedSearchResult = null;
+    }
+
+    [RelayCommand]
+    private void NextPreviewPage()
+    {
+        if (PreviewCurrentPage < PreviewTotalPages && _currentPreviewPages.Count >= PreviewCurrentPage)
+        {
+            PreviewCurrentPage++;
+            PreviewPageText = _currentPreviewPages[PreviewCurrentPage - 1];
+        }
+    }
+
+    [RelayCommand]
+    private void PreviousPreviewPage()
+    {
+        if (PreviewCurrentPage > 1 && _currentPreviewPages.Count >= PreviewCurrentPage - 1)
+        {
+            PreviewCurrentPage--;
+            PreviewPageText = _currentPreviewPages[PreviewCurrentPage - 1];
         }
     }
     

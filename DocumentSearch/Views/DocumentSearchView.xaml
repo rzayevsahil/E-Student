@@ -123,7 +123,17 @@
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="🔍" FontSize="11" VerticalAlignment="Center" Margin="0,0,6,0" Opacity="0.5"/>
+                            <Path Grid.Column="0" 
+                                  Data="M 7,2 A 5,5 0 1 0 7,12 A 5,5 0 1 0 7,2 Z M 10.5,10.5 L 15,15" 
+                                  Stroke="{DynamicResource SecondaryTextBrush}" 
+                                  StrokeThickness="1.8" 
+                                  StrokeLineJoin="Round"
+                                  StrokeEndLineCap="Round"
+                                  Width="12" 
+                                  Height="12" 
+                                  Stretch="Uniform" 
+                                  VerticalAlignment="Center" 
+                                  Margin="0,0,6,0"/>
                             <Grid Grid.Column="1" VerticalAlignment="Center">
                                 <TextBlock Text="Listede ara..." 
                                            FontSize="11" 
@@ -365,13 +375,16 @@
                                         <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" 
                                                     Orientation="Horizontal" 
                                                     VerticalAlignment="Center">
-                                            <TextBlock Text="👁️" 
-                                                       FontSize="12" 
-                                                       Margin="0,0,6,0" 
-                                                       Opacity="0.6" 
-                                                       ToolTip="Çift tıklayarak aç" 
-                                                       VerticalAlignment="Center"/>
-                                            <Button Content="✕" 
+                                            <Path Data="M 12,4.5 C 7,4.5 2.73,7.61 1,12 C 2.73,16.39 7,19.5 12,19.5 C 17,19.5 21.27,16.39 23,12 C 21.27,7.61 17,4.5 12,4.5 Z M 12,17 C 9.24,17 7,14.76 7,12 C 7,9.24 9.24,7 12,7 C 14.76,7 17,9.24 17,12 C 17,14.76 14.76,17 12,17 Z M 12,9 C 10.34,9 9,10.34 9,12 C 9,13.66 10.34,15 12,15 C 13.66,15 15,13.66 15,12 C 15,10.34 13.66,9 12,9 Z" 
+                                                  Fill="{DynamicResource SecondaryTextBrush}" 
+                                                  Width="14" 
+                                                  Height="14" 
+                                                  Stretch="Uniform" 
+                                                  Margin="0,0,8,0" 
+                                                  Opacity="0.75" 
+                                                  ToolTip="Çift tıklayarak aç" 
+                                                  VerticalAlignment="Center"/>
+                                            <Button Content="✕"
                                                     Width="24"
                                                     Height="24"
                                                     Padding="0"
@@ -397,193 +410,409 @@
                           HorizontalAlignment="Stretch" 
                           Background="{DynamicResource SplitterBrush}"/>
 
-            <!-- Right Panel - Search and Results -->
+            <!-- Right Panel - Search and Results + Split-View Reader Panel -->
             <Grid Grid.Column="2" Margin="10,0,0,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                <!-- Search Box -->
-                <Border Grid.Row="0" 
-                        BorderBrush="{DynamicResource BorderBrush}" 
-                        BorderThickness="1" 
-                        Background="{DynamicResource CardBackgroundBrush}"
-                        CornerRadius="6"
-                        Padding="12"
-                        Margin="0,0,0,10">
-                    <StackPanel>
-                        <TextBlock Text="Arama" 
-                                   FontWeight="Bold" 
-                                   Foreground="{DynamicResource PrimaryTextBrush}"
-                                   Margin="0,0,0,6"/>
-                        
-                        <Border Background="{DynamicResource InputBackgroundBrush}"
-                                BorderBrush="{DynamicResource BorderBrush}"
-                                BorderThickness="1"
-                                CornerRadius="6"
-                                Height="44">
-                            <Grid Margin="12,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Path Grid.Column="0" 
-                                      Data="M 7,2 A 5,5 0 1 0 7,12 A 5,5 0 1 0 7,2 Z M 10.5,10.5 L 15,15" 
-                                      Stroke="{DynamicResource SecondaryTextBrush}" 
-                                      StrokeThickness="2" 
-                                      StrokeLineJoin="Round"
-                                      StrokeEndLineCap="Round"
-                                      Width="16" 
-                                      Height="16" 
-                                      Stretch="Uniform" 
-                                      VerticalAlignment="Center" 
-                                      Margin="0,0,10,0"/>
-                                <Grid Grid.Column="1" VerticalAlignment="Center">
-                                    <TextBlock Text="Belgelerinizde aramak istediğiniz kelimeyi yazın..."
-                                               FontSize="13"
-                                               Foreground="{DynamicResource SecondaryTextBrush}"
-                                               Opacity="0.5"
-                                               VerticalAlignment="Center"
-                                               IsHitTestVisible="False">
-                                        <TextBlock.Style>
+                <!-- Search Box and Results DataGrid -->
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Search Box -->
+                    <Border Grid.Row="0" 
+                            BorderBrush="{DynamicResource BorderBrush}" 
+                            BorderThickness="1" 
+                            Background="{DynamicResource CardBackgroundBrush}"
+                            CornerRadius="6"
+                            Padding="12"
+                            Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="Arama" 
+                                       FontWeight="Bold" 
+                                       Foreground="{DynamicResource PrimaryTextBrush}"
+                                       Margin="0,0,0,6"/>
+                            
+                            <Border Background="{DynamicResource InputBackgroundBrush}"
+                                    BorderBrush="{DynamicResource BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="6"
+                                    Height="44">
+                                <Grid Margin="12,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Path Grid.Column="0" 
+                                          Data="M 7,2 A 5,5 0 1 0 7,12 A 5,5 0 1 0 7,2 Z M 10.5,10.5 L 15,15" 
+                                          Stroke="{DynamicResource SecondaryTextBrush}" 
+                                          StrokeThickness="2" 
+                                          StrokeLineJoin="Round"
+                                          StrokeEndLineCap="Round"
+                                          Width="16" 
+                                          Height="16" 
+                                          Stretch="Uniform" 
+                                          VerticalAlignment="Center" 
+                                          Margin="0,0,10,0"/>
+                                    <Grid Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="Belgelerinizde aramak istediğiniz kelimeyi yazın..."
+                                                   FontSize="13"
+                                                   Foreground="{DynamicResource SecondaryTextBrush}"
+                                                   Opacity="0.5"
+                                                   VerticalAlignment="Center"
+                                                   IsHitTestVisible="False">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SearchQuery}" Value="">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding SearchQuery}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Visible"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
+                                                 FontSize="14"
+                                                 Background="Transparent"
+                                                 Foreground="{DynamicResource PrimaryTextBrush}"
+                                                 CaretBrush="{DynamicResource PrimaryTextBrush}"
+                                                 SelectionBrush="{DynamicResource AccentBrush}"
+                                                 BorderThickness="0"
+                                                 VerticalAlignment="Center"
+                                                 VerticalContentAlignment="Center"
+                                                 Padding="0"/>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+
+                            <TextBlock Text="Yazdıkça otomatik arama yapılır" 
+                                       FontSize="11" 
+                                       Foreground="{DynamicResource SecondaryTextBrush}"
+                                       Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Results -->
+                    <Border Grid.Row="1" 
+                            BorderBrush="{DynamicResource BorderBrush}" 
+                            BorderThickness="1" 
+                            Background="{DynamicResource CardBackgroundBrush}"
+                            CornerRadius="6">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <Grid Grid.Row="0" Background="{DynamicResource CardHeaderBackgroundBrush}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0"
+                                           Text="{Binding SearchResults.Count, StringFormat='Arama Sonuçları ({0})'}" 
+                                           FontWeight="Bold" 
+                                           Foreground="{DynamicResource PrimaryTextBrush}"
+                                           Padding="10,10,10,5"/>
+                                <TextBlock Grid.Row="1"
+                                           FontSize="10"
+                                           Foreground="{DynamicResource SecondaryTextBrush}"
+                                           Padding="10,0,10,10"
+                                           FontStyle="Italic">
+                                    <Run Text="💡 İpucu:" Foreground="DarkOrange" FontWeight="SemiBold"/>
+                                    <Run Text=" Tıklayarak sağda önizleyin, çift tıklayarak harici uygulamada açın."/>
+                                </TextBlock>
+                            </Grid>
+                            
+                            <DataGrid Grid.Row="1" 
+                                      ItemsSource="{Binding SearchResults}"
+                                      SelectedItem="{Binding SelectedSearchResult, Mode=TwoWay}"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      GridLinesVisibility="Horizontal"
+                                      HeadersVisibility="Column"
+                                      SelectionMode="Single"
+                                      Background="Transparent"
+                                      Foreground="{DynamicResource PrimaryTextBrush}"
+                                      HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
+                                      BorderThickness="0"
+                                      Margin="5"
+                                      MouseDoubleClick="SearchResultsDataGrid_MouseDoubleClick"
+                                      Cursor="Hand">
+                                 <DataGrid.ColumnHeaderStyle>
+                                     <Style TargetType="DataGridColumnHeader">
+                                         <Setter Property="Background" Value="{DynamicResource CardHeaderBackgroundBrush}"/>
+                                         <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                                         <Setter Property="FontWeight" Value="SemiBold"/>
+                                         <Setter Property="Padding" Value="10,8"/>
+                                         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                                         <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                                     </Style>
+                                 </DataGrid.ColumnHeaderStyle>
+                                 <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
+                                        <Setter Property="ToolTip">
+                                            <Setter.Value>
+                                                <TextBlock>
+                                                    <Run Text="Tıklayarak önizleyin, çift tıklayarak "/>
+                                                    <Run Text="{Binding PageNumber, StringFormat='sayfa {0}'}" FontWeight="Bold"/>
+                                                    <Run Text="'den harici açın"/>
+                                                </TextBlock>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding PageNumber}" Value="0">
+                                                <Setter Property="ToolTip" Value="Tıklayarak önizleyin, çift tıklayarak açın"/>
+                                            </DataTrigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource SelectedBackgroundBrush}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource SelectedForegroundBrush}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.RowStyle>
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Dosya" 
+                                                        Binding="{Binding DocumentName}" 
+                                                        Width="1.2*"/>
+                                    <DataGridTextColumn Header="Sayfa" 
+                                                        Binding="{Binding PageNumber, StringFormat='{}{0}'}" 
+                                                        Width="60">
+                                        <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding SearchQuery}" Value="">
-                                                        <Setter Property="Visibility" Value="Visible"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding SearchQuery}" Value="{x:Null}">
-                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    <DataTrigger Binding="{Binding PageNumber}" Value="0">
+                                                        <Setter Property="Text" Value="-"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </TextBlock.Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="Eşleşen Snippet" 
+                                                        Binding="{Binding Snippet}" 
+                                                        Width="2*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Splitter between Results & Preview Side Panel -->
+                <GridSplitter Grid.Column="1" 
+                              Width="5" 
+                              HorizontalAlignment="Stretch" 
+                              Background="{DynamicResource SplitterBrush}"
+                              Visibility="{Binding IsPreviewOpen, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                <!-- Right Side Panel: Metin İçi Hızlı Önizleme Paneli (Split-View Reader) -->
+                <Border Grid.Column="2"
+                        Width="380"
+                        Margin="6,0,0,0"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+                        Background="{DynamicResource CardBackgroundBrush}"
+                        CornerRadius="6"
+                        Visibility="{Binding IsPreviewOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/> <!-- Header -->
+                            <RowDefinition Height="Auto"/> <!-- Snippet / Eşleşen Metin -->
+                            <RowDefinition Height="*"/>    <!-- Page Reader Text -->
+                            <RowDefinition Height="Auto"/> <!-- Navigation Footer -->
+                        </Grid.RowDefinitions>
+
+                        <!-- Preview Header -->
+                        <Border Grid.Row="0" 
+                                Background="{DynamicResource CardHeaderBackgroundBrush}"
+                                CornerRadius="6,6,0,0"
+                                Padding="12,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                        <!-- File Extension Badge -->
+                                        <Border CornerRadius="4" Padding="6,2" Margin="0,0,8,0" VerticalAlignment="Center">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Background" Value="#64748B"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding PreviewFileExtension}" Value=".pdf">
+                                                            <Setter Property="Background" Value="#DC2626"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PreviewFileExtension}" Value=".docx">
+                                                            <Setter Property="Background" Value="#2563EB"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PreviewFileExtension}" Value=".doc">
+                                                            <Setter Property="Background" Value="#2563EB"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PreviewFileExtension}" Value=".xlsx">
+                                                            <Setter Property="Background" Value="#16A34A"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PreviewFileExtension}" Value=".xls">
+                                                            <Setter Property="Background" Value="#16A34A"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PreviewFileExtension}" Value=".pptx">
+                                                            <Setter Property="Background" Value="#EA580C"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding PreviewFileExtension}" Value=".ppt">
+                                                            <Setter Property="Background" Value="#EA580C"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <TextBlock Text="{Binding PreviewFileExtension}" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                        </Border>
+
+                                        <TextBlock Text="{Binding PreviewDocumentName}" 
+                                                   FontWeight="Bold" 
+                                                   FontSize="13"
+                                                   Foreground="{DynamicResource PrimaryTextBrush}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   MaxWidth="200"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+
+                                    <TextBlock FontSize="11" Foreground="{DynamicResource SecondaryTextBrush}">
+                                        <Run Text="📖 Hızlı Önizleme | Sayfa "/>
+                                        <Run Text="{Binding PreviewCurrentPage}" FontWeight="Bold"/>
+                                        <Run Text=" / "/>
+                                        <Run Text="{Binding PreviewTotalPages}"/>
                                     </TextBlock>
-                                    <TextBox Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" 
-                                             FontSize="14"
-                                             Background="Transparent"
-                                             Foreground="{DynamicResource PrimaryTextBrush}"
-                                             CaretBrush="{DynamicResource PrimaryTextBrush}"
-                                             SelectionBrush="{DynamicResource AccentBrush}"
-                                             BorderThickness="0"
-                                             VerticalAlignment="Center"
-                                             VerticalContentAlignment="Center"
-                                             Padding="0"/>
-                                </Grid>
+                                </StackPanel>
+
+                                <!-- Header Actions: Harici Aç & Kapat -->
+                                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Button Content="↗ Harici Aç"
+                                            Padding="8,4"
+                                            FontSize="11"
+                                            FontWeight="SemiBold"
+                                            Background="{DynamicResource InputBackgroundBrush}"
+                                            Foreground="{DynamicResource PrimaryTextBrush}"
+                                            BorderBrush="{DynamicResource BorderBrush}"
+                                            BorderThickness="1"
+                                            Cursor="Hand"
+                                            Margin="0,0,6,0"
+                                            Click="OpenExternalFromPreview_Click"
+                                            ToolTip="Belgeyi harici uygulamada aç"/>
+                                    <Button Content="✕"
+                                            Width="26"
+                                            Height="26"
+                                            FontSize="12"
+                                            FontWeight="Bold"
+                                            Background="Transparent"
+                                            Foreground="{DynamicResource SecondaryTextBrush}"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            Command="{Binding ClosePreviewCommand}"
+                                            ToolTip="Önizlemeyi Kapat"/>
+                                </StackPanel>
                             </Grid>
                         </Border>
 
-                        <TextBlock Text="Yazdıkça otomatik arama yapılır" 
-                                   FontSize="11" 
-                                   Foreground="{DynamicResource SecondaryTextBrush}"
-                                   Margin="0,5,0,0"/>
-                    </StackPanel>
-                </Border>
+                        <!-- Matched Snippet Box -->
+                        <Border Grid.Row="1" 
+                                Margin="10,10,10,5"
+                                Padding="10,8"
+                                Background="{DynamicResource InputBackgroundBrush}"
+                                BorderBrush="{DynamicResource AccentBrush}"
+                                BorderThickness="3,0,0,0"
+                                CornerRadius="4">
+                            <StackPanel>
+                                <TextBlock Text="🔍 Arama Eşleşmesi / Snippet" 
+                                           FontSize="10" 
+                                           FontWeight="Bold" 
+                                           Foreground="{DynamicResource AccentBrush}" 
+                                           Margin="0,0,0,4"/>
+                                <TextBlock Text="{Binding PreviewSnippet}" 
+                                           FontSize="12" 
+                                           FontStyle="Italic"
+                                           Foreground="{DynamicResource PrimaryTextBrush}" 
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
 
-                <!-- Results -->
-                <Border Grid.Row="1" 
-                        BorderBrush="{DynamicResource BorderBrush}" 
-                        BorderThickness="1" 
-                        Background="{DynamicResource CardBackgroundBrush}"
-                        CornerRadius="6">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        
-                        <Grid Grid.Row="0" Background="{DynamicResource CardHeaderBackgroundBrush}">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <TextBlock Grid.Row="0"
-                                       Text="{Binding SearchResults.Count, StringFormat='Arama Sonuçları ({0})'}" 
-                                       FontWeight="Bold" 
-                                       Foreground="{DynamicResource PrimaryTextBrush}"
-                                       Padding="10,10,10,5"/>
-                            <TextBlock Grid.Row="1"
-                                       FontSize="10"
-                                       Foreground="{DynamicResource SecondaryTextBrush}"
-                                       Padding="10,0,10,10"
-                                       FontStyle="Italic">
-                                <Run Text="💡 İpucu:" Foreground="DarkOrange" FontWeight="SemiBold"/>
-                                <Run Text=" Sonuçlara çift tıklayarak dosyayı ilgili sayfadan açabilirsiniz"/>
-                            </TextBlock>
-                        </Grid>
-                        
-                        <DataGrid Grid.Row="1" 
-                                  ItemsSource="{Binding SearchResults}"
-                                  AutoGenerateColumns="False"
-                                  IsReadOnly="True"
-                                  GridLinesVisibility="Horizontal"
-                                  HeadersVisibility="Column"
-                                  SelectionMode="Single"
-                                  Background="Transparent"
-                                  Foreground="{DynamicResource PrimaryTextBrush}"
-                                  HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
-                                  BorderThickness="0"
-                                  Margin="5"
-                                  MouseDoubleClick="SearchResultsDataGrid_MouseDoubleClick"
-                                  Cursor="Hand">
-                             <DataGrid.ColumnHeaderStyle>
-                                 <Style TargetType="DataGridColumnHeader">
-                                     <Setter Property="Background" Value="{DynamicResource CardHeaderBackgroundBrush}"/>
-                                     <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-                                     <Setter Property="FontWeight" Value="SemiBold"/>
-                                     <Setter Property="Padding" Value="10,8"/>
-                                     <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
-                                     <Setter Property="BorderThickness" Value="0,0,1,1"/>
-                                 </Style>
-                             </DataGrid.ColumnHeaderStyle>
-                             <DataGrid.RowStyle>
-                                <Style TargetType="DataGridRow">
-                                    <Setter Property="Background" Value="Transparent"/>
-                                    <Setter Property="Foreground" Value="{DynamicResource PrimaryTextBrush}"/>
-                                    <Setter Property="ToolTip">
-                                        <Setter.Value>
-                                            <TextBlock>
-                                                <Run Text="Çift tıklayarak dosyayı "/>
-                                                <Run Text="{Binding PageNumber, StringFormat='sayfa {0}'}" FontWeight="Bold"/>
-                                                <Run Text="'den aç"/>
-                                            </TextBlock>
-                                        </Setter.Value>
-                                    </Setter>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding PageNumber}" Value="0">
-                                            <Setter Property="ToolTip" Value="Çift tıklayarak dosyayı aç"/>
-                                        </DataTrigger>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource HoverBackgroundBrush}"/>
-                                        </Trigger>
-                                        <Trigger Property="IsSelected" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource SelectedBackgroundBrush}"/>
-                                            <Setter Property="Foreground" Value="{DynamicResource SelectedForegroundBrush}"/>
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGrid.RowStyle>
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="Dosya" 
-                                                    Binding="{Binding DocumentName}" 
-                                                    Width="*"/>
-                                <DataGridTextColumn Header="Sayfa" 
-                                                    Binding="{Binding PageNumber, StringFormat='{}{0}'}" 
-                                                    Width="80">
-                                    <DataGridTextColumn.ElementStyle>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="HorizontalAlignment" Value="Center"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding PageNumber}" Value="0">
-                                                    <Setter Property="Text" Value="-"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </DataGridTextColumn.ElementStyle>
-                                </DataGridTextColumn>
-                            </DataGrid.Columns>
-                        </DataGrid>
+                        <!-- Full Page Text Viewer -->
+                        <Border Grid.Row="2" Margin="10,5,10,10" Background="{DynamicResource InputBackgroundBrush}" CornerRadius="6" Padding="12">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <TextBox Text="{Binding PreviewPageText}"
+                                         IsReadOnly="True"
+                                         TextWrapping="Wrap"
+                                         AcceptsReturn="True"
+                                         Background="Transparent"
+                                         BorderThickness="0"
+                                         Foreground="{DynamicResource PrimaryTextBrush}"
+                                         FontSize="12.5"
+                                         FontFamily="Segoe UI, Consolas"/>
+                            </ScrollViewer>
+                        </Border>
+
+                        <!-- Footer Page Navigation Toolbar -->
+                        <Border Grid.Row="3" 
+                                Background="{DynamicResource CardHeaderBackgroundBrush}"
+                                CornerRadius="0,0,6,6"
+                                Padding="10,8">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Grid.Column="0" 
+                                        Content="◀ Önceki" 
+                                        Command="{Binding PreviousPreviewPageCommand}"
+                                        Padding="8,4"
+                                        FontSize="11"
+                                        Background="{DynamicResource InputBackgroundBrush}"
+                                        Foreground="{DynamicResource PrimaryTextBrush}"
+                                        BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="1"
+                                        Cursor="Hand"/>
+
+                                <TextBlock Grid.Column="1" 
+                                           HorizontalAlignment="Center" 
+                                           VerticalAlignment="Center"
+                                           FontSize="11" 
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource SecondaryTextBrush}">
+                                    <Run Text="Sayfa "/>
+                                    <Run Text="{Binding PreviewCurrentPage}"/>
+                                    <Run Text=" / "/>
+                                    <Run Text="{Binding PreviewTotalPages}"/>
+                                </TextBlock>
+
+                                <Button Grid.Column="2" 
+                                        Content="Sonraki ▶" 
+                                        Command="{Binding NextPreviewPageCommand}"
+                                        Padding="8,4"
+                                        FontSize="11"
+                                        Background="{DynamicResource InputBackgroundBrush}"
+                                        Foreground="{DynamicResource PrimaryTextBrush}"
+                                        BorderBrush="{DynamicResource BorderBrush}"
+                                        BorderThickness="1"
+                                        Cursor="Hand"/>
+                            </Grid>
+                        </Border>
                     </Grid>
                 </Border>
             </Grid>

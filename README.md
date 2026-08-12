@@ -1,5 +1,7 @@
 # E-Student - Akıllı Öğrenci Asistanı & Verimlilik Platformu
 
+[🇹🇷 Türkçe](README.md) | [🇬🇧 English](README.en.md) | [🇦🇿 Azərbaycanca](README.az.md)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **E-Student**, öğrencilerin ders materyallerini yönetmelerini, dokümanları içerisinde anında arama yapmalarını ve Pomodoro tekniği ile çalışma verimliliklerini artırmalarını sağlayan modern bir Windows masaüstü asistanıdır.

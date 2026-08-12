@@ -46,6 +46,9 @@
     <sys:String x:Key="Doc_Preview_Next">Next ▶</sys:String>
     <sys:String x:Key="Doc_ToolTip_DoubleOpen">Double click to open file</sys:String>
     <sys:String x:Key="Doc_ToolTip_Remove">Remove file</sys:String>
+    <sys:String x:Key="Doc_ToolTip_PomodoroFocus">Start Pomodoro focus session for this document</sys:String>
+    <sys:String x:Key="Doc_ToolTip_OpenPreview">Open / preview document</sys:String>
+    <sys:String x:Key="Doc_ToolTip_AddTag">Add Tag</sys:String>
 
     <!-- Pomodoro View -->
     <sys:String x:Key="Pomo_Title">Pomodoro Technique</sys:String>
@@ -70,6 +73,9 @@
     <sys:String x:Key="Pomo_Step2">2. Take a 5-minute short break when work session ends</sys:String>
     <sys:String x:Key="Pomo_Step3">3. Take a 15-minute long break every 4 pomodoros</sys:String>
     <sys:String x:Key="Pomo_Step4">4. Increase your productivity by repeating this cycle</sys:String>
+    <sys:String x:Key="Pomo_FocusedDocument">Focused Document:</sys:String>
+    <sys:String x:Key="Pomo_NoDocumentSelected">No Document Selected</sys:String>
+    <sys:String x:Key="Pomo_DocumentStatsTitle">Document-Based Study Times</sys:String>
 
     <!-- Status Messages -->
     <sys:String x:Key="Status_Ready">Ready</sys:String>

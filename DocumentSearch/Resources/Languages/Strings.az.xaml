@@ -46,6 +46,9 @@
     <sys:String x:Key="Doc_Preview_Next">Növbəti ▶</sys:String>
     <sys:String x:Key="Doc_ToolTip_DoubleOpen">Faylı açmaq üçün iki dəfə klikləyin</sys:String>
     <sys:String x:Key="Doc_ToolTip_Remove">Faylı sil</sys:String>
+    <sys:String x:Key="Doc_ToolTip_PomodoroFocus">Bu sənəd üçün Pomodoro fokuslanma seansı başlat</sys:String>
+    <sys:String x:Key="Doc_ToolTip_OpenPreview">Sənədi aç / bax</sys:String>
+    <sys:String x:Key="Doc_ToolTip_AddTag">Teq Əlavə Et</sys:String>
 
     <!-- Pomodoro View -->
     <sys:String x:Key="Pomo_Title">Pomodoro Texnikası</sys:String>
@@ -70,6 +73,9 @@
     <sys:String x:Key="Pomo_Step2">2. İş vaxtı bitdikdə 5 dəqiqə qısa fasilə verin</sys:String>
     <sys:String x:Key="Pomo_Step3">3. Hər 4 pomodorodan bir 15 dəqiqə uzun fasilə verin</sys:String>
     <sys:String x:Key="Pomo_Step4">4. Bu dövrəni təkrar edərək məhsuldarlığınızı artırın</sys:String>
+    <sys:String x:Key="Pomo_FocusedDocument">Fokuslanılan Sənəd:</sys:String>
+    <sys:String x:Key="Pomo_NoDocumentSelected">Sənəd Seçilmədi</sys:String>
+    <sys:String x:Key="Pomo_DocumentStatsTitle">Sənəd Üzrə Çalışma Müddətləri</sys:String>
 
     <!-- Status Messages -->
     <sys:String x:Key="Status_Ready">Hazır</sys:String>

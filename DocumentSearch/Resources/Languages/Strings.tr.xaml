@@ -46,6 +46,9 @@
     <sys:String x:Key="Doc_Preview_Next">Sonraki ▶</sys:String>
     <sys:String x:Key="Doc_ToolTip_DoubleOpen">Çift tıklayarak dosyayı aç</sys:String>
     <sys:String x:Key="Doc_ToolTip_Remove">Dosyayı kaldır</sys:String>
+    <sys:String x:Key="Doc_ToolTip_PomodoroFocus">Bu belge için Pomodoro odaklanma seansı başlat</sys:String>
+    <sys:String x:Key="Doc_ToolTip_OpenPreview">Belgeyi aç / önizle</sys:String>
+    <sys:String x:Key="Doc_ToolTip_AddTag">Etiket Ekle</sys:String>
 
     <!-- Pomodoro View -->
     <sys:String x:Key="Pomo_Title">Pomodoro Tekniği</sys:String>
@@ -70,6 +73,9 @@
     <sys:String x:Key="Pomo_Step2">2. Çalışma süresi bitince 5 dakika kısa mola verin</sys:String>
     <sys:String x:Key="Pomo_Step3">3. Her 4 pomodoroda bir 15 dakika uzun mola verin</sys:String>
     <sys:String x:Key="Pomo_Step4">4. Bu döngüyü tekrarlayarak verimliliğinizi artırın</sys:String>
+    <sys:String x:Key="Pomo_FocusedDocument">Odaklanılan Belge:</sys:String>
+    <sys:String x:Key="Pomo_NoDocumentSelected">Belge Seçilmedi</sys:String>
+    <sys:String x:Key="Pomo_DocumentStatsTitle">Belge Bazlı Çalışma Süreleri</sys:String>
 
     <!-- Status Messages -->
     <sys:String x:Key="Status_Ready">Hazır</sys:String>

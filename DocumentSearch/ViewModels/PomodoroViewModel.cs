@@ -26,6 +26,9 @@ public partial class PomodoroViewModel : ObservableObject
     public ObservableCollection<DocumentStudyStat> DocumentStats => Service.DocumentStats;
     public string TimeDisplay => Service.TimeDisplay;
     public int CompletedCount => Service.CompletedCount;
+    public string ActiveDocumentDisplayName => Service.ActiveDocument != null 
+        ? Service.ActiveDocument.FileName 
+        : _languageService.GetString("Pomo_NoDocumentSelected");
 
     public PomodoroViewModel(PomodoroService pomodoroService, LanguageService languageService)
     {
@@ -33,6 +36,13 @@ public partial class PomodoroViewModel : ObservableObject
         _languageService = languageService;
 
         _languageService.LanguageChanged += (s, lang) => RefreshTexts();
+        Service.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(Service.ActiveDocument))
+            {
+                OnPropertyChanged(nameof(ActiveDocumentDisplayName));
+            }
+        };
         Service.StateChanged += (s, e) => 
         {
             RefreshTexts();
@@ -47,6 +57,7 @@ public partial class PomodoroViewModel : ObservableObject
     private void RefreshTexts()
     {
         InfoText = _languageService.GetString("Pomo_InfoText");
+        OnPropertyChanged(nameof(ActiveDocumentDisplayName));
 
         switch (Service.CurrentState)
         {

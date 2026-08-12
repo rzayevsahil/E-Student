@@ -520,8 +520,7 @@
                                                      Margin="4,0,0,0">
                                              <!-- Pomodoro Odaklan Butonu -->
                                              <Button Click="StartFocusSession_Click"
-                                                     
-                                                     ToolTip="Bu belge için Pomodoro odaklanma seansı başlat"
+                                                     ToolTip="{DynamicResource Doc_ToolTip_PomodoroFocus}"
                                                      Width="20"
                                                      Height="20"
                                                      Margin="0,0,6,0"
@@ -540,10 +539,10 @@
                                              </Button>
                                              <!-- Popover Açma '+' Butonu -->
                                              <ToggleButton x:Name="AddTagToggleBtn"
-                                                           ToolTip="{DynamicResource Doc_AddTag}"
+                                                           ToolTip="{DynamicResource Doc_ToolTip_AddTag}"
                                                            Width="20"
                                                            Height="20"
-                                                           Margin="0,0,8,0"
+                                                           Margin="0,0,6,0"
                                                            Background="{DynamicResource AccentBrush}"
                                                            Foreground="White"
                                                            BorderThickness="0"
@@ -608,7 +607,7 @@
 
                                              <!-- Göz / Önizleme Butonu (İndigo Daire Rozet) -->
                                              <Button Click="OpenDocumentItem_Click"
-                                                     ToolTip="Belgeyi aç / önizle"
+                                                     ToolTip="{DynamicResource Doc_ToolTip_OpenPreview}"
                                                      Width="20"
                                                      Height="20"
                                                      Margin="0,0,6,0"
@@ -639,7 +638,7 @@
 
                                              <!-- Dosya Kaldır Butonu (Kırmızı Daire Rozet) -->
                                              <Button Click="RemoveDocument_Click"
-                                                     ToolTip="Dosyayı listeden kaldır"
+                                                     ToolTip="{DynamicResource Doc_ToolTip_Remove}"
                                                      Width="20"
                                                      Height="20"
                                                      Margin="0"

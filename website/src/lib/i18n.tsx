@@ -33,6 +33,11 @@ export interface Translations {
     fastBody: string;
     fastPoints: string[];
 
+    multiLangLabel: string;
+    multiLangTitle: string;
+    multiLangBody: string;
+    multiLangPoints: string[];
+
     pomodoroLabel: string;
     pomodoroTitle: string;
     pomodoroBody: string;
@@ -93,12 +98,12 @@ export const translations: Record<Language, Translations> = {
           body: "PDF, Word, Excel ve PowerPoint dosyalarınızın tamamı tek bir noktadan aynı anda taranır.",
         },
         {
-          title: "Ders notlarınızı düzenli tutun",
-          body: "Ders notlarınızı bir kez yükleyin ve her çalışma oturumunda anında hazır bulundurun.",
+          title: "Çok dilli yerelleştirme (TR | EN | AZ)",
+          body: "Türkçe, İngilizce ve Azerbaycanca arayüz dilleri arasında tek tıkla anında geçiş yapın.",
         },
         {
-          title: "Pomodoro ile odaklanın",
-          body: "Entegre zamanlayıcı ve mola bildirimleri ile yüksek verimle çalışın.",
+          title: "Hızlı önizleme ve sürükle-bırak",
+          body: "Sayfaları yan panelde canlı inceleyin ve dosyalarınızı sürükleyip bırakarak saniyeler içinde yükleyin.",
         },
       ],
     },
@@ -120,6 +125,15 @@ export const translations: Record<Language, Translations> = {
         "Tek bir arama tüm ders materyalini kapsar",
         "Yüklenen belgeler önbelleğe alınır, sonraki aramalar saliseler sürer",
         "Göz gezdirmek yerine doğrudan ilgili sayfaya zıplayın",
+      ],
+      multiLangLabel: "ÇOK DİLLİ VE AKILLI ARAYÜZ",
+      multiLangTitle: "Tam dil desteği ve canlı bölünmüş önizleme.",
+      multiLangBody:
+        "Türkçe, İngilizce ve Azerbaycanca dillerinde kesintisiz arayüz. Arama sonuçlarını harici bir programa ihtiyaç duymadan sağ taraftaki bölünmüş okuyucu panelinde doğrudan görüntüleyin.",
+      multiLangPoints: [
+        "Türkçe, İngilizce ve Azerbaycanca (TR | EN | AZ) tam dinamik yerelleştirme",
+        "Yan panelde sayfa ve slayt bazlı canlı metin önizleme ve gezinme",
+        "Sürükle-bırak dosya yükleme ve format çip filtreleri",
       ],
       pomodoroLabel: "POMODORO ZAMANLAYICI",
       pomodoroTitle: "Dikkat dağıtıcı unsurları engelleyin.",
@@ -187,12 +201,12 @@ export const translations: Record<Language, Translations> = {
           body: "PDF, Word, Excel və PowerPoint fayllarınızın hamısı tək bir yerdən eyni anda taranır.",
         },
         {
-          title: "Dərs qeydlərinizi nizamlı saxlayın",
-          body: "Qeydlərinizi bir dəfə yükləyin və hər təhsil seansında anında hazır bulundurun.",
+          title: "Çoxdilli lokallaşdırma (AZ | EN | TR)",
+          body: "Azərbaycan, İngilis və Türk interfeys dilləri arasında tək kliklə anında keçid edin.",
         },
         {
-          title: "Pomodoro ilə diqqəti cəmləyin",
-          body: "Daxili taymer və fasilə bildirişləri ilə yüksək məhsuldarlıqla çalışın.",
+          title: "Tez önizləmə və sürüklə-burax",
+          body: "Səhifələri yan paneldə canlı nəzərdən keçirin və faylları sürükləyib buraxaraq saniyələr içində yükləyin.",
         },
       ],
     },
@@ -214,6 +228,15 @@ export const translations: Record<Language, Translations> = {
         "Tək bir axtarış bütün dərs materiallarını əhatə edir",
         "Sənədlər keşlənir, növbəti axtarışlar salisələr çəkir",
         "Səhifələri vərəqləmək əvəzinə birbaşa müvafiq səhifəyə keçin",
+      ],
+      multiLangLabel: "ÇOXDİLLİ VƏ AĞILLI İNTERFEYS",
+      multiLangTitle: "Tam dil dəstəyi və canlı bölünmüş önizləmə.",
+      multiLangBody:
+        "Azərbaycan, İngilis və Türk dillərində kəsintisiz interfeys. Axtarış nəticələrini kənar proqramlara ehtiyac olmadan sağ tərəfdəki bölünmüş oxuyucu panelində birbaşa baxın.",
+      multiLangPoints: [
+        "Azərbaycan, İngilis və Türk (AZ | EN | TR) tam dinamik lokallaşdırma",
+        "Yan paneldə səhifə və slayd bazlı canlı mətn önizləmə və keçid",
+        "Sürüklə-burax fayl yükləmə və format çip filtrləri",
       ],
       pomodoroLabel: "POMODORO TAYMERİ",
       pomodoroTitle: "Diqqəti cəmləyin və vaxtı idarə edin.",
@@ -281,12 +304,12 @@ export const translations: Record<Language, Translations> = {
           body: "PDF, Word, Excel and PowerPoint files are all searched together, in one place.",
         },
         {
-          title: "Keep materials organized",
-          body: "Load your lecture notes once and keep them ready for every study session.",
+          title: "Multi-language support (EN | TR | AZ)",
+          body: "Switch instantly between English, Turkish, and Azerbaijani interface languages with a single click.",
         },
         {
-          title: "Stay focused with Pomodoro",
-          body: "Work in focused sessions with a built-in timer and break reminders.",
+          title: "Split-view reader & drag-and-drop",
+          body: "Preview match pages directly in the side panel and drag-and-drop files to load in seconds.",
         },
       ],
     },
@@ -308,6 +331,15 @@ export const translations: Record<Language, Translations> = {
         "One search covers all of your loaded study material",
         "Documents are remembered, so the next search starts instantly",
         "Jump straight to the exact page instead of skimming",
+      ],
+      multiLangLabel: "MULTI-LANGUAGE & SMART UI",
+      multiLangTitle: "Full language support & instant split-view reader.",
+      multiLangBody:
+        "Fully localized in English, Turkish, and Azerbaijani. Read search matches right inside the app using the split-view reader panel without launching external software.",
+      multiLangPoints: [
+        "Full dynamic localization in English, Turkish, and Azerbaijani (EN | TR | AZ)",
+        "Split-view side panel for live page-by-page document previewing",
+        "Drag-and-drop file imports and dynamic format filter chips",
       ],
       pomodoroLabel: "POMODORO",
       pomodoroTitle: "Stay focused on what matters.",

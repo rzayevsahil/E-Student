@@ -14,10 +14,22 @@
   - PDF, Word (`.docx`, `.doc`), Excel (`.xlsx`, `.xls`) ve PowerPoint (`.pptx`, `.ppt`) dosyalarınızı yükleyin.
   - Ders notları, sunum slaytları, poz numaraları, kelimeler ve tablolar içerisinde saliseler içinde arama yapın.
   - Çok çekirdekli arka plan motoru ve akıllı yerel metin önbellekleme sayesinde binlerce sayfalık ders materyalinde anında arama.
-  
+
+- 🌐 **Çok Dilli Arayüz Desteği (TR | EN | AZ)**:
+  - Türkçe, İngilizce ve Azerbaycanca dil desteği.
+  - Uygulama içi anında dinamik dil değişimi ve seçilen dilin kalıcı saklanması.
+
+- 👁️ **Hızlı Önizleme Paneli (Split-View Reader)**:
+  - Arama sonuçlarını uygulama dışına çıkmadan sağ taraftaki önizleme panelinde sayfa ve slayt bazlı inceleme.
+  - Sayfalar arası hızlı gezinme (Önceki/Sonraki sayfa) ve harici uygulamada açma seçeneği.
+
+- 📂 **Sürükle-Bırak & Akıllı Filtreleme**:
+  - Masaüstünden veya klasörlerden dosyaları doğrudan uygulamaya sürükleyip bırakarak yükleme.
+  - PDF, Word, Excel ve PowerPoint türlerine göre dinamik çip filtreleme ve dosya adı araması.
+
 - ⏱️ **Pomodoro Sayaç & Çalışma Yönetimi**:
-  - Odaklanma oturumları ve özelleştirilebilir mola zamanlayıcısı.
-  - Ders çalışma disiplini ve verimliliğini artırmaya yönelik akıllı Pomodoro aracı.
+  - Odaklanma oturumları (25 dk), kısa (5 dk) ve uzun (15 dk) mola zamanlayıcısı.
+  - Tamamlanan Pomodoro istatistikleri ve özelleştirilebilir eylem butonları.
 
 - ⚡ **Yüksek Performans & Metin Önbellekleme**:
   - Belgelerin içerikleri ilk taramada önbelleğe alınır, sonraki açılışlar milisaniyeler sürer.
@@ -27,7 +39,7 @@
   - GitHub Releases üzerinden güncellemeleri otomatik denetleme ve arka planda sessiz güncelleme.
 
 - 🎨 **Modern ve Temiz Kullanıcı Arayüzü**:
-  - Kullanıcı dostu, modern WPF arayüzü ve sezgisel gezinme menüsü.
+  - Kullanıcı dostu, modern WPF arayüzü, karanlık mod desteği ve sezgisel gezinme menüsü.
 
 ---
 

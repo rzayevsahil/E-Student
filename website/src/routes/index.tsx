@@ -266,6 +266,18 @@ function Features() {
         }
       />
       <FeatureRow
+        label={t.features.multiLangLabel}
+        title={t.features.multiLangTitle}
+        body={t.features.multiLangBody}
+        points={t.features.multiLangPoints}
+        visual={
+          <WindowFrame>
+            <SearchScreen query="lokallaşdırma" />
+          </WindowFrame>
+        }
+      />
+      <FeatureRow
+        flip
         label={t.features.pomodoroLabel}
         title={t.features.pomodoroTitle}
         body={t.features.pomodoroBody}

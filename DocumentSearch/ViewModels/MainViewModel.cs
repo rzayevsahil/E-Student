@@ -97,6 +97,13 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private int previewTotalPages = 1;
 
+    [ObservableProperty]
+    private ObservableCollection<string> recentSearches = new();
+
+    [ObservableProperty]
+    private bool isRecentSearchesOpen;
+
+    private readonly string _searchHistoryPath;
     private List<string> _currentPreviewPages = new();
 
     private CancellationTokenSource? _searchCts;
@@ -108,10 +115,16 @@ public partial class MainViewModel : ObservableObject
         _languageService = languageService;
         _pomodoroService = pomodoroService;
 
+        var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var appFolder = Path.Combine(appDataPath, "E-Student");
+        Directory.CreateDirectory(appFolder);
+        _searchHistoryPath = Path.Combine(appFolder, "search_history.json");
+
         _languageService.LanguageChanged += (s, lang) => _lastStatusUpdate?.Invoke();
         SetStatus(() => StatusMessage = _languageService.GetString("Status_Ready"));
 
-        // Uygulama başlarken kayıtlı dosyaları yükle
+        // Uygulama başlarken kayıtlı dosyaları ve arama geçmişini yükle
+        LoadRecentSearches();
         _ = InitializeAsync();
 
         // SearchQuery veya Filtre değiştiğinde otomatik güncelle
@@ -583,7 +596,118 @@ public partial class MainViewModel : ObservableObject
         }
 
         SetStatus(() => StatusMessage = _languageService.GetString("Status_ResultsFound", results.Count));
+
+        if (!string.IsNullOrWhiteSpace(query) && query.Length >= 2)
+        {
+            AddRecentSearch(query);
+        }
     }
 
+    [RelayCommand]
+    private void SelectRecentSearch(string? query)
+    {
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            SearchQuery = query;
+            IsRecentSearchesOpen = false;
+        }
+    }
+
+    [RelayCommand]
+    private void RemoveRecentSearch(string? query)
+    {
+        if (string.IsNullOrWhiteSpace(query)) return;
+
+        var existing = RecentSearches.FirstOrDefault(s => s.Equals(query, StringComparison.OrdinalIgnoreCase));
+        if (existing != null)
+        {
+            RecentSearches.Remove(existing);
+            SaveRecentSearches();
+        }
+
+        if (RecentSearches.Count == 0)
+        {
+            IsRecentSearchesOpen = false;
+        }
+    }
+
+    [RelayCommand]
+    private void ClearRecentSearches()
+    {
+        RecentSearches.Clear();
+        SaveRecentSearches();
+        IsRecentSearchesOpen = false;
+    }
+
+    [RelayCommand]
+    private void ToggleRecentSearches()
+    {
+        if (RecentSearches.Count > 0)
+        {
+            IsRecentSearchesOpen = !IsRecentSearchesOpen;
+        }
+    }
+
+    public void AddRecentSearch(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query)) return;
+        var cleanQuery = query.Trim();
+        if (cleanQuery.Length < 2) return;
+
+        var existing = RecentSearches.FirstOrDefault(s => s.Equals(cleanQuery, StringComparison.OrdinalIgnoreCase));
+        if (existing != null)
+        {
+            RecentSearches.Remove(existing);
+        }
+
+        RecentSearches.Insert(0, cleanQuery);
+
+        while (RecentSearches.Count > 5)
+        {
+            RecentSearches.RemoveAt(RecentSearches.Count - 1);
+        }
+
+        SaveRecentSearches();
+    }
+
+    private void LoadRecentSearches()
+    {
+        try
+        {
+            if (File.Exists(_searchHistoryPath))
+            {
+                var json = File.ReadAllText(_searchHistoryPath);
+                var items = System.Text.Json.JsonSerializer.Deserialize<List<string>>(json);
+                if (items != null)
+                {
+                    RecentSearches.Clear();
+                    foreach (var item in items.Take(5))
+                    {
+                        if (!string.IsNullOrWhiteSpace(item))
+                        {
+                            RecentSearches.Add(item.Trim());
+                        }
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Sessizce devam et
+        }
+    }
+
+    private void SaveRecentSearches()
+    {
+        try
+        {
+            var json = System.Text.Json.JsonSerializer.Serialize(RecentSearches.Take(5).ToList());
+            File.WriteAllText(_searchHistoryPath, json);
+        }
+        catch
+        {
+            // Sessizce devam et
+        }
+    }
 }
 

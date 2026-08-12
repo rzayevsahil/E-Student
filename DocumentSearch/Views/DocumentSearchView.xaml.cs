@@ -3,6 +3,7 @@ using DocumentSearch.ViewModels;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace DocumentSearch.Views;
 
@@ -134,6 +135,82 @@ public partial class DocumentSearchView : UserControl
     private void SearchResultsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         OpenSelectedSearchResult(sender);
+    }
+
+    public void FocusSearchBox()
+    {
+        SearchTextBox.Focus();
+        SearchTextBox.SelectAll();
+    }
+
+    private void SearchTextBox_GotFocus(object sender, RoutedEventArgs e)
+    {
+        if (DataContext is MainViewModel vm && vm.RecentSearches.Count > 0)
+        {
+            vm.IsRecentSearchesOpen = true;
+        }
+    }
+
+    private void SearchTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Down)
+        {
+            if (DataContext is MainViewModel vm && vm.IsRecentSearchesOpen)
+            {
+                // Arama geçmişi açık ise yönlendirme
+            }
+            else if (SearchResultsDataGrid.Items.Count > 0)
+            {
+                SearchResultsDataGrid.Focus();
+                if (SearchResultsDataGrid.SelectedIndex < 0)
+                {
+                    SearchResultsDataGrid.SelectedIndex = 0;
+                }
+                var row = (DataGridRow)SearchResultsDataGrid.ItemContainerGenerator.ContainerFromIndex(SearchResultsDataGrid.SelectedIndex);
+                row?.Focus();
+                e.Handled = true;
+            }
+        }
+        else if (e.Key == Key.Escape)
+        {
+            if (DataContext is MainViewModel vm)
+            {
+                if (vm.IsRecentSearchesOpen)
+                {
+                    vm.IsRecentSearchesOpen = false;
+                    e.Handled = true;
+                }
+                else if (!string.IsNullOrEmpty(vm.SearchQuery))
+                {
+                    vm.SearchQuery = string.Empty;
+                    e.Handled = true;
+                }
+                else if (vm.IsPreviewOpen)
+                {
+                    vm.ClosePreviewCommand.Execute(null);
+                    e.Handled = true;
+                }
+            }
+        }
+    }
+
+    private void SearchResultsDataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter)
+        {
+            OpenSelectedSearchResult(sender);
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Up && SearchResultsDataGrid.SelectedIndex <= 0)
+        {
+            FocusSearchBox();
+            e.Handled = true;
+        }
+        else if (e.Key == Key.Escape)
+        {
+            FocusSearchBox();
+            e.Handled = true;
+        }
     }
 
     private void OpenSelectedSearchResult(object sender)

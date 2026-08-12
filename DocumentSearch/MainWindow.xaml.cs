@@ -65,4 +65,28 @@ public partial class MainWindow : Window
             LogoImage.Visibility = Visibility.Collapsed;
         }
     }
+
+    private void Window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key == System.Windows.Input.Key.F && (System.Windows.Input.Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Control) == System.Windows.Input.ModifierKeys.Control)
+        {
+            if (DataContext is NavigationViewModel navVm)
+            {
+                if (navVm.SelectedMenuItem != "DocumentSearch")
+                {
+                    navVm.NavigateToDocumentSearchCommand.Execute(null);
+                }
+
+                Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Input, new Action(() =>
+                {
+                    if (navVm.CurrentView is Views.DocumentSearchView searchView)
+                    {
+                        searchView.FocusSearchBox();
+                    }
+                }));
+
+                e.Handled = true;
+            }
+        }
+    }
 }

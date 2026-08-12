@@ -49,6 +49,9 @@
     <sys:String x:Key="Doc_ToolTip_PomodoroFocus">Bu belge için Pomodoro odaklanma seansı başlat</sys:String>
     <sys:String x:Key="Doc_ToolTip_OpenPreview">Belgeyi aç / önizle</sys:String>
     <sys:String x:Key="Doc_ToolTip_AddTag">Etiket Ekle</sys:String>
+    <sys:String x:Key="Doc_RecentSearches">Son Aramalar</sys:String>
+    <sys:String x:Key="Doc_ClearHistory">Temizle</sys:String>
+    <sys:String x:Key="Doc_RecentSearchesToolTip">Son aramaları göster</sys:String>
 
     <!-- Pomodoro View -->
     <sys:String x:Key="Pomo_Title">Pomodoro Tekniği</sys:String>

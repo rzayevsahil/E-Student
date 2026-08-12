@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const GITHUB_REPO = "rzayevsahil/E-Student";
-export const APP_VERSION = "v2.4.0";
+export const APP_VERSION = "v2.4.1";
 
 let cachedVersion: string | null = null;
 let fetchPromise: Promise<string> | null = null;

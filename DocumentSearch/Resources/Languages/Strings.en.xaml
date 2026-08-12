@@ -49,6 +49,9 @@
     <sys:String x:Key="Doc_ToolTip_PomodoroFocus">Start Pomodoro focus session for this document</sys:String>
     <sys:String x:Key="Doc_ToolTip_OpenPreview">Open / preview document</sys:String>
     <sys:String x:Key="Doc_ToolTip_AddTag">Add Tag</sys:String>
+    <sys:String x:Key="Doc_RecentSearches">Recent Searches</sys:String>
+    <sys:String x:Key="Doc_ClearHistory">Clear</sys:String>
+    <sys:String x:Key="Doc_RecentSearchesToolTip">Show recent searches</sys:String>
 
     <!-- Pomodoro View -->
     <sys:String x:Key="Pomo_Title">Pomodoro Technique</sys:String>

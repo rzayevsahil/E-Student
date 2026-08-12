@@ -445,9 +445,9 @@ function Footer() {
 
 function Index() {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-background">
+    <div className="min-h-screen bg-background">
       <Nav />
-      <main>
+      <main className="overflow-x-hidden">
         <Hero />
         <Intro />
         <Features />

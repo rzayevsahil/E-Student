@@ -5,6 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="clr-namespace:DocumentSearch.ViewModels"
              xmlns:converters="clr-namespace:DocumentSearch.Converters"
+             xmlns:helpers="clr-namespace:DocumentSearch.Helpers"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="1200">
     <UserControl.Resources>
@@ -809,11 +810,20 @@
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Binding="{Binding Snippet}" Width="2*">
-                                        <DataGridTextColumn.Header>
+                                    <DataGridTemplateColumn Width="2*">
+                                        <DataGridTemplateColumn.Header>
                                             <TextBlock Text="{DynamicResource Doc_Col_Snippet}"/>
-                                        </DataGridTextColumn.Header>
-                                    </DataGridTextColumn>
+                                        </DataGridTemplateColumn.Header>
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock helpers:HighlightHelper.HighlightText="{Binding Snippet}"
+                                                           helpers:HighlightHelper.SearchQuery="{Binding DataContext.SearchQuery, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                           VerticalAlignment="Center"
+                                                           TextWrapping="Wrap"
+                                                           Margin="10,6"/>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
@@ -950,7 +960,8 @@
                                            FontWeight="Bold" 
                                            Foreground="{DynamicResource AccentBrush}" 
                                            Margin="0,0,0,4"/>
-                                <TextBlock Text="{Binding PreviewSnippet}" 
+                                <TextBlock helpers:HighlightHelper.HighlightText="{Binding PreviewSnippet}"
+                                           helpers:HighlightHelper.SearchQuery="{Binding SearchQuery}"
                                            FontSize="12" 
                                            FontStyle="Italic"
                                            Foreground="{DynamicResource PrimaryTextBrush}" 
@@ -961,15 +972,12 @@
                         <!-- Full Page Text Viewer -->
                         <Border Grid.Row="2" Margin="10,5,10,10" Background="{DynamicResource InputBackgroundBrush}" CornerRadius="6" Padding="12">
                             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <TextBox Text="{Binding PreviewPageText}"
-                                         IsReadOnly="True"
-                                         TextWrapping="Wrap"
-                                         AcceptsReturn="True"
-                                         Background="Transparent"
-                                         BorderThickness="0"
-                                         Foreground="{DynamicResource PrimaryTextBrush}"
-                                         FontSize="12.5"
-                                         FontFamily="Segoe UI, Consolas"/>
+                                <TextBlock helpers:HighlightHelper.HighlightText="{Binding PreviewPageText}"
+                                           helpers:HighlightHelper.SearchQuery="{Binding SearchQuery}"
+                                           TextWrapping="Wrap"
+                                           Foreground="{DynamicResource PrimaryTextBrush}"
+                                           FontSize="12.5"
+                                           FontFamily="Segoe UI, Consolas"/>
                             </ScrollViewer>
                         </Border>
 

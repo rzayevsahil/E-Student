@@ -21,13 +21,125 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,15">
-            <TextBlock FontSize="28" 
-                       FontWeight="Bold" 
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,10">
-                <Run Foreground="#FF6B35" Text="🍅"/>
-                <Run Foreground="{DynamicResource PrimaryTextBrush}" Text="{DynamicResource Pomo_Title}"/>
-            </TextBlock>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
+                <TextBlock FontSize="28" 
+                           FontWeight="Bold" 
+                           VerticalAlignment="Center">
+                    <Run Foreground="#FF6B35" Text="🍅"/>
+                    <Run Foreground="{DynamicResource PrimaryTextBrush}" Text="{DynamicResource Pomo_Title}"/>
+                </TextBlock>
+
+                <!-- Help Popover Trigger Button (Mavi Soru İşareti İkonu) -->
+                <ToggleButton x:Name="HelpToggleBtn"
+                              ToolTip="{DynamicResource Pomo_HowItWorks}"
+                              Background="Transparent"
+                              BorderThickness="0"
+                              Cursor="Hand"
+                              Margin="10,0,0,0"
+                              VerticalAlignment="Center">
+                    <ToggleButton.Template>
+                        <ControlTemplate TargetType="ToggleButton">
+                            <Border x:Name="border"
+                                    Width="26" Height="26"
+                                    Background="{DynamicResource InputBackgroundBrush}"
+                                    BorderBrush="#00D2FF"
+                                    BorderThickness="1.5"
+                                    CornerRadius="13">
+                                <TextBlock x:Name="txt" Text="?" FontSize="14" FontWeight="Bold" Foreground="#00D2FF" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-1,0,0"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#00D2FF"/>
+                                    <Setter TargetName="txt" Property="Foreground" Value="#0F172A"/>
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#00D2FF"/>
+                                    <Setter TargetName="txt" Property="Foreground" Value="#0F172A"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </ToggleButton.Template>
+                </ToggleButton>
+
+                <!-- Popover (Dosyalar tarafındaki etiket ekleme Popover yapısı ile birebir aynı) -->
+                <Popup IsOpen="{Binding IsChecked, ElementName=HelpToggleBtn}"
+                       PlacementTarget="{Binding ElementName=HelpToggleBtn}"
+                       Placement="Bottom"
+                       StaysOpen="False"
+                       AllowsTransparency="True">
+                    <Border Width="380"
+                            Background="{DynamicResource CardBackgroundBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1.5"
+                            CornerRadius="12"
+                            Padding="16"
+                            Margin="0,8,0,0">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="16" ShadowDepth="4" Opacity="0.5" Color="Black"/>
+                        </Border.Effect>
+                        <StackPanel Orientation="Vertical">
+                            <!-- Popover Header -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                                <TextBlock Text="💡 " FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="{DynamicResource Pomo_HowItWorks}" 
+                                           FontSize="14" 
+                                           FontWeight="Bold" 
+                                           Foreground="{DynamicResource PrimaryTextBrush}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Step 1 -->
+                            <Border Background="{DynamicResource InputBackgroundBrush}" CornerRadius="8" Padding="10" Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="🎯 " FontSize="15" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{DynamicResource Pomo_Step1}" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Step 2 -->
+                            <Border Background="{DynamicResource InputBackgroundBrush}" CornerRadius="8" Padding="10" Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="☕ " FontSize="15" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{DynamicResource Pomo_Step2}" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Step 3 -->
+                            <Border Background="{DynamicResource InputBackgroundBrush}" CornerRadius="8" Padding="10" Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="🔄 " FontSize="15" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{DynamicResource Pomo_Step3}" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Step 4 -->
+                            <Border Background="{DynamicResource InputBackgroundBrush}" CornerRadius="8" Padding="10">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Text="📈 " FontSize="15" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{DynamicResource Pomo_Step4}" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                </Popup>
+            </StackPanel>
+
             <!-- Active Document Focus Badge -->
             <Border Background="{DynamicResource CardBackgroundBrush}"
                     BorderBrush="#FF6B35"
@@ -237,159 +349,81 @@
             </Button>
         </StackPanel>
 
-        <!-- Bottom Section: 2 Columns Side-by-Side Layout -->
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.35*"/> <!-- Sol Kolon: İstatistikler ve Belge Süreleri (%57) -->
-                <ColumnDefinition Width="16"/>    <!-- Ara Boşluk -->
-                <ColumnDefinition Width="1*"/>    <!-- Sağ Kolon: Pomodoro Rehberi (%43) -->
-            </Grid.ColumnDefinitions>
+        <!-- Bottom Section: Full Width Statistics & Document Study Times Card -->
+        <Border Grid.Row="3" 
+                BorderBrush="{DynamicResource BorderBrush}" 
+                BorderThickness="1" 
+                Background="{DynamicResource CardBackgroundBrush}"
+                CornerRadius="12"
+                Padding="20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-            <!-- Sol Kolon: Tamamlanan Pomodoro & Belge Bazlı Çalışma Süreleri -->
-            <Border Grid.Column="0" 
-                    BorderBrush="{DynamicResource BorderBrush}" 
-                    BorderThickness="1" 
-                    Background="{DynamicResource CardBackgroundBrush}"
-                    CornerRadius="12"
-                    Padding="16">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                <!-- İstatistik Özeti Başlığı -->
+                <StackPanel Grid.Row="0" Margin="0,0,0,14">
+                    <TextBlock Text="{DynamicResource Pomo_CompletedTitle}" 
+                               FontSize="13" 
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource SecondaryTextBrush}"/>
+                    <TextBlock Text="{Binding CompletedCount, StringFormat='{}{0} Pomodoro'}" 
+                               FontSize="22" 
+                               FontWeight="Bold"
+                               Foreground="#00D2FF"
+                               Margin="0,2,0,0"/>
+                </StackPanel>
 
-                    <!-- İstatistik Özeti Başlığı -->
-                    <StackPanel Grid.Row="0" Margin="0,0,0,12">
-                        <TextBlock Text="{DynamicResource Pomo_CompletedTitle}" 
-                                   FontSize="13" 
-                                   FontWeight="SemiBold"
-                                   Foreground="{DynamicResource SecondaryTextBrush}"/>
-                        <TextBlock Text="{Binding CompletedCount, StringFormat='{}{0} Pomodoro'}" 
-                                   FontSize="20" 
+                <!-- Belge Süreleri Listesi -->
+                <Border Grid.Row="1" 
+                        Background="{DynamicResource InputBackgroundBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="14">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" 
+                                   Text="📊 Belge Bazlı Çalışma Süreleri" 
+                                   FontSize="15" 
                                    FontWeight="Bold"
-                                   Foreground="#00D2FF"
-                                   Margin="0,2,0,0"/>
-                    </StackPanel>
+                                   Foreground="{DynamicResource PrimaryTextBrush}"
+                                   Margin="0,0,0,12"/>
 
-                    <!-- Belge Süreleri Listesi -->
-                    <Border Grid.Row="1" 
-                            Background="{DynamicResource InputBackgroundBrush}"
-                            BorderBrush="{DynamicResource BorderBrush}"
-                            BorderThickness="1"
-                            CornerRadius="8"
-                            Padding="12">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-
-                            <TextBlock Grid.Row="0" 
-                                       Text="📊 Belge Bazlı Çalışma Süreleri" 
-                                       FontSize="14" 
-                                       FontWeight="Bold"
-                                       Foreground="{DynamicResource PrimaryTextBrush}"
-                                       Margin="0,0,0,10"/>
-
-                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                                <ItemsControl ItemsSource="{Binding DocumentStats}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Border Background="{DynamicResource CardBackgroundBrush}"
-                                                    BorderBrush="{DynamicResource BorderBrush}"
-                                                    BorderThickness="1"
-                                                    CornerRadius="6"
-                                                    Padding="10,8"
-                                                    Margin="0,0,0,6">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="{Binding FileName}" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextBrush}" TextTrimming="CharacterEllipsis"/>
-                                                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="10,0,0,0">
-                                                        <TextBlock Text="⏱️ " FontSize="12"/>
-                                                        <TextBlock Text="{Binding StudyTimeDisplay, Mode=OneWay}" FontWeight="Bold" Foreground="#10B981"/>
-                                                    </StackPanel>
-                                                </Grid>
-                                            </Border>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </Grid>
-                    </Border>
-                </Grid>
-            </Border>
-
-            <!-- Sağ Kolon: Pomodoro Tekniği Rehberi -->
-            <Border Grid.Column="2" 
-                    BorderBrush="{DynamicResource BorderBrush}" 
-                    BorderThickness="1" 
-                    Background="{DynamicResource CardBackgroundBrush}"
-                    CornerRadius="12"
-                    Padding="16">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Orientation="Vertical">
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                            <TextBlock Text="💡 " FontSize="16" VerticalAlignment="Center"/>
-                            <TextBlock Text="{DynamicResource Pomo_HowItWorks}" 
-                                       FontSize="14" 
-                                       FontWeight="Bold"
-                                       Foreground="{DynamicResource PrimaryTextBrush}"
-                                       VerticalAlignment="Center"/>
-                        </StackPanel>
-
-                        <!-- Step 1 -->
-                        <Border Background="{DynamicResource InputBackgroundBrush}" CornerRadius="8" Padding="10" Margin="0,0,0,8">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="🎯 " FontSize="15" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Text="{DynamicResource Pomo_Step1}" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-                            </Grid>
-                        </Border>
-
-                        <!-- Step 2 -->
-                        <Border Background="{DynamicResource InputBackgroundBrush}" CornerRadius="8" Padding="10" Margin="0,0,0,8">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="☕ " FontSize="15" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Text="{DynamicResource Pomo_Step2}" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-                            </Grid>
-                        </Border>
-
-                        <!-- Step 3 -->
-                        <Border Background="{DynamicResource InputBackgroundBrush}" CornerRadius="8" Padding="10" Margin="0,0,0,8">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="🔄 " FontSize="15" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Text="{DynamicResource Pomo_Step3}" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-                            </Grid>
-                        </Border>
-
-                        <!-- Step 4 -->
-                        <Border Background="{DynamicResource InputBackgroundBrush}" CornerRadius="8" Padding="10">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Grid.Column="0" Text="📈 " FontSize="15" Margin="0,0,8,0" VerticalAlignment="Center"/>
-                                <TextBlock Grid.Column="1" Text="{DynamicResource Pomo_Step4}" FontSize="12" Foreground="{DynamicResource PrimaryTextBrush}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-                            </Grid>
-                        </Border>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
-        </Grid>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding DocumentStats}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{DynamicResource CardBackgroundBrush}"
+                                                BorderBrush="{DynamicResource BorderBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="6"
+                                                Padding="12,10"
+                                                Margin="0,0,0,8">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding FileName}" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryTextBrush}" TextTrimming="CharacterEllipsis"/>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="12,0,0,0">
+                                                    <TextBlock Text="⏱️ " FontSize="13"/>
+                                                    <TextBlock Text="{Binding StudyTimeDisplay, Mode=OneWay}" FontWeight="Bold" Foreground="#10B981"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
     </Grid>
 </UserControl>

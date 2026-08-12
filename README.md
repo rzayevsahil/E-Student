@@ -11,8 +11,8 @@
 ## 🌟 Öne Çıkan Özellikler
 
 - 🔍 **Akıllı Belge ve Ders Notu Arama**:
-  - PDF, Word (`.docx`, `.doc`) ve Excel (`.xlsx`, `.xls`) dosyalarınızı yükleyin.
-  - Ders notları, poz numaraları, kelimeler ve tablolar içerisinde saliseler içinde arama yapın.
+  - PDF, Word (`.docx`, `.doc`), Excel (`.xlsx`, `.xls`) ve PowerPoint (`.pptx`, `.ppt`) dosyalarınızı yükleyin.
+  - Ders notları, sunum slaytları, poz numaraları, kelimeler ve tablolar içerisinde saliseler içinde arama yapın.
   - Çok çekirdekli arka plan motoru ve akıllı yerel metin önbellekleme sayesinde binlerce sayfalık ders materyalinde anında arama.
   
 - ⏱️ **Pomodoro Sayaç & Çalışma Yönetimi**:
@@ -37,7 +37,7 @@
 - **WPF** - UI Framework
 - **PdfPig** - PDF işleme
 - **ClosedXML** - Excel işleme
-- **DocumentFormat.OpenXml** - Word işleme
+- **DocumentFormat.OpenXml** - Word ve PowerPoint işleme
 - **Inno Setup** - Windows Kurulum Sihirbazı
 - **CommunityToolkit.Mvvm** - MVVM Pattern
 - **Microsoft.Extensions.DependencyInjection** - Dependency Injection
@@ -73,7 +73,7 @@
 ## 💡 Kullanım Rehberi
 
 1. **Belge Arama & Ders Notları**: 
-   - "Dosya Yükle" ile PDF, Excel ve Word formatındaki ders notlarınızı ve kaynaklarınızı ekleyin.
+   - "Dosya Yükle" ile PDF, Word, Excel ve PowerPoint formatındaki ders notlarınızı ve kaynaklarınızı ekleyin.
    - Arama çubuğuna aradığınız kelimeyi veya ifadeyi yazın; sonuçlar ilgili sayfa ve konumla anında listelenir.
 
 2. **Pomodoro Odaklanma Modu**:

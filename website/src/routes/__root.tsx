@@ -82,13 +82,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "E-Student is a Windows desktop app that searches inside your PDF, Word and Excel study materials and keeps you focused with a built-in Pomodoro timer.",
+          "E-Student is a Windows desktop app that searches inside your PDF, Word, Excel and PowerPoint study materials and keeps you focused with a built-in Pomodoro timer.",
       },
       { property: "og:title", content: "E-Student — Search your study documents in seconds" },
       {
         property: "og:description",
         content:
-          "Find any note across your PDF, Word and Excel files instantly. Free Windows desktop app.",
+          "Find any note across your PDF, Word, Excel and PowerPoint files instantly. Free Windows desktop app.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -18,13 +18,13 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "E-Student is a free Windows desktop app that searches inside your PDF, Word and Excel study materials and keeps you focused with a Pomodoro timer.",
+          "E-Student is a free Windows desktop app that searches inside your PDF, Word, Excel and PowerPoint study materials and keeps you focused with a Pomodoro timer.",
       },
       { property: "og:title", content: "E-Student — Find your study materials in seconds" },
       {
         property: "og:description",
         content:
-          "Search across all your PDF, Word and Excel documents from one place. Download E-Student for Windows.",
+          "Search across all your PDF, Word, Excel and PowerPoint documents from one place. Download E-Student for Windows.",
       },
     ],
   }),

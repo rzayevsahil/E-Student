@@ -3,10 +3,10 @@ import { useLatestRelease } from "@/hooks/useLatestRelease";
 
 const files = [
   { name: "Veri Yapıları - Hafta 5.pdf", ext: "PDF" },
+  { name: "Yapay Zeka Sunumu.pptx", ext: "PPTX" },
   { name: "Mikroiktisat Ders Notu.docx", ext: "DOCX" },
   { name: "Laboratuvar Ölçümleri.xlsx", ext: "XLSX" },
   { name: "Anayasa Hukuku Özet.pdf", ext: "PDF" },
-  { name: "İstatistik Formüller.docx", ext: "DOCX" },
 ];
 
 const results = [

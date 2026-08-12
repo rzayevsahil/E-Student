@@ -38,6 +38,18 @@ public partial class DocumentSearchView : UserControl
         }
     }
 
+    private void StartFocusSession_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement element && element.DataContext is Document document)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.StartFocusSessionCommand.Execute(document);
+            }
+        }
+        e.Handled = true;
+    }
+
     private void RemoveDocument_Click(object sender, RoutedEventArgs e)
     {
         if (sender is Button button && button.DataContext is Document document)

@@ -14,7 +14,10 @@ public partial class MainViewModel : ObservableObject
     private readonly IDocumentService _documentService;
     private readonly ISearchService _searchService;
     private readonly LanguageService _languageService;
+    private readonly PomodoroService _pomodoroService;
     private Action? _lastStatusUpdate;
+
+    public PomodoroService Pomodoro => _pomodoroService;
 
     [ObservableProperty]
     private ObservableCollection<Document> documents = new();
@@ -98,11 +101,12 @@ public partial class MainViewModel : ObservableObject
 
     private CancellationTokenSource? _searchCts;
 
-    public MainViewModel(IDocumentService documentService, ISearchService searchService, LanguageService languageService)
+    public MainViewModel(IDocumentService documentService, ISearchService searchService, LanguageService languageService, PomodoroService pomodoroService)
     {
         _documentService = documentService;
         _searchService = searchService;
         _languageService = languageService;
+        _pomodoroService = pomodoroService;
 
         _languageService.LanguageChanged += (s, lang) => _lastStatusUpdate?.Invoke();
         SetStatus(() => StatusMessage = _languageService.GetString("Status_Ready"));
@@ -153,6 +157,7 @@ public partial class MainViewModel : ObservableObject
         {
             _currentPreviewPages = ExtractPages(doc.RawContent);
             PreviewTotalPages = _currentPreviewPages.Count > 0 ? _currentPreviewPages.Count : 1;
+            _pomodoroService.SetActiveDocument(doc);
         }
         else
         {
@@ -191,7 +196,23 @@ public partial class MainViewModel : ObservableObject
         PreviewPageText = _currentPreviewPages.Count > 0 ? _currentPreviewPages[0] : (string.IsNullOrWhiteSpace(doc.RawContent) ? "İçerik okunamadı veya boş." : doc.RawContent);
         PreviewPageNumber = 1;
 
+        _pomodoroService.SetActiveDocument(doc);
         IsPreviewOpen = true;
+    }
+
+    [RelayCommand]
+    private void StartFocusSession(Document? doc)
+    {
+        if (doc == null)
+        {
+            doc = Documents.FirstOrDefault(d => d.FilePath.Equals(PreviewDocumentPath, StringComparison.OrdinalIgnoreCase));
+        }
+
+        if (doc != null)
+        {
+            _pomodoroService.StartWorkForDocument(doc);
+            SetStatus(() => StatusMessage = $"🍅 '{doc.FileName}' belgesi için Pomodoro odaklanma oturumu başlatıldı!");
+        }
     }
 
     private List<string> ExtractPages(string rawContent)

@@ -14,6 +14,12 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
+        DispatcherUnhandledException += (sender, args) =>
+        {
+            MessageBox.Show($"Beklenmeyen Hata:\n\n{args.Exception.Message}\n\nDetay:\n{args.Exception.StackTrace}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            args.Handled = true;
+        };
+
         var serviceCollection = new ServiceCollection();
         ConfigureServices(serviceCollection);
         _serviceProvider = serviceCollection.BuildServiceProvider();
@@ -39,6 +45,7 @@ public partial class App : Application
         services.AddSingleton<UpdateService>();
         services.AddSingleton<ThemeService>();
         services.AddSingleton<LanguageService>();
+        services.AddSingleton<PomodoroService>();
 
         // ViewModels
         services.AddTransient<MainViewModel>();

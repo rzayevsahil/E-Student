@@ -39,6 +39,21 @@ public partial class Document : ObservableObject
     [ObservableProperty]
     private string tagInputText = string.Empty;
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StudyTimeDisplay))]
+    [NotifyPropertyChangedFor(nameof(HasStudyTime))]
+    private int studyMinutes;
+
+    public string StudyTimeDisplay
+    {
+        get => StudyMinutes > 60
+            ? $"{StudyMinutes / 60} sa {StudyMinutes % 60} dk"
+            : $"{StudyMinutes} dk";
+        set { }
+    }
+
+    public bool HasStudyTime => StudyMinutes > 0;
+
     public string DisplayTags => Tags != null && Tags.Any() ? string.Join(", ", Tags) : string.Empty;
 
     public bool HasTags => Tags != null && Tags.Any();

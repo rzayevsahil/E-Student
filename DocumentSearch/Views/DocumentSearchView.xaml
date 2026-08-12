@@ -461,6 +461,19 @@
                                                             FontWeight="Bold" 
                                                             Foreground="White"/>
                                              </Border>
+
+                                             <!-- Çalışma Süresi Rozeti -->
+                                             <Border Visibility="{Binding HasStudyTime, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                     Background="#10B981"
+                                                     CornerRadius="4"
+                                                     Padding="6,2"
+                                                     Margin="6,0,0,0"
+                                                     ToolTip="Bu belge üzerinde çalışılan toplam odaklanma süresi">
+                                                 <StackPanel Orientation="Horizontal">
+                                                     <TextBlock Text="⏱️ " FontSize="10"/>
+                                                     <TextBlock Text="{Binding StudyTimeDisplay}" FontSize="10" FontWeight="Bold" Foreground="White"/>
+                                                 </StackPanel>
+                                             </Border>
                                          </StackPanel>
                                          <!-- Etiketler Listesi -->
                                          <WrapPanel Grid.Column="1" Grid.Row="2" Margin="0,4,0,0" VerticalAlignment="Center">
@@ -500,11 +513,31 @@
                                              </ItemsControl>
                                          </WrapPanel>
 
-                                         <!-- Sağ İkonlar: Etiket Ekle (+), Göz/Önizleme & Kaldır Butonu -->
+                                         <!-- Sağ İkonlar: Pomodoro Odaklan (🍅), Etiket Ekle (+), Göz/Önizleme & Kaldır Butonu -->
                                          <StackPanel Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" 
                                                      Orientation="Horizontal" 
                                                      VerticalAlignment="Center"
                                                      Margin="4,0,0,0">
+                                             <!-- Pomodoro Odaklan Butonu -->
+                                             <Button Click="StartFocusSession_Click"
+                                                     
+                                                     ToolTip="Bu belge için Pomodoro odaklanma seansı başlat"
+                                                     Width="20"
+                                                     Height="20"
+                                                     Margin="0,0,6,0"
+                                                     Background="#FF6B35"
+                                                     Foreground="White"
+                                                     BorderThickness="0"
+                                                     Cursor="Hand"
+                                                     VerticalAlignment="Center">
+                                                 <Button.Template>
+                                                     <ControlTemplate TargetType="Button">
+                                                         <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                                                             <TextBlock Text="🍅" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,-1,0,0"/>
+                                                         </Border>
+                                                     </ControlTemplate>
+                                                 </Button.Template>
+                                             </Button>
                                              <!-- Popover Açma '+' Butonu -->
                                              <ToggleButton x:Name="AddTagToggleBtn"
                                                            ToolTip="{DynamicResource Doc_AddTag}"
@@ -914,11 +947,36 @@
                                         <Run Text="{Binding PreviewCurrentPage}" FontWeight="Bold"/>
                                         <Run Text=" / "/>
                                         <Run Text="{Binding PreviewTotalPages}"/>
+                                        <Run Text="  •  ⏱️ "/>
+                                        <Run Text="{Binding Pomodoro.ActiveDocument.StudyTimeDisplay, Mode=OneWay, FallbackValue='0 dk'}" FontWeight="Bold" Foreground="#10B981"/>
+                                        <Run Text=" çalışıldı"/>
                                     </TextBlock>
                                 </StackPanel>
 
-                                <!-- Header Actions: Harici Aç & Kapat -->
+                                <!-- Header Actions: Pomodoro Odaklan, Harici Aç & Kapat -->
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Button Command="{Binding StartFocusSessionCommand}"
+                                            Padding="8,4"
+                                            FontSize="11"
+                                            FontWeight="Bold"
+                                            Background="#FF6B35"
+                                            Foreground="White"
+                                            BorderThickness="0"
+                                            Cursor="Hand"
+                                            Margin="0,0,6,0"
+                                            ToolTip="Bu belge için Pomodoro Odaklanma Seansı Başlat">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="🍅 " FontSize="11"/>
+                                            <TextBlock Text="Odaklan" FontSize="11"/>
+                                        </StackPanel>
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
                                     <Button Content="{DynamicResource Doc_Preview_OpenExternal}"
                                             Padding="8,4"
                                             FontSize="11"

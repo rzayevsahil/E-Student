@@ -76,6 +76,10 @@
     <sys:String x:Key="Pomo_FocusedDocument">Focused Document:</sys:String>
     <sys:String x:Key="Pomo_NoDocumentSelected">No Document Selected</sys:String>
     <sys:String x:Key="Pomo_DocumentStatsTitle">Document-Based Study Times</sys:String>
+    <sys:String x:Key="Pomo_Notif_WorkComplete_Title">🍅 Pomodoro Finished!</sys:String>
+    <sys:String x:Key="Pomo_Notif_WorkComplete_Body">Great job! 25 minutes work session completed. Time for a break! ☕</sys:String>
+    <sys:String x:Key="Pomo_Notif_BreakComplete_Title">☕ Break Finished!</sys:String>
+    <sys:String x:Key="Pomo_Notif_BreakComplete_Body">Break time is over. Ready to start a new work session! 🚀</sys:String>
 
     <!-- Status Messages -->
     <sys:String x:Key="Status_Ready">Ready</sys:String>

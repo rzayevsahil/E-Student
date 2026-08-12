@@ -76,6 +76,10 @@
     <sys:String x:Key="Pomo_FocusedDocument">Odaklanılan Belge:</sys:String>
     <sys:String x:Key="Pomo_NoDocumentSelected">Belge Seçilmedi</sys:String>
     <sys:String x:Key="Pomo_DocumentStatsTitle">Belge Bazlı Çalışma Süreleri</sys:String>
+    <sys:String x:Key="Pomo_Notif_WorkComplete_Title">🍅 Pomodoro Tamamlandı!</sys:String>
+    <sys:String x:Key="Pomo_Notif_WorkComplete_Body">Tebrikler! 25 dakikalık çalışma seansı bitti. Mola zamanı! ☕</sys:String>
+    <sys:String x:Key="Pomo_Notif_BreakComplete_Title">☕ Mola Bitti!</sys:String>
+    <sys:String x:Key="Pomo_Notif_BreakComplete_Body">Mola süreniz doldu. Yeni çalışma seansına başlayabilirsiniz! 🚀</sys:String>
 
     <!-- Status Messages -->
     <sys:String x:Key="Status_Ready">Hazır</sys:String>

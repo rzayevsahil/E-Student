@@ -233,13 +233,30 @@ public partial class PomodoroService : ObservableObject
         if (_currentState == PomodoroState.Working)
         {
             CompleteWork();
-            try { System.Media.SystemSounds.Asterisk.Play(); } catch { }
+            string title = GetLocalizedString("Pomo_Notif_WorkComplete_Title", "🍅 Pomodoro Tamamlandı!");
+            string body = GetLocalizedString("Pomo_Notif_WorkComplete_Body", "Tebrikler! 25 dakikalık çalışma seansı bitti. Mola zamanı! ☕");
+            NotificationService.ShowNotification(title, body);
         }
         else if (_currentState == PomodoroState.ShortBreak || _currentState == PomodoroState.LongBreak)
         {
             StartWork();
-            try { System.Media.SystemSounds.Asterisk.Play(); } catch { }
+            string title = GetLocalizedString("Pomo_Notif_BreakComplete_Title", "☕ Mola Bitti!");
+            string body = GetLocalizedString("Pomo_Notif_BreakComplete_Body", "Mola süreniz doldu. Yeni çalışma seansına başlayabilirsiniz! 🚀");
+            NotificationService.ShowNotification(title, body);
         }
+    }
+
+    private static string GetLocalizedString(string resourceKey, string fallback)
+    {
+        try
+        {
+            if (System.Windows.Application.Current != null && System.Windows.Application.Current.Resources.Contains(resourceKey))
+            {
+                return System.Windows.Application.Current.Resources[resourceKey] as string ?? fallback;
+            }
+        }
+        catch { }
+        return fallback;
     }
 
     private void UpdateTimeDisplay()

@@ -76,6 +76,10 @@
     <sys:String x:Key="Pomo_FocusedDocument">Fokuslanılan Sənəd:</sys:String>
     <sys:String x:Key="Pomo_NoDocumentSelected">Sənəd Seçilmədi</sys:String>
     <sys:String x:Key="Pomo_DocumentStatsTitle">Sənəd Üzrə Çalışma Müddətləri</sys:String>
+    <sys:String x:Key="Pomo_Notif_WorkComplete_Title">🍅 Pomodoro Tamamlandı!</sys:String>
+    <sys:String x:Key="Pomo_Notif_WorkComplete_Body">Təbriklər! 25 dəqiqəlik iş sessiyası bitdi. İstirahət vaxtıdır! ☕</sys:String>
+    <sys:String x:Key="Pomo_Notif_BreakComplete_Title">☕ İstirahət Bitdi!</sys:String>
+    <sys:String x:Key="Pomo_Notif_BreakComplete_Body">İstirahət vaxtınız bitti. Yeni iş sessiyasına başlaya bilərsiniz! 🚀</sys:String>
 
     <!-- Status Messages -->
     <sys:String x:Key="Status_Ready">Hazır</sys:String>

@@ -8,7 +8,7 @@ import { useLanguage } from "@/lib/i18n";
 import { useLatestRelease } from "@/hooks/useLatestRelease";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
-const DOWNLOAD_URL = "https://github.com/rzayevsahil/E-Student/releases/latest/download/E-Student.exe";
+const DOWNLOAD_URL = "https://github.com/rzayevsahil/E-Student/releases/latest/download/E-Student-Setup.exe";
 const GITHUB_URL = "https://github.com/rzayevsahil/E-Student";
 
 export const Route = createFileRoute("/")({

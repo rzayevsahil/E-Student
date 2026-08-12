@@ -50,6 +50,44 @@ public partial class DocumentSearchView : UserControl
         e.Handled = true;
     }
 
+    private void AddTagAndClose_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement element && element.DataContext is Document document)
+        {
+            if (DataContext is MainViewModel viewModel)
+            {
+                viewModel.AddTagCommand.Execute(document);
+            }
+
+            var popup = FindParent<System.Windows.Controls.Primitives.Popup>(element);
+            if (popup != null)
+            {
+                popup.IsOpen = false;
+            }
+        }
+    }
+
+    private void TagTextBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key == System.Windows.Input.Key.Enter)
+        {
+            AddTagAndClose_Click(sender, e);
+            e.Handled = true;
+        }
+    }
+
+    private static T? FindParent<T>(DependencyObject child) where T : DependencyObject
+    {
+        DependencyObject? parentObject = System.Windows.Media.VisualTreeHelper.GetParent(child);
+        if (parentObject == null)
+        {
+            parentObject = LogicalTreeHelper.GetParent(child);
+        }
+        if (parentObject == null) return null;
+        if (parentObject is T parent) return parent;
+        return FindParent<T>(parentObject);
+    }
+
     private void DocumentListBox_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         if (sender is ListBox listBox && listBox.SelectedItem is Document document)

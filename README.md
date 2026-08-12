@@ -13,9 +13,16 @@
 ## 🌟 Öne Çıkan Özellikler
 
 - 🔍 **Akıllı Belge ve Ders Notu Arama**:
-  - PDF, Word (`.docx`, `.doc`), Excel (`.xlsx`, `.xls`) ve PowerPoint (`.pptx`, `.ppt`) dosyalarınızı yükleyin.
+  - PDF, Word (`.docx`, `.doc`), Excel (`.xlsx`, `.xls`), PowerPoint (`.pptx`, `.ppt`) ve Görsel (`.png`, `.jpg`, `.jpeg`, `.bmp`, `.tiff`) dosyalarınızı yükleyin.
   - Ders notları, sunum slaytları, poz numaraları, kelimeler ve tablolar içerisinde saliseler içinde arama yapın.
   - Çok çekirdekli arka plan motoru ve akıllı yerel metin önbellekleme sayesinde binlerce sayfalık ders materyalinde anında arama.
+
+- 🖼️ **Yerel OCR Desteği (Görsel İçinde Metin Arama)**:
+  - Ders notu fotoğrafları, ekran görüntüleri ve taranmış belgeler (`.png`, `.jpg`, `.jpeg`, `.bmp`, `.tiff`) içerisindeki metinleri Windows Native OCR teknolojisi ile otomatik algılama ve arama yapabilme.
+
+- ⭐ **Favori & Etiketleme (Tagging) Sistemi**:
+  - Önemli belgeleri favorilere (⭐) ekleme ve tek tıkla filtreleme.
+  - Belgelere özel etiketler (`#Matematik101`, `#Vize`, `#Laboratuvar`) ekleyerek ders bazlı gruplama ve etiket ismiyle arama yapabilme.
 
 - 🌐 **Çok Dilli Arayüz Desteği (TR | EN | AZ)**:
   - Türkçe, İngilizce ve Azerbaycanca dil desteği.

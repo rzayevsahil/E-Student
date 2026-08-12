@@ -19,10 +19,14 @@
     <sys:String x:Key="Doc_UploadedFiles">Yüklənmiş Fayllar</sys:String>
     <sys:String x:Key="Doc_SearchInList">Siyahıda axtar...</sys:String>
     <sys:String x:Key="Doc_Filter_All">Hamısı</sys:String>
+    <sys:String x:Key="Doc_Filter_Favorites">⭐ Sevimlilər</sys:String>
+    <sys:String x:Key="Doc_Filter_Images">🖼️ Şəkil (OCR)</sys:String>
     <sys:String x:Key="Doc_Filter_PDF">PDF</sys:String>
     <sys:String x:Key="Doc_Filter_Word">Word</sys:String>
     <sys:String x:Key="Doc_Filter_Excel">Excel</sys:String>
     <sys:String x:Key="Doc_Filter_PPT">PPT</sys:String>
+    <sys:String x:Key="Doc_TagPlaceholder">Teq əlavə et (məs: Mat101)...</sys:String>
+    <sys:String x:Key="Doc_AddTag">+ Əlavə et</sys:String>
     <sys:String x:Key="Doc_DropTitle">Faylları Buraya Sürükləyin</sys:String>
     <sys:String x:Key="Doc_DropSubtext">və ya 'Fayl Yüklə' düyməsini istifadə edin</sys:String>
     <sys:String x:Key="Doc_SearchTitle">Axtarış</sys:String>

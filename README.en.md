@@ -13,9 +13,16 @@
 ## 🌟 Key Features
 
 - 🔍 **Smart Document & Study Note Search**:
-  - Upload PDF, Word (`.docx`, `.doc`), Excel (`.xlsx`, `.xls`), and PowerPoint (`.pptx`, `.ppt`) files.
+  - Upload PDF, Word (`.docx`, `.doc`), Excel (`.xlsx`, `.xls`), PowerPoint (`.pptx`, `.ppt`), and Image (`.png`, `.jpg`, `.jpeg`, `.bmp`, `.tiff`) files.
   - Search inside lecture notes, presentation slides, terms, numbers, and tables in milliseconds.
   - Instant search across thousands of pages powered by a multi-threaded background engine and local text caching.
+
+- 🖼️ **Native OCR Support (Text Search Inside Images)**:
+  - Automatically extract and search text inside study note photos, screenshots, and scanned documents (`.png`, `.jpg`, `.jpeg`, `.bmp`, `.tiff`) using Windows Native OCR technology.
+
+- ⭐ **Favorites & Tagging System**:
+  - Mark important documents as favorites (⭐) and filter them with a single click.
+  - Add custom tags (`#Math101`, `#Exam`, `#Lab`) to documents for course-based grouping and search by tag names.
 
 - 🌐 **Multi-Language UI Support (EN | TR | AZ)**:
   - English, Turkish, and Azerbaijani interface languages.

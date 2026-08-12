@@ -1,13 +1,49 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+using System.Collections.ObjectModel;
+
 namespace DocumentSearch.Models;
 
-public class Document
+public partial class Document : ObservableObject
 {
-    public string FilePath { get; set; } = string.Empty;
-    public string FileName { get; set; } = string.Empty;
-    public string FileExtension { get; set; } = string.Empty;
-    public long FileSize { get; set; }
-    public DateTime UploadDate { get; set; } = DateTime.Now;
-    public List<PriceItem> PriceItems { get; set; } = new();
-    public string RawContent { get; set; } = string.Empty;
-}
+    [ObservableProperty]
+    private string filePath = string.Empty;
 
+    [ObservableProperty]
+    private string fileName = string.Empty;
+
+    [ObservableProperty]
+    private string fileExtension = string.Empty;
+
+    [ObservableProperty]
+    private long fileSize;
+
+    [ObservableProperty]
+    private DateTime uploadDate = DateTime.Now;
+
+    [ObservableProperty]
+    private List<PriceItem> priceItems = new();
+
+    [ObservableProperty]
+    private string rawContent = string.Empty;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FavoriteIcon))]
+    [NotifyPropertyChangedFor(nameof(FavoriteBrush))]
+    private bool isFavorite;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayTags))]
+    [NotifyPropertyChangedFor(nameof(HasTags))]
+    private ObservableCollection<string> tags = new();
+
+    [ObservableProperty]
+    private string tagInputText = string.Empty;
+
+    public string DisplayTags => Tags != null && Tags.Any() ? string.Join(", ", Tags) : string.Empty;
+
+    public bool HasTags => Tags != null && Tags.Any();
+
+    public string FavoriteIcon => IsFavorite ? "★" : "☆";
+
+    public string FavoriteBrush => IsFavorite ? "#F59E0B" : "#9CA3AF";
+}

@@ -1,4 +1,5 @@
 using DocumentSearch.Models;
+using System.Collections.ObjectModel;
 using System.IO;
 using Newtonsoft.Json;
 
@@ -11,17 +12,24 @@ public class DocumentService : IDocumentService
     private readonly IExcelParser _excelParser;
     private readonly IWordParser _wordParser;
     private readonly IPowerPointParser _powerPointParser;
+    private readonly IOcrService _ocrService;
     private readonly string _storagePath;
     private readonly string _tempFolder;
 
-    public DocumentService(IPdfParser pdfParser, IExcelParser excelParser, IWordParser wordParser, IPowerPointParser powerPointParser)
+    public DocumentService(
+        IPdfParser pdfParser, 
+        IExcelParser excelParser, 
+        IWordParser wordParser, 
+        IPowerPointParser powerPointParser,
+        IOcrService ocrService)
     {
         _pdfParser = pdfParser;
         _excelParser = excelParser;
         _wordParser = wordParser;
         _powerPointParser = powerPointParser;
+        _ocrService = ocrService;
         
-        // AppData/Local/E-Student klasöründe sakla (Eski DocumentSearch klasörünü otomatik taşı)
+        // AppData/Local/E-Student klasöründe sakla
         var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         var appFolder = Path.Combine(appDataPath, "E-Student");
         var oldAppFolder = Path.Combine(appDataPath, "DocumentSearch");
@@ -72,7 +80,9 @@ public class DocumentService : IDocumentService
                         FileExtension = docInfo.FileExtension,
                         FileSize = docInfo.FileSize,
                         UploadDate = docInfo.UploadDate,
-                        RawContent = docInfo.RawContent
+                        RawContent = docInfo.RawContent,
+                        IsFavorite = docInfo.IsFavorite,
+                        Tags = new ObservableCollection<string>(docInfo.Tags ?? new List<string>())
                     });
                 }
                 else
@@ -91,7 +101,16 @@ public class DocumentService : IDocumentService
             // Yeniden parse edilmesi gereken dosyaları paralel yükle
             if (docsToReParse.Any())
             {
-                var tasks = docsToReParse.Select(info => LoadDocumentAsync(info.FilePath));
+                var tasks = docsToReParse.Select(async info =>
+                {
+                    var doc = await LoadDocumentAsync(info.FilePath);
+                    doc.IsFavorite = info.IsFavorite;
+                    if (info.Tags != null && info.Tags.Any())
+                    {
+                        doc.Tags = new ObservableCollection<string>(info.Tags);
+                    }
+                    return doc;
+                });
                 await Task.WhenAll(tasks);
             }
         }
@@ -103,56 +122,56 @@ public class DocumentService : IDocumentService
 
     public async Task<Document> LoadDocumentAsync(string filePath)
     {
-        return await Task.Run(() =>
+        var fileInfo = new FileInfo(filePath);
+        var extension = fileInfo.Extension.ToLower();
+        
+        var document = new Document
         {
-            var fileInfo = new FileInfo(filePath);
-            var extension = fileInfo.Extension.ToLower();
-            
-            var document = new Document
-            {
-                FilePath = filePath,
-                FileName = fileInfo.Name,
-                FileExtension = extension,
-                FileSize = fileInfo.Length,
-                UploadDate = DateTime.Now
-            };
+            FilePath = filePath,
+            FileName = fileInfo.Name,
+            FileExtension = extension,
+            FileSize = fileInfo.Length,
+            UploadDate = DateTime.Now
+        };
 
-            string rawContent;
+        string rawContent;
 
-            switch (extension)
+        if (_ocrService.IsSupportedExtension(extension))
+        {
+            rawContent = await _ocrService.ExtractTextAsync(filePath);
+        }
+        else
+        {
+            rawContent = await Task.Run(() =>
             {
-                case ".pdf":
-                    rawContent = _pdfParser.ExtractText(filePath);
-                    break;
-                case ".xlsx":
-                case ".xls":
-                    rawContent = _excelParser.ExtractText(filePath);
-                    break;
-                case ".docx":
-                case ".doc":
-                    rawContent = _wordParser.ExtractText(filePath);
-                    break;
-                case ".pptx":
-                case ".ppt":
-                    rawContent = _powerPointParser.ExtractText(filePath);
-                    break;
-                default:
-                    rawContent = string.Empty;
-                    break;
+                return extension switch
+                {
+                    ".pdf" => _pdfParser.ExtractText(filePath),
+                    ".xlsx" or ".xls" => _excelParser.ExtractText(filePath),
+                    ".docx" or ".doc" => _wordParser.ExtractText(filePath),
+                    ".pptx" or ".ppt" => _powerPointParser.ExtractText(filePath),
+                    _ => string.Empty
+                };
+            });
+        }
+
+        document.RawContent = rawContent;
+
+        lock (_documents)
+        {
+            var existing = _documents.FirstOrDefault(d => d.FilePath.Equals(filePath, StringComparison.OrdinalIgnoreCase));
+            if (existing != null)
+            {
+                document.IsFavorite = existing.IsFavorite;
+                document.Tags = existing.Tags;
+                _documents.Remove(existing);
             }
-
-            document.RawContent = rawContent;
-
-            lock (_documents)
-            {
-                _documents.RemoveAll(d => d.FilePath.Equals(filePath, StringComparison.OrdinalIgnoreCase));
-                _documents.Add(document);
-            }
-            
-            SaveDocuments();
-            
-            return document;
-        });
+            _documents.Add(document);
+        }
+        
+        SaveDocuments();
+        
+        return document;
     }
 
     public void RemoveDocument(string filePath)
@@ -170,6 +189,11 @@ public class DocumentService : IDocumentService
         {
             return _documents.ToList();
         }
+    }
+
+    public void SaveDocumentMetadata()
+    {
+        SaveDocuments();
     }
     
     private void SaveDocuments()
@@ -197,7 +221,9 @@ public class DocumentService : IDocumentService
                         FileSize = d.FileSize,
                         UploadDate = d.UploadDate,
                         LastWriteTime = lastWrite,
-                        RawContent = d.RawContent
+                        RawContent = d.RawContent,
+                        IsFavorite = d.IsFavorite,
+                        Tags = d.Tags.ToList()
                     };
                 }).ToList();
             }
@@ -220,6 +246,7 @@ public class DocumentService : IDocumentService
         public DateTime UploadDate { get; set; }
         public DateTime LastWriteTime { get; set; }
         public string RawContent { get; set; } = string.Empty;
+        public bool IsFavorite { get; set; }
+        public List<string> Tags { get; set; } = new();
     }
 }
-

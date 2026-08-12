@@ -29,6 +29,7 @@ public partial class App : Application
     private void ConfigureServices(IServiceCollection services)
     {
         // Services
+        services.AddSingleton<IOcrService, OcrService>();
         services.AddSingleton<IPdfParser, PdfParser>();
         services.AddSingleton<IExcelParser, ExcelParser>();
         services.AddSingleton<IWordParser, WordParser>();

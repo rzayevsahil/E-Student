@@ -113,9 +113,9 @@ export const translations: Record<Language, Translations> = {
       docSearchBody:
         "PDF, Word, Excel ve PowerPoint dosyalarınızı ekleyin, ardından aradığınız terimi yazın. E-Student her bir dosyanın içeriğini tarar ve eşleşen sayfa/slayt numarasıyla birlikte önünüze getirir.",
       docSearchPoints: [
-        "PDF, Word (.docx), Excel (.xlsx) ve PowerPoint (.pptx, .ppt) formatlarını destekler",
-        "Siz yazdıkça sonuçlar anında listelenir — ayrı bir buton gerekmez",
-        "Sonuca çift tıklayarak ilgili belgeyi tam sayfasında veya slaydında açın",
+        "PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx) ve Görsel (.png, .jpg, .jpeg, .bmp, .tiff) destekler",
+        "Windows Native OCR ile resim ve taranmış ders notlarındaki metinlerde anında arama",
+        "Favori yıldızı (⭐) ve özel etiketler (#Matematik101) ile ders bazlı gruplama ve süzme",
       ],
       fastLabel: "HIZLI VE PRATİK",
       fastTitle: "Dosyaları tek tek açıp okumaya son verin.",
@@ -216,9 +216,9 @@ export const translations: Record<Language, Translations> = {
       docSearchBody:
         "PDF, Word, Excel və PowerPoint fayllarınızı əlavə edin, sonra axtardığınız sözü yazın. E-Student hər bir sənədin məzmununu tarayır və uyğun gələn səhifə/slayd nömrəsi ilə təqdim edir.",
       docSearchPoints: [
-        "PDF, Word (.docx), Excel (.xlsx) və PowerPoint (.pptx, .ppt) formatlarını dəstəkləyir",
-        "Yazdıqca nəticələr anında siyahılanır — ayrı axtarış düyməsinə ehtiyac yoxdur",
-        "Nəticəyə iki dəfə klikləyərək müvafiq sənədi dəqiq səhifəsində və ya slaydında açın",
+        "PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx) və Şəkil (.png, .jpg, .jpeg, .bmp, .tiff) dəstəkləyir",
+        "Windows Native OCR ilə şəkil və skan edilmiş dərs qeydlərindəki mətnlərdə anında axtarış",
+        "Sevimlilər ulduzu (⭐) və xüsusi teqlər (#Riyaziyyat101) ilə fənn bazlı qruplaşdırma və filtrləmə",
       ],
       fastLabel: "SÜRƏTLİ VƏ RAHAT",
       fastTitle: "Faylları tək-tək açıb oxumağa son qoyun.",
@@ -319,9 +319,9 @@ export const translations: Record<Language, Translations> = {
       docSearchBody:
         "Add your PDF, Word, Excel and PowerPoint files once, then type what you're looking for. E-Student searches inside every document and shows you the file, page or slide where your words appear.",
       docSearchPoints: [
-        "Works with PDF, Word (.docx), Excel (.xlsx) and PowerPoint (.pptx, .ppt) files",
-        "Results appear as you type — no separate search button",
-        "Double-click a result to open the file on the right page or slide",
+        "Supports PDF, Word (.docx), Excel (.xlsx), PowerPoint (.pptx), and Image (.png, .jpg, .jpeg, .bmp, .tiff)",
+        "Instant text search inside images and scanned study notes using Windows Native OCR",
+        "Star favorites (⭐) and custom tags (#Math101) for course-based grouping and filtering",
       ],
       fastLabel: "FAST & CONVENIENT",
       fastTitle: "Stop opening documents one by one.",

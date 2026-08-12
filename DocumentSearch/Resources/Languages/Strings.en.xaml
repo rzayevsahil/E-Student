@@ -19,10 +19,14 @@
     <sys:String x:Key="Doc_UploadedFiles">Uploaded Files</sys:String>
     <sys:String x:Key="Doc_SearchInList">Search in list...</sys:String>
     <sys:String x:Key="Doc_Filter_All">All</sys:String>
+    <sys:String x:Key="Doc_Filter_Favorites">⭐ Favorites</sys:String>
+    <sys:String x:Key="Doc_Filter_Images">🖼️ Image (OCR)</sys:String>
     <sys:String x:Key="Doc_Filter_PDF">PDF</sys:String>
     <sys:String x:Key="Doc_Filter_Word">Word</sys:String>
     <sys:String x:Key="Doc_Filter_Excel">Excel</sys:String>
     <sys:String x:Key="Doc_Filter_PPT">PPT</sys:String>
+    <sys:String x:Key="Doc_TagPlaceholder">Add tag (e.g. Math101)...</sys:String>
+    <sys:String x:Key="Doc_AddTag">+ Add</sys:String>
     <sys:String x:Key="Doc_DropTitle">Drag Files Here</sys:String>
     <sys:String x:Key="Doc_DropSubtext">or use the 'Upload File' button</sys:String>
     <sys:String x:Key="Doc_SearchTitle">Search</sys:String>

@@ -8,5 +8,5 @@ public interface IDocumentService
     void RemoveDocument(string filePath);
     List<Document> GetAllDocuments();
     Task LoadSavedDocumentsAsync();
+    void SaveDocumentMetadata();
 }
-

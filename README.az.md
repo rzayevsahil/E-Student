@@ -13,9 +13,16 @@
 ## 🌟 Əsas Xüsusiyyətlər
 
 - 🔍 **Ağıllı Sənəd və Dərs Qeydi Axtarışı**:
-  - PDF, Word (`.docx`, `.doc`), Excel (`.xlsx`, `.xls`) və PowerPoint (`.pptx`, `.ppt`) fayllarınızı yükləyin.
+  - PDF, Word (`.docx`, `.doc`), Excel (`.xlsx`, `.xls`), PowerPoint (`.pptx`, `.ppt`) və Şəkil (`.png`, `.jpg`, `.jpeg`, `.bmp`, `.tiff`) fayllarınızı yükləyin.
   - Dərs qeydləri, təqdimat slaydları, istilahlar, rəqəmlər və cədvəllər içərisində salisələr içində axtarış edin.
   - Çoxnüvəli arxa plan mühərriki və ağıllı yerli mətn keşləməsi sayəsində minlərlə səhifəlik dərs materialında anında axtarış.
+
+- 🖼️ **Yerli OCR Dəstəyi (Şəkil Daxilində Mətn Axtarışı)**:
+  - Dərs qeydi şəkilləri, ekran görüntüləri və skan edilmiş sənədlər (`.png`, `.jpg`, `.jpeg`, `.bmp`, `.tiff`) içərisindəki mətnləri Windows Native OCR texnologiyası ilə avtomatik aşkar etmə və axtarma imkanı.
+
+- ⭐ **Sevimlilər & Teqləmə (Tagging) Sistemi**:
+  - Vacib sənədləri sevimlilərə (⭐) əlavə etmə və tək kliklə filtrləmə.
+  - Sənədlərə xüsusi teqlər (`#Riyaziyyat101`, `#İmtahan`, `#Laboratoriya`) əlavə edərək fənn bazlı qruplaşdırma və teq adı ilə axtarış etmə imkanı.
 
 - 🌐 **Çoxdilli İnterfeys Dəstəyi (AZ | EN | TR)**:
   - Azərbaycan, İngilis və Türk dillərində tam interfeys dəstəyi.

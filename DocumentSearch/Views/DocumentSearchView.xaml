@@ -218,6 +218,24 @@
                             <RadioButton Style="{StaticResource FilterChipStyle}" 
                                          GroupName="FileFilter" 
                                          Command="{Binding SelectFilterCommand}" 
+                                         CommandParameter="Favorites">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{DynamicResource Doc_Filter_Favorites}"/>
+                                    <TextBlock Text="{Binding FavoriteCount, StringFormat=' ({0})'}"/>
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton Style="{StaticResource FilterChipStyle}" 
+                                         GroupName="FileFilter" 
+                                         Command="{Binding SelectFilterCommand}" 
+                                         CommandParameter="Image">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{DynamicResource Doc_Filter_Images}"/>
+                                    <TextBlock Text="{Binding ImageCount, StringFormat=' ({0})'}"/>
+                                </StackPanel>
+                            </RadioButton>
+                            <RadioButton Style="{StaticResource FilterChipStyle}" 
+                                         GroupName="FileFilter" 
+                                         Command="{Binding SelectFilterCommand}" 
                                          CommandParameter="PDF">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="PDF"/>
@@ -327,81 +345,174 @@
                             </ListBox.ItemContainerStyle>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid Cursor="Hand">
+                                    <Grid Cursor="Hand" Margin="2,2">
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
                                         
+                                        <!-- Favori Yıldızı -->
+                                        <Button Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
+                                                Command="{Binding DataContext.ToggleFavoriteCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding .}"
+                                                Content="{Binding FavoriteIcon}"
+                                                Foreground="{Binding FavoriteBrush}"
+                                                FontSize="15"
+                                                Width="22"
+                                                Height="22"
+                                                Padding="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Cursor="Hand"
+                                                ToolTip="Favorilere Ekle / Çıkar"
+                                                VerticalAlignment="Top"
+                                                Margin="0,2,6,0"/>
+
                                         <!-- Dosya adı -->
-                                        <TextBlock Grid.Column="0" Grid.Row="0"
+                                        <TextBlock Grid.Column="1" Grid.Row="0"
                                                    Text="{Binding FileName}" 
                                                    FontWeight="SemiBold"
                                                    Foreground="{DynamicResource PrimaryTextBrush}"
                                                    TextWrapping="Wrap"
-                                                   Margin="0,0,8,0"
+                                                   Margin="0,0,6,0"
                                                    VerticalAlignment="Center"/>
                                         
                                         <!-- Dosya Uzantısı Rozeti (File Extension Badge) -->
-                                        <Border Grid.Column="0" Grid.Row="1"
-                                                HorizontalAlignment="Left"
-                                                CornerRadius="4"
-                                                Padding="6,2"
-                                                Margin="0,5,0,0">
-                                            <Border.Style>
-                                                <Style TargetType="Border">
-                                                    <Setter Property="Background" Value="#64748B"/>
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".pdf">
-                                                            <Setter Property="Background" Value="#DC2626"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".docx">
-                                                            <Setter Property="Background" Value="#2563EB"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".doc">
-                                                            <Setter Property="Background" Value="#2563EB"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".xlsx">
-                                                            <Setter Property="Background" Value="#16A34A"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".xls">
-                                                            <Setter Property="Background" Value="#16A34A"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".pptx">
-                                                            <Setter Property="Background" Value="#EA580C"/>
-                                                        </DataTrigger>
-                                                        <DataTrigger Binding="{Binding FileExtension}" Value=".ppt">
-                                                            <Setter Property="Background" Value="#EA580C"/>
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <TextBlock Text="{Binding FileExtension}" 
-                                                       FontSize="10" 
-                                                       FontWeight="Bold" 
-                                                       Foreground="White"/>
-                                        </Border>
+                                        <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" Margin="0,4,0,0">
+                                            <Border HorizontalAlignment="Left"
+                                                    CornerRadius="4"
+                                                    Padding="6,2">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Background" Value="#64748B"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".pdf">
+                                                                <Setter Property="Background" Value="#DC2626"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".docx">
+                                                                <Setter Property="Background" Value="#2563EB"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".doc">
+                                                                <Setter Property="Background" Value="#2563EB"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".xlsx">
+                                                                <Setter Property="Background" Value="#16A34A"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".xls">
+                                                                <Setter Property="Background" Value="#16A34A"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".pptx">
+                                                                <Setter Property="Background" Value="#EA580C"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".ppt">
+                                                                <Setter Property="Background" Value="#EA580C"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".png">
+                                                                <Setter Property="Background" Value="#8B5CF6"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".jpg">
+                                                                <Setter Property="Background" Value="#8B5CF6"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".jpeg">
+                                                                <Setter Property="Background" Value="#8B5CF6"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".bmp">
+                                                                <Setter Property="Background" Value="#8B5CF6"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding FileExtension}" Value=".tiff">
+                                                                <Setter Property="Background" Value="#8B5CF6"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock Text="{Binding FileExtension}" 
+                                                           FontSize="10" 
+                                                           FontWeight="Bold" 
+                                                           Foreground="White"/>
+                                            </Border>
+                                        </StackPanel>
+
+                                        <!-- Etiketler Listesi -->
+                                        <ItemsControl Grid.Column="1" Grid.Row="2" ItemsSource="{Binding Tags}" Margin="0,4,0,0">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel Orientation="Horizontal"/>
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="#3B82F6" CornerRadius="4" Padding="5,1" Margin="0,2,4,2">
+                                                        <TextBlock Text="{Binding StringFormat='#{0}'}" FontSize="10" Foreground="White" FontWeight="SemiBold"/>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <!-- Etiket Ekleme Input Alanı -->
+                                        <Grid Grid.Column="1" Grid.Row="3" Margin="0,4,0,2">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" 
+                                                    CornerRadius="3" 
+                                                    BorderBrush="{DynamicResource BorderBrush}" 
+                                                    BorderThickness="1"
+                                                    Background="{DynamicResource InputBackgroundBrush}">
+                                                <TextBox Text="{Binding TagInputText, UpdateSourceTrigger=PropertyChanged}"
+                                                         FontSize="10"
+                                                         Padding="4,2"
+                                                         Background="Transparent"
+                                                         Foreground="{DynamicResource PrimaryTextBrush}"
+                                                         CaretBrush="{DynamicResource PrimaryTextBrush}"
+                                                         BorderThickness="0"
+                                                         ToolTip="{DynamicResource Doc_TagPlaceholder}"/>
+                                            </Border>
+                                            <Button Grid.Column="1"
+                                                    Command="{Binding DataContext.AddTagCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding .}"
+                                                    Content="{DynamicResource Doc_AddTag}"
+                                                    FontSize="10"
+                                                    Padding="6,2"
+                                                    Margin="4,0,0,0"
+                                                    Background="{DynamicResource AccentBrush}"
+                                                    Foreground="White"
+                                                    BorderThickness="0"
+                                                    Cursor="Hand">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" CornerRadius="3" Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
+                                        </Grid>
 
                                         <!-- Sağ İkonlar: Göz/Önizleme & Kaldır Butonu -->
-                                        <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" 
+                                        <StackPanel Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" 
                                                     Orientation="Horizontal" 
-                                                    VerticalAlignment="Center">
+                                                    VerticalAlignment="Top"
+                                                    Margin="4,2,0,0">
                                             <Path Data="M 12,4.5 C 7,4.5 2.73,7.61 1,12 C 2.73,16.39 7,19.5 12,19.5 C 17,19.5 21.27,16.39 23,12 C 21.27,7.61 17,4.5 12,4.5 Z M 12,17 C 9.24,17 7,14.76 7,12 C 7,9.24 9.24,7 12,7 C 14.76,7 17,9.24 17,12 C 17,14.76 14.76,17 12,17 Z M 12,9 C 10.34,9 9,10.34 9,12 C 9,13.66 10.34,15 12,15 C 13.66,15 15,13.66 15,12 C 15,10.34 13.66,9 12,9 Z" 
                                                   Fill="{DynamicResource SecondaryTextBrush}" 
                                                   Width="14" 
                                                   Height="14" 
                                                   Stretch="Uniform" 
-                                                  Margin="0,0,8,0" 
+                                                  Margin="0,0,6,0" 
                                                   Opacity="0.75" 
                                                   ToolTip="Çift tıklayarak aç" 
                                                   VerticalAlignment="Center"/>
                                             <Button Content="✕"
-                                                    Width="24"
-                                                    Height="24"
+                                                    Width="22"
+                                                    Height="22"
                                                     Padding="0"
                                                     FontSize="12"
                                                     Background="Transparent"

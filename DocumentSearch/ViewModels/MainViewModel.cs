@@ -38,6 +38,12 @@ public partial class MainViewModel : ObservableObject
     private int totalCount;
 
     [ObservableProperty]
+    private int favoriteCount;
+
+    [ObservableProperty]
+    private int imageCount;
+
+    [ObservableProperty]
     private int pdfCount;
 
     [ObservableProperty]
@@ -275,6 +281,8 @@ public partial class MainViewModel : ObservableObject
     public void UpdateFilteredDocuments()
     {
         TotalCount = Documents.Count;
+        FavoriteCount = Documents.Count(d => d.IsFavorite);
+        ImageCount = Documents.Count(d => d.FileExtension is ".png" or ".jpg" or ".jpeg" or ".bmp" or ".tiff");
         PdfCount = Documents.Count(d => d.FileExtension.Equals(".pdf", StringComparison.OrdinalIgnoreCase));
         WordCount = Documents.Count(d => d.FileExtension.Equals(".docx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".doc", StringComparison.OrdinalIgnoreCase));
         ExcelCount = Documents.Count(d => d.FileExtension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".xls", StringComparison.OrdinalIgnoreCase));
@@ -285,13 +293,15 @@ public partial class MainViewModel : ObservableObject
         if (!string.IsNullOrWhiteSpace(DocumentFilterText))
         {
             var filter = DocumentFilterText.Trim().ToLower();
-            docs = docs.Where(d => d.FileName.ToLower().Contains(filter));
+            docs = docs.Where(d => d.FileName.ToLower().Contains(filter) || (d.Tags != null && d.Tags.Any(t => t.ToLower().Contains(filter))));
         }
 
         if (SelectedFileFilter != "All")
         {
             docs = SelectedFileFilter switch
             {
+                "Favorites" => docs.Where(d => d.IsFavorite),
+                "Image" => docs.Where(d => d.FileExtension is ".png" or ".jpg" or ".jpeg" or ".bmp" or ".tiff"),
                 "PDF" => docs.Where(d => d.FileExtension.Equals(".pdf", StringComparison.OrdinalIgnoreCase)),
                 "Word" => docs.Where(d => d.FileExtension.Equals(".docx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".doc", StringComparison.OrdinalIgnoreCase)),
                 "Excel" => docs.Where(d => d.FileExtension.Equals(".xlsx", StringComparison.OrdinalIgnoreCase) || d.FileExtension.Equals(".xls", StringComparison.OrdinalIgnoreCase)),
@@ -308,11 +318,57 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void ToggleFavorite(Document? doc)
+    {
+        if (doc == null) return;
+        doc.IsFavorite = !doc.IsFavorite;
+        _documentService.SaveDocumentMetadata();
+        UpdateFilteredDocuments();
+    }
+
+    [RelayCommand]
+    private void AddTag(Document? doc)
+    {
+        if (doc == null || string.IsNullOrWhiteSpace(doc.TagInputText)) return;
+
+        var input = doc.TagInputText.Trim().TrimStart('#');
+        var newTags = input.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+        foreach (var tag in newTags)
+        {
+            var cleanTag = tag.Trim();
+            if (!string.IsNullOrWhiteSpace(cleanTag) && !doc.Tags.Contains(cleanTag, StringComparer.OrdinalIgnoreCase))
+            {
+                doc.Tags.Add(cleanTag);
+            }
+        }
+
+        doc.TagInputText = string.Empty;
+        _documentService.SaveDocumentMetadata();
+        UpdateFilteredDocuments();
+    }
+
+    [RelayCommand]
+    private void RemoveTag(object? parameter)
+    {
+        if (parameter is ValueTuple<Document, string> tuple)
+        {
+            var (doc, tag) = tuple;
+            if (doc != null && doc.Tags.Contains(tag))
+            {
+                doc.Tags.Remove(tag);
+                _documentService.SaveDocumentMetadata();
+                UpdateFilteredDocuments();
+            }
+        }
+    }
+
+    [RelayCommand]
     private async Task LoadFiles()
     {
         var dialog = new OpenFileDialog
         {
-            Filter = "Desteklenen Dosyalar|*.pdf;*.xlsx;*.xls;*.docx;*.doc;*.pptx;*.ppt|PDF Dosyaları|*.pdf|Excel Dosyaları|*.xlsx;*.xls|Word Dosyaları|*.docx;*.doc|PowerPoint Sunumları|*.pptx;*.ppt|Tüm Dosyalar|*.*",
+            Filter = "Desteklenen Tüm Dosyalar|*.pdf;*.xlsx;*.xls;*.docx;*.doc;*.pptx;*.ppt;*.png;*.jpg;*.jpeg;*.bmp;*.tiff|PDF Dosyaları|*.pdf|Word Dosyaları|*.docx;*.doc|Excel Dosyaları|*.xlsx;*.xls|PowerPoint Sunumları|*.pptx;*.ppt|Görsel (OCR) Dosyaları|*.png;*.jpg;*.jpeg;*.bmp;*.tiff|Tüm Dosyalar|*.*",
             Multiselect = true
         };
 
@@ -329,7 +385,6 @@ public partial class MainViewModel : ObservableObject
 
                 if (filesToLoad.Any())
                 {
-                    // Dosyaları paralel olarak yükle
                     var tasks = filesToLoad.Select(filePath => _documentService.LoadDocumentAsync(filePath));
                     var loadedDocs = await Task.WhenAll(tasks);
 
@@ -363,7 +418,7 @@ public partial class MainViewModel : ObservableObject
 
     public async Task LoadFilesFromPathsAsync(IEnumerable<string> filePaths)
     {
-        var validExtensions = new[] { ".pdf", ".docx", ".doc", ".xlsx", ".xls", ".pptx", ".ppt" };
+        var validExtensions = new[] { ".pdf", ".docx", ".doc", ".xlsx", ".xls", ".pptx", ".ppt", ".png", ".jpg", ".jpeg", ".bmp", ".tiff" };
         var filesToLoad = filePaths
             .Where(path => validExtensions.Contains(Path.GetExtension(path).ToLower()))
             .Where(path => !Documents.Any(d => d.FilePath.Equals(path, StringComparison.OrdinalIgnoreCase)))

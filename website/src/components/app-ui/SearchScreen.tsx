@@ -57,7 +57,7 @@ export function SearchScreen({ query = "regresyon" }: { query?: string }) {
       <Sidebar active="search" />
       <div className="min-w-0 flex-1 p-3 sm:p-4">
         <h3 className="text-center text-[15px] font-bold text-navy sm:text-[17px]">
-          Belge İçerik Arama Uygulaması
+          E-Student
         </h3>
         <div className="mt-3 flex items-center gap-3">
           <span className="rounded-[3px] bg-sky px-3 py-1.5 text-[12px] font-medium text-white">

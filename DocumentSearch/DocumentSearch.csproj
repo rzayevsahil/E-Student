@@ -8,8 +8,8 @@
     <UseWPF>true</UseWPF>
     <ApplicationIcon>app.ico</ApplicationIcon>
     <AssemblyName>E-Student</AssemblyName>
-    <Product>E-Student Belge Arama Uygulaması</Product>
-    <Version>2.3.2</Version>
+    <Product>E-Student</Product>
+    <Version>2.3.3</Version>
   </PropertyGroup>
 
   <ItemGroup>

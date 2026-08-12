@@ -16,7 +16,7 @@
 
         <!-- Header -->
         <TextBlock Grid.Row="0" 
-                   Text="Belge İçerik Arama Uygulaması" 
+                   Text="E-Student" 
                    FontSize="24" 
                    FontWeight="Bold" 
                    Foreground="{DynamicResource PrimaryTextBrush}"

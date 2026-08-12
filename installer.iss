@@ -1,10 +1,10 @@
-#define MyAppName "E-Student Belge Arama"
+#define MyAppName "E-Student"
 #define MyAppPublisher "Sahil Rzayev"
 #define MyAppURL "https://github.com/rzayevsahil/E-Student"
 #define MyAppExeName "E-Student.exe"
 
 #ifndef MyAppVersion
-#define MyAppVersion "2.3.2"
+#define MyAppVersion "2.3.3"
 #endif
 
 [Setup]

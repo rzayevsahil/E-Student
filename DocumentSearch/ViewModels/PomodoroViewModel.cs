@@ -87,6 +87,21 @@ public partial class PomodoroViewModel : ObservableObject
         RefreshTexts();
     }
 
+    [ObservableProperty]
+    private bool isHelpModalOpen;
+
+    [RelayCommand]
+    private void ToggleHelpModal()
+    {
+        IsHelpModalOpen = !IsHelpModalOpen;
+    }
+
+    [RelayCommand]
+    private void CloseHelpModal()
+    {
+        IsHelpModalOpen = false;
+    }
+
     [RelayCommand]
     private void Skip()
     {

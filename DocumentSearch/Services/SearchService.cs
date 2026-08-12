@@ -28,8 +28,9 @@ public class SearchService : ISearchService
                 });
             }
 
-            // İçerikte sayfa bazlı arama (PDF ve Word için)
-            if ((document.FileExtension.ToLower() == ".pdf" || document.FileExtension.ToLower() == ".docx" || document.FileExtension.ToLower() == ".doc") 
+            // İçerikte sayfa/slayt bazlı arama (PDF, Word ve PowerPoint için)
+            var ext = document.FileExtension.ToLower();
+            if ((ext == ".pdf" || ext == ".docx" || ext == ".doc" || ext == ".pptx" || ext == ".ppt") 
                 && !string.IsNullOrWhiteSpace(document.RawContent))
             {
                 // İçeriği sayfalara böl (---PAGE_X--- ayırıcısına göre)

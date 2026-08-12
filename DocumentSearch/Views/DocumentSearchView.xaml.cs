@@ -85,6 +85,13 @@ public partial class DocumentSearchView : UserControl
                 OpenWordDocumentAtPage(document.FilePath, pageNumber.Value);
                 return;
             }
+            // PowerPoint dosyaları için slayt numarası ile açma
+            else if (pageNumber.HasValue && pageNumber.Value > 0 && 
+                     (fileExtension == ".pptx" || fileExtension == ".ppt"))
+            {
+                OpenPowerPointAtSlide(document.FilePath, pageNumber.Value);
+                return;
+            }
             else
             {
                 // Sayfa numarası yoksa veya desteklenmeyen format ise normal aç
@@ -314,6 +321,57 @@ public partial class DocumentSearchView : UserControl
             catch (Exception ex)
             {
                 MessageBox.Show($"Word dosyası açılırken hata oluştu: {ex.Message}", 
+                    "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+    }
+
+    private void OpenPowerPointAtSlide(string filePath, int slideNumber)
+    {
+        try
+        {
+            Type? pptType = Type.GetTypeFromProgID("PowerPoint.Application");
+            if (pptType == null)
+            {
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = filePath,
+                    UseShellExecute = true
+                };
+                Process.Start(processStartInfo);
+                return;
+            }
+
+            dynamic pptApp = Activator.CreateInstance(pptType);
+            pptApp.Visible = true;
+            
+            dynamic presentation = pptApp.Presentations.Open(filePath);
+            try
+            {
+                if (pptApp.ActiveWindow != null)
+                {
+                    pptApp.ActiveWindow.View.GotoSlide(slideNumber);
+                }
+            }
+            catch
+            {
+                // En azından sunumu açtı
+            }
+        }
+        catch
+        {
+            try
+            {
+                var processStartInfo = new ProcessStartInfo
+                {
+                    FileName = filePath,
+                    UseShellExecute = true
+                };
+                Process.Start(processStartInfo);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"PowerPoint dosyası açılırken hata oluştu: {ex.Message}", 
                     "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

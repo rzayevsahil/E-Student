@@ -21,8 +21,8 @@
                     <TextBlock Text="🔍" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Border>
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Belge İçerik Arama" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"/>
-                    <TextBlock Text="PDF, Word, Excel ve PowerPoint ders materyallerinizde anında kelime araması" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,2,0,0"/>
+                    <TextBlock Text="{DynamicResource Doc_Title}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource PrimaryTextBrush}"/>
+                    <TextBlock Text="{DynamicResource Doc_Subtitle}" FontSize="12" Foreground="{DynamicResource SecondaryTextBrush}" Margin="0,2,0,0"/>
                 </StackPanel>
             </StackPanel>
         </Grid>
@@ -48,7 +48,7 @@
                                             Padding="{TemplateBinding Padding}">
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                             <TextBlock Text="➕ " FontSize="12" VerticalAlignment="Center"/>
-                                            <TextBlock Text="Dosya Yükle" VerticalAlignment="Center"/>
+                                            <TextBlock Text="{DynamicResource Doc_UploadButtonText}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Border>
                                 </ControlTemplate>
@@ -100,7 +100,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" 
-                                   Text="Yüklenen Dosyalar" 
+                                   Text="{DynamicResource Doc_UploadedFiles}" 
                                    FontWeight="Bold" 
                                    Padding="12,10"
                                    Foreground="{DynamicResource PrimaryTextBrush}"/>
@@ -135,7 +135,7 @@
                                   VerticalAlignment="Center" 
                                   Margin="0,0,6,0"/>
                             <Grid Grid.Column="1" VerticalAlignment="Center">
-                                <TextBlock Text="Listede ara..." 
+                                <TextBlock Text="{DynamicResource Doc_SearchInList}" 
                                            FontSize="11" 
                                            Foreground="{DynamicResource SecondaryTextBrush}" 
                                            Opacity="0.5" 
@@ -209,33 +209,48 @@
                                          GroupName="FileFilter" 
                                          IsChecked="True" 
                                          Command="{Binding SelectFilterCommand}" 
-                                         CommandParameter="All" 
-                                         Content="{Binding TotalCount}"
-                                         ContentStringFormat="Tümü ({0})"/>
+                                         CommandParameter="All">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{DynamicResource Doc_Filter_All}"/>
+                                    <TextBlock Text="{Binding TotalCount, StringFormat=' ({0})'}"/>
+                                </StackPanel>
+                            </RadioButton>
                             <RadioButton Style="{StaticResource FilterChipStyle}" 
                                          GroupName="FileFilter" 
                                          Command="{Binding SelectFilterCommand}" 
-                                         CommandParameter="PDF" 
-                                         Content="{Binding PdfCount}"
-                                         ContentStringFormat="PDF ({0})"/>
+                                         CommandParameter="PDF">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="PDF"/>
+                                    <TextBlock Text="{Binding PdfCount, StringFormat=' ({0})'}"/>
+                                </StackPanel>
+                            </RadioButton>
                             <RadioButton Style="{StaticResource FilterChipStyle}" 
                                          GroupName="FileFilter" 
                                          Command="{Binding SelectFilterCommand}" 
-                                         CommandParameter="Word" 
-                                         Content="{Binding WordCount}"
-                                         ContentStringFormat="Word ({0})"/>
+                                         CommandParameter="Word">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Word"/>
+                                    <TextBlock Text="{Binding WordCount, StringFormat=' ({0})'}"/>
+                                </StackPanel>
+                            </RadioButton>
                             <RadioButton Style="{StaticResource FilterChipStyle}" 
                                          GroupName="FileFilter" 
                                          Command="{Binding SelectFilterCommand}" 
-                                         CommandParameter="Excel" 
-                                         Content="{Binding ExcelCount}"
-                                         ContentStringFormat="Excel ({0})"/>
+                                         CommandParameter="Excel">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Excel"/>
+                                    <TextBlock Text="{Binding ExcelCount, StringFormat=' ({0})'}"/>
+                                </StackPanel>
+                            </RadioButton>
                             <RadioButton Style="{StaticResource FilterChipStyle}" 
                                          GroupName="FileFilter" 
                                          Command="{Binding SelectFilterCommand}" 
-                                         CommandParameter="PowerPoint" 
-                                         Content="{Binding PptCount}"
-                                         ContentStringFormat="PPT ({0})"/>
+                                         CommandParameter="PowerPoint">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="PPT"/>
+                                    <TextBlock Text="{Binding PptCount, StringFormat=' ({0})'}"/>
+                                </StackPanel>
+                            </RadioButton>
                         </StackPanel>
                     </ScrollViewer>
 
@@ -260,13 +275,13 @@
                             </Border.Style>
                             <StackPanel Margin="15,25" HorizontalAlignment="Center">
                                 <TextBlock Text="📥" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,8" Opacity="0.7"/>
-                                <TextBlock Text="Dosyaları Buraya Sürükleyin" 
+                                <TextBlock Text="{DynamicResource Doc_DropTitle}" 
                                            FontSize="13" 
                                            FontWeight="SemiBold" 
                                            Foreground="{DynamicResource PrimaryTextBrush}" 
                                            HorizontalAlignment="Center" 
                                            TextAlignment="Center"/>
-                                <TextBlock Text="veya 'Dosya Yükle' butonunu kullanın" 
+                                <TextBlock Text="{DynamicResource Doc_DropSubtext}" 
                                            FontSize="11" 
                                            Foreground="{DynamicResource SecondaryTextBrush}" 
                                            HorizontalAlignment="Center" 
@@ -434,7 +449,7 @@
                             Padding="12"
                             Margin="0,0,0,10">
                         <StackPanel>
-                            <TextBlock Text="Arama" 
+                            <TextBlock Text="{DynamicResource Doc_SearchTitle}" 
                                        FontWeight="Bold" 
                                        Foreground="{DynamicResource PrimaryTextBrush}"
                                        Margin="0,0,0,6"/>
@@ -461,7 +476,7 @@
                                           VerticalAlignment="Center" 
                                           Margin="0,0,10,0"/>
                                     <Grid Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="Belgelerinizde aramak istediğiniz kelimeyi yazın..."
+                                        <TextBlock Text="{DynamicResource Doc_SearchPlaceholder}"
                                                    FontSize="13"
                                                    Foreground="{DynamicResource SecondaryTextBrush}"
                                                    Opacity="0.5"
@@ -495,7 +510,7 @@
                                 </Grid>
                             </Border>
 
-                            <TextBlock Text="Yazdıkça otomatik arama yapılır" 
+                            <TextBlock Text="{DynamicResource Doc_AutoSearchSubtext}" 
                                        FontSize="11" 
                                        Foreground="{DynamicResource SecondaryTextBrush}"
                                        Margin="0,5,0,0"/>
@@ -519,18 +534,21 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <TextBlock Grid.Row="0"
-                                           Text="{Binding SearchResults.Count, StringFormat='Arama Sonuçları ({0})'}" 
-                                           FontWeight="Bold" 
-                                           Foreground="{DynamicResource PrimaryTextBrush}"
-                                           Padding="10,10,10,5"/>
+                                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10,10,10,5">
+                                    <TextBlock Text="{DynamicResource Doc_SearchResults}" 
+                                               FontWeight="Bold" 
+                                               Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                    <TextBlock Text="{Binding SearchResults.Count, StringFormat=' ({0})'}" 
+                                               FontWeight="Bold" 
+                                               Foreground="{DynamicResource PrimaryTextBrush}"/>
+                                </StackPanel>
                                 <TextBlock Grid.Row="1"
                                            FontSize="10"
                                            Foreground="{DynamicResource SecondaryTextBrush}"
                                            Padding="10,0,10,10"
                                            FontStyle="Italic">
-                                    <Run Text="💡 İpucu:" Foreground="DarkOrange" FontWeight="SemiBold"/>
-                                    <Run Text=" Tıklayarak sağda önizleyin, çift tıklayarak harici uygulamada açın."/>
+                                    <Run Text="{DynamicResource Doc_TipHeader}" Foreground="DarkOrange" FontWeight="SemiBold"/>
+                                    <Run Text="{DynamicResource Doc_TipText}"/>
                                 </TextBlock>
                             </Grid>
                             
@@ -587,12 +605,15 @@
                                     </Style>
                                 </DataGrid.RowStyle>
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Dosya" 
-                                                        Binding="{Binding DocumentName}" 
-                                                        Width="1.2*"/>
-                                    <DataGridTextColumn Header="Sayfa" 
-                                                        Binding="{Binding PageNumber, StringFormat='{}{0}'}" 
-                                                        Width="60">
+                                    <DataGridTextColumn Binding="{Binding DocumentName}" Width="1.2*">
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="{DynamicResource Doc_Col_File}"/>
+                                        </DataGridTextColumn.Header>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Binding="{Binding PageNumber, StringFormat='{}{0}'}" Width="60">
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="{DynamicResource Doc_Col_Page}"/>
+                                        </DataGridTextColumn.Header>
                                         <DataGridTextColumn.ElementStyle>
                                             <Style TargetType="TextBlock">
                                                 <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -604,9 +625,11 @@
                                             </Style>
                                         </DataGridTextColumn.ElementStyle>
                                     </DataGridTextColumn>
-                                    <DataGridTextColumn Header="Eşleşen Snippet" 
-                                                        Binding="{Binding Snippet}" 
-                                                        Width="2*"/>
+                                    <DataGridTextColumn Binding="{Binding Snippet}" Width="2*">
+                                        <DataGridTextColumn.Header>
+                                            <TextBlock Text="{DynamicResource Doc_Col_Snippet}"/>
+                                        </DataGridTextColumn.Header>
+                                    </DataGridTextColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
                         </Grid>
@@ -702,7 +725,7 @@
 
                                 <!-- Header Actions: Harici Aç & Kapat -->
                                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                    <Button Content="↗ Harici Aç"
+                                    <Button Content="{DynamicResource Doc_Preview_OpenExternal}"
                                             Padding="8,4"
                                             FontSize="11"
                                             FontWeight="SemiBold"
@@ -713,7 +736,7 @@
                                             Cursor="Hand"
                                             Margin="0,0,6,0"
                                             Click="OpenExternalFromPreview_Click"
-                                            ToolTip="Belgeyi harici uygulamada aç"/>
+                                            ToolTip="{DynamicResource Doc_Preview_OpenExternal}"/>
                                     <Button Content="✕"
                                             Width="26"
                                             Height="26"
@@ -724,7 +747,7 @@
                                             BorderThickness="0"
                                             Cursor="Hand"
                                             Command="{Binding ClosePreviewCommand}"
-                                            ToolTip="Önizlemeyi Kapat"/>
+                                            ToolTip="{DynamicResource Doc_Preview_Close}"/>
                                 </StackPanel>
                             </Grid>
                         </Border>
@@ -738,7 +761,7 @@
                                 BorderThickness="3,0,0,0"
                                 CornerRadius="4">
                             <StackPanel>
-                                <TextBlock Text="🔍 Arama Eşleşmesi / Snippet" 
+                                <TextBlock Text="{DynamicResource Doc_Preview_SnippetTitle}" 
                                            FontSize="10" 
                                            FontWeight="Bold" 
                                            Foreground="{DynamicResource AccentBrush}" 
@@ -779,7 +802,7 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Button Grid.Column="0" 
-                                        Content="◀ Önceki" 
+                                        Content="{DynamicResource Doc_Preview_Prev}" 
                                         Command="{Binding PreviousPreviewPageCommand}"
                                         Padding="8,4"
                                         FontSize="11"
@@ -795,14 +818,15 @@
                                            FontSize="11" 
                                            FontWeight="SemiBold"
                                            Foreground="{DynamicResource SecondaryTextBrush}">
-                                    <Run Text="Sayfa "/>
+                                    <Run Text="{DynamicResource Doc_Col_Page}"/>
+                                    <Run Text=" "/>
                                     <Run Text="{Binding PreviewCurrentPage}"/>
                                     <Run Text=" / "/>
                                     <Run Text="{Binding PreviewTotalPages}"/>
                                 </TextBlock>
 
                                 <Button Grid.Column="2" 
-                                        Content="Sonraki ▶" 
+                                        Content="{DynamicResource Doc_Preview_Next}" 
                                         Command="{Binding NextPreviewPageCommand}"
                                         Padding="8,4"
                                         FontSize="11"

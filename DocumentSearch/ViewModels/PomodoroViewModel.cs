@@ -1,5 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DocumentSearch.Services;
 using System;
 using System.Windows.Threading;
 
@@ -7,6 +8,7 @@ namespace DocumentSearch.ViewModels;
 
 public partial class PomodoroViewModel : ObservableObject
 {
+    private readonly LanguageService _languageService;
     private DispatcherTimer? _timer;
     private TimeSpan _remainingTime;
     private TimeSpan _workDuration = TimeSpan.FromMinutes(25);
@@ -19,10 +21,10 @@ public partial class PomodoroViewModel : ObservableObject
     private string timeDisplay = "25:00";
 
     [ObservableProperty]
-    private string statusText = "Pomodoro Tekniği";
+    private string statusText = string.Empty;
 
     [ObservableProperty]
-    private string buttonText = "Başlat";
+    private string buttonText = string.Empty;
 
     [ObservableProperty]
     private bool isRunning = false;
@@ -31,15 +33,48 @@ public partial class PomodoroViewModel : ObservableObject
     private int completedCount = 0;
 
     [ObservableProperty]
-    private string currentPhase = "Çalışma";
+    private string currentPhase = string.Empty;
 
     [ObservableProperty]
-    private string infoText = "Pomodoro Tekniği, odaklanmayı artırmak için 25 dakikalık çalışma ve kısa molalar kullanır.";
+    private string infoText = string.Empty;
 
-    public PomodoroViewModel()
+    public PomodoroViewModel(LanguageService languageService)
     {
+        _languageService = languageService;
+        _languageService.LanguageChanged += (s, lang) => RefreshTexts();
+
         _remainingTime = _workDuration;
         UpdateTimeDisplay();
+        RefreshTexts();
+    }
+
+    private void RefreshTexts()
+    {
+        InfoText = _languageService.GetString("Pomo_InfoText");
+
+        switch (_currentState)
+        {
+            case PomodoroState.Idle:
+                CurrentPhase = _languageService.GetString("Pomo_Phase_Work");
+                StatusText = _languageService.GetString("Pomo_Status_Idle");
+                ButtonText = _languageService.GetString("Pomo_Start");
+                break;
+            case PomodoroState.Working:
+                CurrentPhase = _languageService.GetString("Pomo_Phase_Work");
+                ButtonText = IsRunning ? _languageService.GetString("Pomo_Pause") : _languageService.GetString("Pomo_Resume");
+                StatusText = IsRunning ? _languageService.GetString("Pomo_Status_Work") : _languageService.GetString("Pomo_Status_Paused");
+                break;
+            case PomodoroState.ShortBreak:
+                CurrentPhase = _languageService.GetString("Pomo_Phase_ShortBreak");
+                ButtonText = IsRunning ? _languageService.GetString("Pomo_Pause") : _languageService.GetString("Pomo_Resume");
+                StatusText = IsRunning ? _languageService.GetString("Pomo_Status_ShortBreak") : _languageService.GetString("Pomo_Status_Paused");
+                break;
+            case PomodoroState.LongBreak:
+                CurrentPhase = _languageService.GetString("Pomo_Phase_LongBreak");
+                ButtonText = IsRunning ? _languageService.GetString("Pomo_Pause") : _languageService.GetString("Pomo_Resume");
+                StatusText = IsRunning ? _languageService.GetString("Pomo_Status_LongBreak") : _languageService.GetString("Pomo_Status_Paused");
+                break;
+        }
     }
 
     [RelayCommand]
@@ -66,10 +101,8 @@ public partial class PomodoroViewModel : ObservableObject
         _currentState = PomodoroState.Idle;
         _remainingTime = _workDuration;
         IsRunning = false;
-        ButtonText = "Başlat";
-        CurrentPhase = "Çalışma";
         UpdateTimeDisplay();
-        StatusText = "Pomodoro Tekniği";
+        RefreshTexts();
     }
 
     [RelayCommand]
@@ -89,9 +122,7 @@ public partial class PomodoroViewModel : ObservableObject
     {
         _currentState = PomodoroState.Working;
         _remainingTime = _workDuration;
-        CurrentPhase = "Çalışma";
         StartTimer();
-        StatusText = "Çalışma zamanı! Odaklanın.";
     }
 
     private void CompleteWork()
@@ -101,7 +132,6 @@ public partial class PomodoroViewModel : ObservableObject
         
         StopTimer();
         IsRunning = false;
-        ButtonText = "Başlat";
 
         // Her 4 pomodoroda bir uzun mola
         if (_completedPomodoros % 4 == 0)
@@ -118,41 +148,30 @@ public partial class PomodoroViewModel : ObservableObject
     {
         _currentState = PomodoroState.ShortBreak;
         _remainingTime = _shortBreakDuration;
-        CurrentPhase = "Kısa Mola";
-        StatusText = "Kısa mola zamanı. Rahatlayın!";
         UpdateTimeDisplay();
+        RefreshTexts();
     }
 
     private void StartLongBreak()
     {
         _currentState = PomodoroState.LongBreak;
         _remainingTime = _longBreakDuration;
-        CurrentPhase = "Uzun Mola";
-        StatusText = "Uzun mola zamanı. İyi dinlenin!";
         UpdateTimeDisplay();
+        RefreshTexts();
     }
 
     private void Pause()
     {
         StopTimer();
         IsRunning = false;
-        ButtonText = "Devam Et";
-        StatusText = "Duraklatıldı";
+        RefreshTexts();
     }
 
     private void Resume()
     {
         StartTimer();
         IsRunning = true;
-        ButtonText = "Duraklat";
-        if (_currentState == PomodoroState.Working)
-        {
-            StatusText = "Çalışma zamanı! Odaklanın.";
-        }
-        else
-        {
-            StatusText = "Mola zamanı. Rahatlayın!";
-        }
+        RefreshTexts();
     }
 
     private void StartTimer()
@@ -164,7 +183,7 @@ public partial class PomodoroViewModel : ObservableObject
         _timer.Tick += Timer_Tick;
         _timer.Start();
         IsRunning = true;
-        ButtonText = "Duraklat";
+        RefreshTexts();
     }
 
     private void StopTimer()
@@ -194,7 +213,7 @@ public partial class PomodoroViewModel : ObservableObject
     {
         StopTimer();
         IsRunning = false;
-        ButtonText = "Başlat";
+        RefreshTexts();
 
         if (_currentState == PomodoroState.Working)
         {

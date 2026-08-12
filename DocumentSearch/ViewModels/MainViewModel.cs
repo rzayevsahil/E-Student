@@ -13,6 +13,8 @@ public partial class MainViewModel : ObservableObject
 {
     private readonly IDocumentService _documentService;
     private readonly ISearchService _searchService;
+    private readonly LanguageService _languageService;
+    private Action? _lastStatusUpdate;
 
     [ObservableProperty]
     private ObservableCollection<Document> documents = new();
@@ -51,7 +53,7 @@ public partial class MainViewModel : ObservableObject
     private bool isLoading;
 
     [ObservableProperty]
-    private string statusMessage = "Hazır";
+    private string statusMessage = string.Empty;
 
     [ObservableProperty]
     private SearchResult? selectedSearchResult;
@@ -87,16 +89,26 @@ public partial class MainViewModel : ObservableObject
 
     private CancellationTokenSource? _searchCts;
 
-    public MainViewModel(IDocumentService documentService, ISearchService searchService)
+    public MainViewModel(IDocumentService documentService, ISearchService searchService, LanguageService languageService)
     {
         _documentService = documentService;
         _searchService = searchService;
-        
+        _languageService = languageService;
+
+        _languageService.LanguageChanged += (s, lang) => _lastStatusUpdate?.Invoke();
+        SetStatus(() => StatusMessage = _languageService.GetString("Status_Ready"));
+
         // Uygulama başlarken kayıtlı dosyaları yükle
         _ = InitializeAsync();
-        
+
         // SearchQuery veya Filtre değiştiğinde otomatik güncelle
         PropertyChanged += MainViewModel_PropertyChanged;
+    }
+
+    private void SetStatus(Action action)
+    {
+        _lastStatusUpdate = action;
+        action();
     }
     
     private void MainViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -225,7 +237,7 @@ public partial class MainViewModel : ObservableObject
     private async Task InitializeAsync()
     {
         IsLoading = true;
-        StatusMessage = "Kayıtlı dosyalar yükleniyor...";
+        SetStatus(() => StatusMessage = _languageService.GetString("Status_LoadingSavedFiles"));
         
         try
         {
@@ -239,11 +251,11 @@ public partial class MainViewModel : ObservableObject
             }
             
             UpdateFilteredDocuments();
-            StatusMessage = $"{allDocuments.Count} kayıtlı dosya yüklendi.";
+            SetStatus(() => StatusMessage = _languageService.GetString("Status_SavedFilesLoaded", allDocuments.Count));
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Hata: {ex.Message}";
+            SetStatus(() => StatusMessage = _languageService.GetString("Status_Error", ex.Message));
         }
         finally
         {
@@ -307,7 +319,7 @@ public partial class MainViewModel : ObservableObject
         if (dialog.ShowDialog() == true)
         {
             IsLoading = true;
-            StatusMessage = "Dosyalar yükleniyor...";
+            SetStatus(() => StatusMessage = _languageService.GetString("Status_LoadingFiles"));
 
             try
             {
@@ -331,11 +343,11 @@ public partial class MainViewModel : ObservableObject
                     UpdateFilteredDocuments();
                 }
 
-                StatusMessage = $"{dialog.FileNames.Length} dosya işlendi. Toplam {Documents.Count} dosya.";
+                SetStatus(() => StatusMessage = _languageService.GetString("Status_FilesProcessed", dialog.FileNames.Length, Documents.Count));
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Hata: {ex.Message}";
+                SetStatus(() => StatusMessage = _languageService.GetString("Status_Error", ex.Message));
                 System.Windows.MessageBox.Show(
                     $"Dosya yüklenirken hata oluştu:\n\n{ex.Message}\n\nDetay: {ex.InnerException?.Message ?? "Yok"}",
                     "Hata",
@@ -360,7 +372,7 @@ public partial class MainViewModel : ObservableObject
         if (!filesToLoad.Any()) return;
 
         IsLoading = true;
-        StatusMessage = "Sürüklenen dosyalar yükleniyor...";
+        SetStatus(() => StatusMessage = _languageService.GetString("Status_DraggingFiles"));
 
         try
         {
@@ -376,7 +388,7 @@ public partial class MainViewModel : ObservableObject
             }
 
             UpdateFilteredDocuments();
-            StatusMessage = $"{filesToLoad.Count} dosya eklendi. Toplam {Documents.Count} dosya.";
+            SetStatus(() => StatusMessage = _languageService.GetString("Status_FilesAdded", filesToLoad.Count, Documents.Count));
             
             if (!string.IsNullOrWhiteSpace(SearchQuery))
             {
@@ -385,7 +397,7 @@ public partial class MainViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            StatusMessage = $"Hata: {ex.Message}";
+            SetStatus(() => StatusMessage = _languageService.GetString("Status_Error", ex.Message));
         }
         finally
         {
@@ -402,7 +414,7 @@ public partial class MainViewModel : ObservableObject
         _documentService.RemoveDocument(document.FilePath);
         Documents.Remove(document);
         UpdateFilteredDocuments();
-        StatusMessage = $"{document.FileName} kaldırıldı.";
+        SetStatus(() => StatusMessage = _languageService.GetString("Status_FileRemoved", document.FileName));
         
         // Arama sonuçlarını güncelle
         if (!string.IsNullOrWhiteSpace(SearchQuery))
@@ -431,7 +443,7 @@ public partial class MainViewModel : ObservableObject
         if (string.IsNullOrWhiteSpace(query))
         {
             SearchResults.Clear();
-            StatusMessage = "";
+            SetStatus(() => StatusMessage = "");
             return;
         }
 
@@ -440,7 +452,7 @@ public partial class MainViewModel : ObservableObject
         if (allDocuments == null || !allDocuments.Any())
         {
             SearchResults.Clear();
-            StatusMessage = "Yüklenmiş dosya yok.";
+            SetStatus(() => StatusMessage = _languageService.GetString("Status_NoFiles"));
             return;
         }
 
@@ -455,7 +467,7 @@ public partial class MainViewModel : ObservableObject
             SearchResults.Add(result);
         }
 
-        StatusMessage = $"{results.Count} sonuç bulundu.";
+        SetStatus(() => StatusMessage = _languageService.GetString("Status_ResultsFound", results.Count));
     }
 
 }

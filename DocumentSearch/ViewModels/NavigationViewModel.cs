@@ -16,6 +16,7 @@ public partial class NavigationViewModel : ObservableObject
     private readonly IServiceProvider? _serviceProvider;
     private readonly UpdateService? _updateService;
     private readonly ThemeService? _themeService;
+    private readonly LanguageService? _languageService;
     private DispatcherTimer? _updateCheckTimer;
 
     [ObservableProperty]
@@ -37,18 +38,34 @@ public partial class NavigationViewModel : ObservableObject
     private string currentVersion = GetCurrentVersion();
 
     [ObservableProperty]
-    private string themeButtonText = "🌙 Koyu Mod";
+    private bool isDarkMode = false;
+
+    [ObservableProperty]
+    private bool isTrSelected;
+
+    [ObservableProperty]
+    private bool isEnSelected;
+
+    [ObservableProperty]
+    private bool isAzSelected;
 
     public NavigationViewModel(IServiceProvider? serviceProvider = null)
     {
         _serviceProvider = serviceProvider;
         _updateService = serviceProvider?.GetService<UpdateService>();
         _themeService = serviceProvider?.GetService<ThemeService>();
+        _languageService = serviceProvider?.GetService<LanguageService>();
 
         if (_themeService != null)
         {
-            UpdateThemeButtonText();
-            _themeService.ThemeChanged += (sender, isDark) => UpdateThemeButtonText();
+            IsDarkMode = _themeService.IsDarkMode;
+            _themeService.ThemeChanged += (sender, isDark) => IsDarkMode = isDark;
+        }
+
+        if (_languageService != null)
+        {
+            UpdateLanguageSelection(_languageService.CurrentLanguage);
+            _languageService.LanguageChanged += (sender, lang) => UpdateLanguageSelection(lang);
         }
         
         // Güncelleme durumu değiştiğinde buton metnini güncelle
@@ -164,12 +181,20 @@ public partial class NavigationViewModel : ObservableObject
         _themeService?.ToggleTheme();
     }
 
-    private void UpdateThemeButtonText()
+    [RelayCommand]
+    private void ChangeLanguage(string? langCode)
     {
-        if (_themeService != null)
+        if (!string.IsNullOrEmpty(langCode))
         {
-            ThemeButtonText = _themeService.IsDarkMode ? "☀️ Açık Mod" : "🌙 Koyu Mod";
+            _languageService?.SetLanguage(langCode);
         }
+    }
+
+    private void UpdateLanguageSelection(string langCode)
+    {
+        IsTrSelected = langCode == "tr";
+        IsEnSelected = langCode == "en";
+        IsAzSelected = langCode == "az";
     }
 
     /// <summary>

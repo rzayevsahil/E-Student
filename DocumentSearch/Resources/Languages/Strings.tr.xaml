@@ -1,0 +1,82 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Navigation / Layout -->
+    <sys:String x:Key="Nav_DocumentSearch">📄 Belge Arama</sys:String>
+    <sys:String x:Key="Nav_Pomodoro">🍅 Pomodoro</sys:String>
+    <sys:String x:Key="Nav_Theme_Dark">🌙 Karanlık Mod</sys:String>
+    <sys:String x:Key="Nav_Theme_Light">☀️ Aydınlık Mod</sys:String>
+    <sys:String x:Key="Nav_Update">🔄 Güncelleme Var!</sys:String>
+    <sys:String x:Key="Nav_Language">🌐 Dil / Language</sys:String>
+    <sys:String x:Key="Footer_Developer">Geliştirici: Sahil Rzayev</sys:String>
+
+    <!-- Document Search View -->
+    <sys:String x:Key="Doc_Title">Belge İçerik Arama</sys:String>
+    <sys:String x:Key="Doc_Subtitle">PDF, Word, Excel ve PowerPoint ders materyallerinizde anında kelime araması</sys:String>
+    <sys:String x:Key="Doc_UploadButton">+ Dosya Yükle</sys:String>
+    <sys:String x:Key="Doc_UploadButtonText">Dosya Yükle</sys:String>
+    <sys:String x:Key="Doc_UploadedFiles">Yüklenen Dosyalar</sys:String>
+    <sys:String x:Key="Doc_SearchInList">Listede ara...</sys:String>
+    <sys:String x:Key="Doc_Filter_All">Tümü</sys:String>
+    <sys:String x:Key="Doc_Filter_PDF">PDF</sys:String>
+    <sys:String x:Key="Doc_Filter_Word">Word</sys:String>
+    <sys:String x:Key="Doc_Filter_Excel">Excel</sys:String>
+    <sys:String x:Key="Doc_Filter_PPT">PPT</sys:String>
+    <sys:String x:Key="Doc_DropTitle">Dosyaları Buraya Sürükleyin</sys:String>
+    <sys:String x:Key="Doc_DropSubtext">veya 'Dosya Yükle' butonunu kullanın</sys:String>
+    <sys:String x:Key="Doc_SearchTitle">Arama</sys:String>
+    <sys:String x:Key="Doc_SearchPlaceholder">Belgelerinizde aramak istediğiniz kelimeyi yazın...</sys:String>
+    <sys:String x:Key="Doc_AutoSearchSubtext">Yazdıkça otomatik arama yapılır</sys:String>
+    <sys:String x:Key="Doc_SearchResults">Arama Sonuçları</sys:String>
+    <sys:String x:Key="Doc_TipHeader">💡 İpucu:</sys:String>
+    <sys:String x:Key="Doc_TipText"> Tıklayarak sağda önizleyin, çift tıklayarak harici uygulamada açın.</sys:String>
+    <sys:String x:Key="Doc_Col_File">Dosya</sys:String>
+    <sys:String x:Key="Doc_Col_Page">Sayfa</sys:String>
+    <sys:String x:Key="Doc_Col_Snippet">Eşleşen Snippet</sys:String>
+    <sys:String x:Key="Doc_Preview_QuickPreview">📖 Hızlı Önizleme | Sayfa</sys:String>
+    <sys:String x:Key="Doc_Preview_OpenExternal">↗ Harici Aç</sys:String>
+    <sys:String x:Key="Doc_Preview_Close">Önizlemeyi Kapat</sys:String>
+    <sys:String x:Key="Doc_Preview_SnippetTitle">🔍 Arama Eşleşmesi / Snippet</sys:String>
+    <sys:String x:Key="Doc_Preview_Prev">◀ Önceki</sys:String>
+    <sys:String x:Key="Doc_Preview_Next">Sonraki ▶</sys:String>
+    <sys:String x:Key="Doc_ToolTip_DoubleOpen">Çift tıklayarak dosyayı aç</sys:String>
+    <sys:String x:Key="Doc_ToolTip_Remove">Dosyayı kaldır</sys:String>
+
+    <!-- Pomodoro View -->
+    <sys:String x:Key="Pomo_Title">Pomodoro Tekniği</sys:String>
+    <sys:String x:Key="Pomo_Reset">Sıfırla</sys:String>
+    <sys:String x:Key="Pomo_Skip">Geç</sys:String>
+    <sys:String x:Key="Pomo_Start">Başlat</sys:String>
+    <sys:String x:Key="Pomo_Pause">Duraklat</sys:String>
+    <sys:String x:Key="Pomo_Resume">Devam Et</sys:String>
+    <sys:String x:Key="Pomo_Phase_Work">Çalışma</sys:String>
+    <sys:String x:Key="Pomo_Phase_ShortBreak">Kısa Mola</sys:String>
+    <sys:String x:Key="Pomo_Phase_LongBreak">Uzun Mola</sys:String>
+    <sys:String x:Key="Pomo_Status_Idle">Pomodoro Tekniği</sys:String>
+    <sys:String x:Key="Pomo_Status_Work">Çalışma zamanı! Odaklanın.</sys:String>
+    <sys:String x:Key="Pomo_Status_ShortBreak">Kısa mola zamanı. Rahatlayın!</sys:String>
+    <sys:String x:Key="Pomo_Status_LongBreak">Uzun mola zamanı. İyi dinlenin!</sys:String>
+    <sys:String x:Key="Pomo_Status_Paused">Duraklatıldı</sys:String>
+    <sys:String x:Key="Pomo_Status_Break">Mola zamanı. Rahatlayın!</sys:String>
+    <sys:String x:Key="Pomo_InfoText">Pomodoro Tekniği, odaklanmayı artırmak için 25 dakikalık çalışma ve kısa molalar kullanır.</sys:String>
+    <sys:String x:Key="Pomo_CompletedTitle">Tamamlanan Pomodorolar</sys:String>
+    <sys:String x:Key="Pomo_HowItWorks">📌 Pomodoro Tekniği Nasıl Çalışır?</sys:String>
+    <sys:String x:Key="Pomo_Step1">1. 25 dakika boyunca odaklanarak çalışın</sys:String>
+    <sys:String x:Key="Pomo_Step2">2. Çalışma süresi bitince 5 dakika kısa mola verin</sys:String>
+    <sys:String x:Key="Pomo_Step3">3. Her 4 pomodoroda bir 15 dakika uzun mola verin</sys:String>
+    <sys:String x:Key="Pomo_Step4">4. Bu döngüyü tekrarlayarak verimliliğinizi artırın</sys:String>
+
+    <!-- Status Messages -->
+    <sys:String x:Key="Status_Ready">Hazır</sys:String>
+    <sys:String x:Key="Status_LoadingSavedFiles">Kayıtlı dosyalar yükleniyor...</sys:String>
+    <sys:String x:Key="Status_SavedFilesLoaded">{0} kayıtlı dosya yüklendi.</sys:String>
+    <sys:String x:Key="Status_Error">Hata: {0}</sys:String>
+    <sys:String x:Key="Status_LoadingFiles">Dosyalar yükleniyor...</sys:String>
+    <sys:String x:Key="Status_FilesProcessed">{0} dosya işlendi. Toplam {1} dosya.</sys:String>
+    <sys:String x:Key="Status_DraggingFiles">Sürüklenen dosyalar yükleniyor...</sys:String>
+    <sys:String x:Key="Status_FilesAdded">{0} dosya eklendi. Toplam {1} dosya.</sys:String>
+    <sys:String x:Key="Status_FileRemoved">{0} kaldırıldı.</sys:String>
+    <sys:String x:Key="Status_NoFiles">Yüklenmiş dosya yok.</sys:String>
+    <sys:String x:Key="Status_ResultsFound">{0} sonuç bulundu.</sys:String>
+</ResourceDictionary>

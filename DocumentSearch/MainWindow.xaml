@@ -61,7 +61,7 @@
 
                     <!-- Menu Items -->
                     <StackPanel>
-                        <Button Content="📄 Belge Arama" 
+                        <Button Content="{DynamicResource Nav_DocumentSearch}" 
                                 Command="{Binding NavigateToDocumentSearchCommand}"
                                 Margin="10,5"
                                 Padding="15,12"
@@ -98,7 +98,7 @@
                             </Button.Style>
                         </Button>
 
-                        <Button Content="🍅 Pomodoro" 
+                        <Button Content="{DynamicResource Nav_Pomodoro}" 
                                 Command="{Binding NavigateToPomodoroCommand}"
                                 Margin="10,5"
                                 Padding="15,12"
@@ -136,11 +136,24 @@
                         </Button>
 
                         <!-- Tema Değiştirme Butonu (Light/Dark) -->
-                        <Button Content="{Binding ThemeButtonText}" 
-                                Command="{Binding ToggleThemeCommand}"
-                                Margin="10,15,10,5"
+                        <Button Command="{Binding ToggleThemeCommand}"
+                                Margin="10,10,10,5"
                                 Padding="15,12"
                                 HorizontalContentAlignment="Left">
+                            <Button.Content>
+                                <TextBlock>
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Text" Value="{DynamicResource Nav_Theme_Dark}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsDarkMode}" Value="True">
+                                                    <Setter Property="Text" Value="{DynamicResource Nav_Theme_Light}"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Button.Content>
                             <Button.Style>
                                 <Style TargetType="Button">
                                     <Setter Property="Background" Value="Transparent"/>
@@ -167,6 +180,142 @@
                                 </Style>
                             </Button.Style>
                         </Button>
+
+                        <!-- Dil Seçimi (Language Selector: TR | EN | AZ) -->
+                        <Border Margin="10,12,10,5" Padding="0">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Nav_Language}" 
+                                           FontSize="11" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="{DynamicResource SecondaryTextBrush}" 
+                                           Margin="4,0,0,6"/>
+                                <UniformGrid Columns="3">
+                                    <RadioButton Content="TR" 
+                                                 GroupName="AppLanguage" 
+                                                 IsChecked="{Binding IsTrSelected}" 
+                                                 Command="{Binding ChangeLanguageCommand}" 
+                                                 CommandParameter="tr" 
+                                                 Margin="2,0" 
+                                                 Padding="4,6" 
+                                                 FontSize="11" 
+                                                 FontWeight="Bold"
+                                                 Foreground="{DynamicResource PrimaryTextBrush}"
+                                                 HorizontalContentAlignment="Center"
+                                                 Cursor="Hand">
+                                        <RadioButton.Style>
+                                            <Style TargetType="RadioButton">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="RadioButton">
+                                                            <Border x:Name="chip" 
+                                                                    Background="{DynamicResource InputBackgroundBrush}" 
+                                                                    BorderBrush="{DynamicResource BorderBrush}" 
+                                                                    BorderThickness="1" 
+                                                                    CornerRadius="6" 
+                                                                    Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsChecked" Value="True">
+                                                                    <Setter TargetName="chip" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                                                    <Setter TargetName="chip" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter TargetName="chip" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </RadioButton.Style>
+                                    </RadioButton>
+                                    <RadioButton Content="EN" 
+                                                 GroupName="AppLanguage" 
+                                                 IsChecked="{Binding IsEnSelected}" 
+                                                 Command="{Binding ChangeLanguageCommand}" 
+                                                 CommandParameter="en" 
+                                                 Margin="2,0" 
+                                                 Padding="4,6" 
+                                                 FontSize="11" 
+                                                 FontWeight="Bold"
+                                                 Foreground="{DynamicResource PrimaryTextBrush}"
+                                                 HorizontalContentAlignment="Center"
+                                                 Cursor="Hand">
+                                        <RadioButton.Style>
+                                            <Style TargetType="RadioButton">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="RadioButton">
+                                                            <Border x:Name="chip" 
+                                                                    Background="{DynamicResource InputBackgroundBrush}" 
+                                                                    BorderBrush="{DynamicResource BorderBrush}" 
+                                                                    BorderThickness="1" 
+                                                                    CornerRadius="6" 
+                                                                    Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsChecked" Value="True">
+                                                                    <Setter TargetName="chip" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                                                    <Setter TargetName="chip" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter TargetName="chip" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </RadioButton.Style>
+                                    </RadioButton>
+                                    <RadioButton Content="AZ" 
+                                                 GroupName="AppLanguage" 
+                                                 IsChecked="{Binding IsAzSelected}" 
+                                                 Command="{Binding ChangeLanguageCommand}" 
+                                                 CommandParameter="az" 
+                                                 Margin="2,0" 
+                                                 Padding="4,6" 
+                                                 FontSize="11" 
+                                                 FontWeight="Bold"
+                                                 Foreground="{DynamicResource PrimaryTextBrush}"
+                                                 HorizontalContentAlignment="Center"
+                                                 Cursor="Hand">
+                                        <RadioButton.Style>
+                                            <Style TargetType="RadioButton">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="RadioButton">
+                                                            <Border x:Name="chip" 
+                                                                    Background="{DynamicResource InputBackgroundBrush}" 
+                                                                    BorderBrush="{DynamicResource BorderBrush}" 
+                                                                    BorderThickness="1" 
+                                                                    CornerRadius="6" 
+                                                                    Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsChecked" Value="True">
+                                                                    <Setter TargetName="chip" Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                                                    <Setter TargetName="chip" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter TargetName="chip" Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </RadioButton.Style>
+                                    </RadioButton>
+                                </UniformGrid>
+                            </StackPanel>
+                        </Border>
 
                         <!-- Güncelleme Butonu -->
                         <Button Content="{Binding UpdateButtonText}" 
@@ -239,7 +388,7 @@
                 BorderBrush="{DynamicResource BorderBrush}"
                 BorderThickness="0,1,0,0"
                 Padding="10,8">
-            <TextBlock Text="Geliştirici: Sahil Rzayev" 
+            <TextBlock Text="{DynamicResource Footer_Developer}" 
                        FontSize="12" 
                        Foreground="{DynamicResource SecondaryTextBrush}"
                        HorizontalAlignment="Center"/>

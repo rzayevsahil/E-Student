@@ -26,7 +26,7 @@
                    Margin="0,0,0,25"
                    HorizontalAlignment="Center">
             <Run Foreground="#FF6B35" Text="🍅"/>
-            <Run Foreground="{DynamicResource PrimaryTextBrush}" Text=" Pomodoro Tekniği"/>
+            <Run Foreground="{DynamicResource PrimaryTextBrush}" Text="{DynamicResource Pomo_Title}"/>
         </TextBlock>
 
         <!-- Timer Display (Exact Dual-Color Glow Ring + Digital LED Clock) -->
@@ -138,7 +138,7 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button Content="Sıfırla" 
+            <Button Content="{DynamicResource Pomo_Reset}" 
                     Command="{Binding ResetCommand}"
                     Padding="28,14"
                     FontSize="16"
@@ -180,7 +180,7 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            <Button Content="Geç" 
+            <Button Content="{DynamicResource Pomo_Skip}" 
                     Command="{Binding SkipCommand}"
                     Padding="28,14"
                     FontSize="16"
@@ -241,7 +241,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" 
-                               Text="Tamamlanan Pomodorolar" 
+                               Text="{DynamicResource Pomo_CompletedTitle}" 
                                FontSize="16" 
                                FontWeight="Bold"
                                Foreground="{DynamicResource PrimaryTextBrush}"
@@ -265,24 +265,24 @@
                     <StackPanel Grid.Row="2" 
                                 Margin="0,35,0,0"
                                 Orientation="Vertical">
-                        <TextBlock Text="📌 Pomodoro Tekniği Nasıl Çalışır?" 
+                        <TextBlock Text="{DynamicResource Pomo_HowItWorks}" 
                                    FontSize="15" 
                                    FontWeight="Bold"
                                    Foreground="{DynamicResource PrimaryTextBrush}"
                                    Margin="0,0,0,8"/>
-                        <TextBlock Text="1. 25 dakika boyunca odaklanarak çalışın" 
+                        <TextBlock Text="{DynamicResource Pomo_Step1}" 
                                    FontSize="13" 
                                    Foreground="{DynamicResource SecondaryTextBrush}"
                                    Margin="0,4,0,0"/>
-                        <TextBlock Text="2. Çalışma süresi bitince 5 dakika kısa mola verin" 
+                        <TextBlock Text="{DynamicResource Pomo_Step2}" 
                                    FontSize="13" 
                                    Foreground="{DynamicResource SecondaryTextBrush}"
                                    Margin="0,4,0,0"/>
-                        <TextBlock Text="3. Her 4 pomodoroda bir 15 dakika uzun mola verin" 
+                        <TextBlock Text="{DynamicResource Pomo_Step3}" 
                                    FontSize="13" 
                                    Foreground="{DynamicResource SecondaryTextBrush}"
                                    Margin="0,4,0,0"/>
-                        <TextBlock Text="4. Bu döngüyü tekrarlayarak verimliliğinizi artırın" 
+                        <TextBlock Text="{DynamicResource Pomo_Step4}" 
                                    FontSize="13" 
                                    Foreground="{DynamicResource SecondaryTextBrush}"
                                    Margin="0,4,0,0"/>

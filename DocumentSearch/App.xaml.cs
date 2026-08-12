@@ -37,6 +37,7 @@ public partial class App : Application
         services.AddSingleton<ISearchService, SearchService>();
         services.AddSingleton<UpdateService>();
         services.AddSingleton<ThemeService>();
+        services.AddSingleton<LanguageService>();
 
         // ViewModels
         services.AddTransient<MainViewModel>();
